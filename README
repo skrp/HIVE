@@ -1,0 +1,9 @@
+#########################
+# HIVE - MINION FRAMEWORK
+# ACTORS ################
+BROOD - daemon creation
+HOST - reactive daemon code
+HIVE - daemon uniq dir
+# FIFO ##################
+POST - write
+WORD - read
