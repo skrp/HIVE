@@ -31,12 +31,11 @@ while(1)
   my $set_name = $set[0]; my $version = $set[1]; my $custom = $set[2];
   my $version =~ $ver.$version; my $wrapped = $dump.$set_name; 
   my $tail = $version.'_tail'; my $custom =~ './batch/'.$custom;
-  
   open(my $Wfh, '>>', $wrapped) or print "fail create $wrapped\n";
   `cat $version >> $wrapped`; print $Wfh "\n"; 
   `cat $custom >> $wrapped`; print $Wfh "\n";
   `cat $tail >> $wrapped`;
-  print "wrapped $set_name\n";
+  print $FPfh "wrapped $set_name\n";
 }
 # FN ################################
 sub TIME
