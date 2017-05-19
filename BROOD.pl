@@ -1,12 +1,24 @@
 #!/usr/local/bin/perl
 use strict; use warnings;
 use Proc::Daemon; use POSIX qw(mkfifo);
-#####################################
+#######################################
 # BROOD - daemon birth mother
-# INIT ##############################
-my $LOG = 'LOG'; open(my $Bfh, '>>', $LOG) or die "cant open LOG\n";
-my $WORD = 'WORD'; mkfifo($WORD, 0770) or die "mkfifo WORD fail\n";
-my $POST = 'POST'; mkfifo($POST, 0770) or die "mkfifo POST fail\n";
+# SETUP ###############################
+my $work = '.';
+# FILES 
+my $BUG = 'BUG'; my $LOG = 'LOG'; my $pid = 'PID';
+my $SLEEP = 'SLEEP'; my $SUICIDE = 'SUICIDE';
+# DAEMONIZE ##########################
+my $daemon = Proc::Daemon->new(
+    work_dir     => $work,
+    child_STDOUT => +>>$LOG,
+    child_STDERR => +>>$BUG,
+    pid_file     => $pid,
+);
+$daemon->Init();
+# INIT ###############################
+my $WORD = 'WORD'; mkfifo($WORD, 0770) or die "mkfifo WORD fail\n"; # wrapped code location
+my $POST = 'POST'; mkfifo($POST, 0770) or die "mkfifo POST fail\n"; # $btime
 while(1)
 {
   my $code = <$WORD>; chomp $code;
@@ -28,7 +40,7 @@ while(1)
     exec_command => "perl $code",
   );
   $embryo->Init() or die "STILLBORN\n";
-  my $btime = TIME(); print $Bfh "$name $btime\n";
+  my $btime = TIME(); print "$name $btime\n";
 }
 # FN ################################
 sub gen
