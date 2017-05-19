@@ -22,7 +22,7 @@ my $POST = 'POST'; mkfifo($POST, 0770) or die "mkfifo POST fail\n"; # $btime
 while(1)
 {
   my $code = <$WORD>; chomp $code;
-  if (not defined $line)
+  if (not defined $code)
     { sleep 500; next; }
   my $set_name = gen(); regen($set_name);
 # DIR 
