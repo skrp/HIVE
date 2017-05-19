@@ -9,10 +9,9 @@ my $WORD = 'WORD'; mkfifo($WORD, 0770) or die "mkfifo WORD fail\n";
 my $POST = 'POST'; mkfifo($POST, 0770) or die "mkfifo POST fail\n";
 while(1)
 {
-  my $line = <$WORD>;
+  my $code = <$WORD>; chomp $code;
   if (not defined $line)
     { sleep 500; next; }
-  my @set = split(/\s+/, $line);
   my $set_name = gen(); regen($set_name);
 # DIR 
   my $home = "hive/$set_name"; my $dump = "$home/dump"; my $que = "$home/que";
@@ -26,6 +25,7 @@ while(1)
     child_STDOUT => "+>>$LOG",
     child_STDERR => "+>>$BUG",
     pid_file => $mPID,
+    exec_command => "perl $code",
   );
   $embryo->Init() or die "STILLBORN\n";
   my $btime = TIME(); print $Bfh "$name $btime\n";
