@@ -4,7 +4,7 @@ use Proc::Daemon; use POSIX qw(mkfifo);
 #######################################
 # HOST - daemon code father
 # SETUP ###############################
-my $dir = '3'; chdir $dir;
+my $dir = ''; chdir $dir; #???????????????????
 my $work = '.'; my $batch = 'batch';
 my $ver = './ver/'; mkdir $ver;
 my $dump ='./dump/'; mkdir $dump;
