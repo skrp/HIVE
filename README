@@ -15,11 +15,11 @@ CODE - version specified to work over the array
 1) admin -> posts new code to HOST
     ACTOR = array action
     @IT = array
-    VERSION = 'CODE_VERSION';
+    VERSION = 'CODE_VERSION'
   
- 2a) HOST -> compiles CODE_VERSION, ACTOR, @ IT
+ 2a) HOST -> reads fifo, compiles: CODE_VERSION, ACTOR, @ IT
  2b) HOST posts($new_code) to write fifo
  
- 3a) BROOD reads fifo, births daemon with $new_code.
+ 3a) BROOD reads fifo, births daemon with $new_code
  
  4a) Daemon is created in its uniq directory and works over set
