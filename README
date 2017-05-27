@@ -10,16 +10,16 @@ WORD - read fifo
 
 admin 
     POST - ACTOR, @IT, CODE_VERSION to HOST
-    WORD - all daemons
+    WORD - status from all daemons
 HOST
     POST - $new_code to BROOL
-    WORD - from admin
+    WORD - set info from admin
 BROOD
-    POST - status to ADMIN
+    POST - status to admin
     WORD - $new_code location from HOST
 MINION
-    POST - status to ADMIN
-    WORD - from BROOD 
+    POST - status to admin
+    WORD - new set infom from admin
 # CODE ###################
 ACTOR - the set's uniq expression
 @IT - set's iteration array
