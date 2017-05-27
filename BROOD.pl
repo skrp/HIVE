@@ -18,9 +18,7 @@ my $daemon = Proc::Daemon->new(
 );
 $daemon->Init();
 # INIT ###############################
-my $WORD = 'WORD'; mkfifo($WORD, 0770) or die "mkfifo WORD fail\n"; # wrapped 
-
-code location
+my $WORD = 'WORD'; mkfifo($WORD, 0770) or die "mkfifo WORD fail\n"; # wrapped code location
 open(my $FWfh, '<', $WORD) or die "cant open WORD\n";
 my $POST = 'POST'; mkfifo($POST, 0770) or die "mkfifo POST fail\n"; # $btime
 open(my $FPfh, '<', $POST) or die "cant open POST\n";
