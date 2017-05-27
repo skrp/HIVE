@@ -1,9 +1,9 @@
 #########################
 # HIVE - MINION FRAMEWORK
 # ACTORS ################
+HOST - daemon code brewery
 BROOD - daemon creation
-HOST - reactive daemon code
 HIVE - daemon uniq dir
-# FIFO ##################
-POST - write
-WORD - read
+# IPC ##################
+POST - write fifo
+WORD - read fifo
