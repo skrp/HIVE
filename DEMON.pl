@@ -3,6 +3,7 @@ use strict; use warnings;
 use Proc::Daemon;
 use File::Path;
 use Archive::Tar;
+use Digest::SHA ();
 #####################################
 # DEMON - summon scroll shell 
 # INIT ##############################
