@@ -3,19 +3,18 @@
 # PROCESS ###################
 ADMIN -> posts (ACTION @IT RACE) -> BROOD_IN_FIFO
   BROOD - births DEMON
-BROOD -> posts (@FACE) -> ADMIN_IN_FIFO
+DEMON -> posts (@FACE) -> ADMIN_IN_FIFO
 # ITEMS ########################
-ADMIN: creator
+ADMIN: udp requests
 BROOD: DEMON spawner
 ACTION: what is done over iterations
 @ITER: array of work to be done
-@API: api
 @FACE: DEMON attributes
 # FIFO FLOW ####################
 ADMIN                                    BROOD
-   (actor, iteration_list, api)
+   (actor, @ITER, api)
 FIFO_WRITE ============================= FIFO_READ 
-                (child_stat)                               DEMON
+                (@FACE)                                   DEMON
 FIFO_READ =================================================FIFO_WRITE                                 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % (node2_489)  split 10 files
