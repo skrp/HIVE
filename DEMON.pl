@@ -12,8 +12,8 @@ my $embryo = Proc::Daemon->new(
 );
 my $pid = $embryo->Init() or die "STILLBORN\n";
 # LOCATION
-my $gravestone = "/graveyard/"$name"."tar";
-my $name = "/tmp/$pid"";
+my $tombstone = "/tombstone/"$name."tar";
+my $name = name($pid);
 my $dump = "$name"."_dump";
 my $code = "$name"."_code";
 my $tar = "$name"."_tar";
@@ -73,8 +73,11 @@ sub dumpr
   `ls $dump > $rep`;
   `rm -r $dump`;
 }
+sub tombstone
+{
   `tar -cf $gravestone $name*`;
   my $xxtime = TIME(); print $Lfh "farewell $xxtime\n";
+}
 sub SUICIDE
 {
   unlink $SUICIDE;
@@ -97,4 +100,10 @@ sub TIME
   my $hour = (split(/\s+/, $t))[3];
   my $time = $mon.'_'.$day.'_'.$hour;
   return $time;
+}
+sub name
+{
+  my @set = ("A".."Z", "a".."z", "1".."9");
+  my $name = $chars[rand @chars] for 1..8;
+  return $name;
 }
