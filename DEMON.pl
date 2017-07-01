@@ -121,6 +121,7 @@ sub face
       $FACE[3] = $set_name . '_' . $count . '/' . $ttl;
       print $wfifo "@FACE";
 }
+# API ##################################################
 sub sha
 {
     my ($sha) = file_digest($i);
