@@ -1,9 +1,5 @@
 #############################
 # DEMON - unix daemon network
-task -> split into segments
-DEMON->(segment_no, code)
-
-
 # PROCESS ###################
 ADMIN -> posts (ACTION @IT RACE) -> HOST_IN_FIFO
   HOST  - prepares DEMON code
