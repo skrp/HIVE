@@ -72,6 +72,13 @@ while (1)
   my $xxtime = TIME(); print $Lfh "farewell $xxtime\n";
 }
 # SUB ##############################
+sub file_digest { #### API SUB #####
+    my ($filename) = @_;
+    my $digest = Digest::SHA->new(256);
+    $digest->addfile($filename, "b");
+    return $digest->hexdigest();
+}
+
 sub SUICIDE
 {
   unlink $SUICIDE;
@@ -94,10 +101,4 @@ sub TIME
   my $hour = (split(/\s+/, $t))[3];
   my $time = $mon.'_'.$day.'_'.$hour;
   return $time;
-}
-sub file_digest {
-    my ($filename) = @_;
-    my $digest = Digest::SHA->new(256);
-    $digest->addfile($filename, "b");
-    return $digest->hexdigest();
 }
