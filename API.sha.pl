@@ -1,7 +1,8 @@
 #!/usr/local/bin/perl
 use strict; use warnings;
 use Proc::Daemon;
-use Digest::SHA ();
+use File::Path;
+use Archive::Tar;
 #####################################
 # SUMMON SCROLL
 # INIT ##############################
@@ -10,14 +11,12 @@ my @FACE; my $RATE = '100';
 # BIRTH ###############################
 my $embryo = Proc::Daemon->new(work_dir => "/tmp/");
 my $pid = $embryo->Init() or die "STILLBORN\n";
-# LOCATION
-my $gravestone = "/graveyard/"$name"."tar";
-my $name = "/tmp/$pid"";
+# VAR ####################################
+my $name = name($pid);
 my $dump = "$name"."_dump";
 my $code = "$name"."_code";
 my $tar = "$name"."_tar";
 my $log = "$name"."_log";
-my $rep = "$name"."_rep";
 my $SLEEP = "$name"."_SLEEP";
 my $SUICIDE = "$name"."_SUICIDE";
 my $wfifo = "/tmp/HOST";
@@ -38,9 +37,9 @@ while (1)
   foreach my $i (@QUE)
   {
     if (-e $SUICIDE)
-      { SUICIDE(); }
+      { SUICIDE($Lfh); }
     if (-e $SLEEP)
-      { SLEEP(); }
+      { SLEEP($Lfh); }
     print $Lfh "started $i\n";
 #####################################
 ## CODE #############################
@@ -53,40 +52,47 @@ while (1)
     # print $Lfh "ended $i\n"; #### DEBUG
 # RATE ##############################
     if ($count % $RATE == 0)
-    {
-      my $current = gmtime();
-      # FACE (age, name, rep, status)
-      $FACE[0] = $name;
-      $FACE[1] = (($current - $born) / 60);
-      $FACE[3] = $set_name . '_' . $count . '/' . $ttl;
-      open(my $wffh, '>', $wfifo);
-      print $wffh "@FACE";
-    }
+      { face($wfifo); }
   }
   my $dtime = TIME(); print $Lfh "done $dtime\n";
-
-  `XS $dump /otto/pool`;
-  `ls $dump > $rep`;
-  `rm -r $dump`; 
-  `tar -cf $gravestone $name*`;
-  my $xxtime = TIME(); print $Lfh "farewell $xxtime\n";
+  dumpr($name, $dump);
+  tombstone($name, $Lfh, $log, $code, $rep);
 }
 # SUB ##############################
-sub file_digest { #### API SUB #####
+sub file_digest 
+{ #### API SUB #####
     my ($filename) = @_;
     my $digest = Digest::SHA->new(256);
     $digest->addfile($filename, "b");
     return $digest->hexdigest();
 }
-
+sub dumpr
+{
+  my $name = shift; my $dump = shift;
+  my $rep = "$name"."_rep";
+  `XS $dump /`;
+  `ls $dump > $rep`;
+  remove_tree($dump);
+}
+sub tombstone
+{
+  my ($name, $Lfh, $log, $code, $rep) = @_; 
+  my $tombstone = "/tombstone/"$name."tar";
+  my $tar = Archive::Tar->new();
+  $tar->add_files($log, $code, $rep) 
+  `tar -cf $tombstone /tmp/$name*`;
+  my $xxtime = TIME(); print $Lfh "farewell $xxtime\n";
+}
 sub SUICIDE
 {
+  my $Lfh = shift;
   unlink $SUICIDE;
   my $xtime = TIME(); print $Lfh "FKTHEWORLD $xtime\n";
   exit;
 }
 sub SLEEP
 {
+  my $Lfh = shift;
   open(my $Sfh, '<', $SLEEP);
   my $timeout = readline $Sfh; chomp $timeout;
   my $ztime = TIME(); print $Lfh "sleep $ztime $timeout\n";
@@ -101,4 +107,21 @@ sub TIME
   my $hour = (split(/\s+/, $t))[3];
   my $time = $mon.'_'.$day.'_'.$hour;
   return $time;
+}
+sub name
+{
+  my ($pid) = shift;
+  my @set = ("A".."Z", "a".."z", "1".."9");
+  my $id = $chars[rand @chars] for 1..8;
+  my $name = $name.$id
+  return $name;
+}
+sub face
+{ # FACE (age, name, rep, status)
+      my $wfifo = shift;
+      my $current = gmtime();
+      $FACE[0] = $name;
+      $FACE[1] = (($current - $born) / 60);
+      $FACE[3] = $set_name . '_' . $count . '/' . $ttl;
+      print $wfifo "@FACE";
 }
