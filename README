@@ -19,17 +19,17 @@ ACTION: what is done over iterations
 RACE: code version
 @FACE: DEMON attributes
 
-
+# HIVE STRUCTURE ###################################
  
 [ ==== /bin /pool /sea /g /k /log /tombstone ===== ]
-[ ================================================ ]
+[ ===================== scp ====================== ]
 [ =================== ZFS NFS ==================== ]
-^^     vv     ^^^     vv     ^
-^^     vv     ^
-^^     vv     ^
+^^      vv     ^^^     vv     ^
+^^      vv     ^
+^^      vv     ^
 **********     
 ** /tmp **
-**********
+** bee5 **
 **********
 ** host **
 *#######**
@@ -42,7 +42,7 @@ RACE: code version
 ( dynamic code )
 ( actor @iterations )
 
-
+# OLD ##############################################
 
 
 
