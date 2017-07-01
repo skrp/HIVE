@@ -3,6 +3,9 @@ use strict; use warnings;
 use Proc::Daemon; use POSIX qw(mkfifo);
 #######################################
 # BROOD - daemon birth mother
+# she lives to brood young
+# the young live to build brood
+# each reign a constant power range
 # SETUP ###############################
 my $dir = '/tmp/'; chdir $dir; #
 my $work = '.';
