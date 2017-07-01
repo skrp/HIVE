@@ -1,6 +1,8 @@
 #!/usr/local/bin/perl
 use strict; use warnings;
 use Proc::Daemon;
+use File::Path;
+use Archive::Tar;
 #####################################
 # SUMMON SCROLL
 # INIT ##############################
@@ -17,7 +19,6 @@ my $dump = "$name"."_dump";
 my $code = "$name"."_code";
 my $tar = "$name"."_tar";
 my $log = "$name"."_log";
-my $rep = "$name"."_rep";
 my $SLEEP = "$name"."_SLEEP";
 my $SUICIDE = "$name"."_SUICIDE";
 my $wfifo = "/tmp/HOST";
@@ -54,21 +55,24 @@ while (1)
       { face($wfifo); }
   }
   my $dtime = TIME(); print $Lfh "done $dtime\n";
-  dumpr($dump);
-  tombstone($name, $Lfh);
+  dumpr($name, $dump);
+  tombstone($name, $Lfh, $log, $code, $rep);
 }
 # SUB ##############################
 sub dumpr
 {
-  my $dump = shift;
-  `XS $dump /pool`;
+  my $name = shift; my $dump = shift;
+  my $rep = "$name"."_rep";
+  `XS $dump /`;
   `ls $dump > $rep`;
-  `rm -r $dump`;
+  remove_tree($dump);
 }
 sub tombstone
 {
-  my $name = shift; my $Lfh = shift;
+  my ($name, $Lfh, $log, $code, $rep) = @_; 
   my $tombstone = "/tombstone/"$name."tar";
+  my $tar = Archive::Tar->new();
+  $tar->add_files($log, $code, $rep) 
   `tar -cf $tombstone /tmp/$name*`;
   my $xxtime = TIME(); print $Lfh "farewell $xxtime\n";
 }
