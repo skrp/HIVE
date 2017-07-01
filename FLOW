@@ -10,8 +10,8 @@ FIFO_READ ========================================================== FIFO_WRITE
 
 
 #################################
+# (node2_489)  split 10 files
 # (node1_950)  scrape 100 links
 # (node4_321)  sha 1000 files
 # (node1_843)  wget -m 
-#
-# 
+# (node5_732)  split 10 files
