@@ -1,9 +1,7 @@
 #############################
 # DEMON - unix daemon network
 # PROCESS ###################
-ADMIN -> posts (ACTION @IT RACE) -> HOST_IN_FIFO
-  HOST  - prepares DEMON code
-HOST -> posts (code_location) -> BROOD_IN_FIFO
+ADMIN -> posts (ACTION @IT RACE) -> BROOD_IN_FIFO
   BROOD - prepares & births DEMON
 BROOD -> posts (@FACE) -> ADMIN_IN_FIFO
 # ITEMS ########################
