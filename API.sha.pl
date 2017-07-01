@@ -12,7 +12,7 @@ foreach my $file (@que)
 {
     my ($sha) = file_digest($file) or die "couldn't sha $file";
     if ($sha != $file)
-      { print $lfh "ERK! $file != $sha\n"; }
+      { print $Lfh "ERK! $file != $sha\n"; }
 }
 ########################
 # SHA FN
