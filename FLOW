@@ -4,3 +4,14 @@ FIFO_WRITE ===================== FIFO_READ      (code_location)
                                  FIFO_WRITE ======================== FIFO_READ
                 (child_stat)                 
 FIFO_READ ========================================================== FIFO_WRITE                                 
+
+
+
+
+
+#################################
+# (node1_950)  scrape 100 links
+# (node4_321)  sha 1000 files
+# (node1_843)  wget -m 
+#
+# 
