@@ -6,7 +6,7 @@ ADMIN -> posts (ACTION @IT RACE) -> HOST_IN_FIFO
 HOST -> posts (code_location) -> BROOD_IN_FIFO
   BROOD - prepares & births DEMON
 BROOD -> posts (@FACE) -> ADMIN_IN_FIFO
-
+# ITEMS ########################
 ADMIN: creator
 HOST: code spawner
 BROOD: DEMON spawner
@@ -14,7 +14,19 @@ ACTION: what is done over iterations
 @ITER: array of work to be done
 RACE: code version
 @FACE: DEMON attributes
-
+# FIFO FLOW ####################
+ADMIN                              HOST                               BROOD
+   (actor, iteration_list, code_version)
+FIFO_WRITE ===================== FIFO_READ      (code_location)
+                                 FIFO_WRITE ======================== FIFO_READ
+                (child_stat)                 
+FIFO_READ ========================================================== FIFO_WRITE                                 
+#################################
+# (node2_489)  split 10 files
+# (node1_950)  scrape 100 links
+# (node4_321)  sha 1000 files
+# (node1_843)  wget -m 
+# (node5_732)  split 10 files
 # HIVE STRUCTURE ###################################
  
 [ ==== /bin /pool /sea /g /k /log /tombstone ===== ]
