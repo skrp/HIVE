@@ -6,7 +6,6 @@ ADMIN -> posts (ACTION @IT RACE) -> BROOD_IN_FIFO
 BROOD -> posts (@FACE) -> ADMIN_IN_FIFO
 # ITEMS ########################
 ADMIN: creator
-HOST: code spawner
 BROOD: DEMON spawner
 ACTION: what is done over iterations
 @ITER: array of work to be done
