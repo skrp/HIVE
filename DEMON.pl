@@ -11,8 +11,7 @@ my $embryo = Proc::Daemon->new(
   work_dir => "/tmp/",
 );
 my $pid = $embryo->Init() or die "STILLBORN\n";
-# LOCATION
-my $tombstone = "/tombstone/"$name."tar";
+# VAR ####################################
 my $name = name($pid);
 my $dump = "$name"."_dump";
 my $code = "$name"."_code";
@@ -56,7 +55,7 @@ while (1)
   }
   my $dtime = TIME(); print $Lfh "done $dtime\n";
   dumpr();
-  tombstone();
+  tombstone($name);
 }
 # SUB ##############################
 sub dumpr
@@ -67,6 +66,8 @@ sub dumpr
 }
 sub tombstone
 {
+  my $name = shift;
+  my $tombstone = "/tombstone/"$name."tar";
   `tar -cf $gravestone $name*`;
   my $xxtime = TIME(); print $Lfh "farewell $xxtime\n";
 }
