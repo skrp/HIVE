@@ -38,9 +38,9 @@ while (1)
   foreach my $i (@QUE)
   {
     if (-e $SUICIDE)
-      { SUICIDE(); }
+      { SUICIDE($Lfh); }
     if (-e $SLEEP)
-      { SLEEP(); }
+      { SLEEP($Lfh); }
     print $Lfh "started $i\n";
 #####################################
 ## CODE #############################
@@ -51,34 +51,37 @@ while (1)
     # print $Lfh "ended $i\n"; #### DEBUG
 # RATE ##############################
     if ($count % $RATE == 0)
-      { face(); }
+      { face($wfifo); }
   }
   my $dtime = TIME(); print $Lfh "done $dtime\n";
-  dumpr();
-  tombstone($name);
+  dumpr($dump);
+  tombstone($name, $Lfh);
 }
 # SUB ##############################
 sub dumpr
 {
+  my $dump = shift;
   `XS $dump /pool`;
   `ls $dump > $rep`;
   `rm -r $dump`;
 }
 sub tombstone
 {
-  my $name = shift;
+  my $name = shift; my $Lfh = shift;
   my $tombstone = "/tombstone/"$name."tar";
-  `tar -cf $gravestone $name*`;
+  `tar -cf $tombstone /tmp/$name*`;
   my $xxtime = TIME(); print $Lfh "farewell $xxtime\n";
 }
 sub SUICIDE
 {
+  my $Lfh = shift;
   unlink $SUICIDE;
   my $xtime = TIME(); print $Lfh "FKTHEWORLD $xtime\n";
   exit;
 }
 sub SLEEP
 {
+  my $Lfh = shift;
   open(my $Sfh, '<', $SLEEP);
   my $timeout = readline $Sfh; chomp $timeout;
   my $ztime = TIME(); print $Lfh "sleep $ztime $timeout\n";
@@ -104,9 +107,10 @@ sub name
 }
 sub face
 { # FACE (age, name, rep, status)
+      my $wfifo = shift;
       my $current = gmtime();
       $FACE[0] = $name;
       $FACE[1] = (($current - $born) / 60);
       $FACE[3] = $set_name . '_' . $count . '/' . $ttl;
-      print $wffh "@FACE";
+      print $wfifo "@FACE";
 }
