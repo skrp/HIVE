@@ -4,11 +4,11 @@ use Proc::Daemon; use POSIX qw(mkfifo);
 #######################################
 # BROOD - daemon birth mother
 # SETUP ###############################
-my $dir = ''; chdir $dir; #??????????????????????
+my $dir = '/tmp/'; chdir $dir; #
 my $work = '.';
 # FILES
-my $BUG = 'BUG'; my $LOG = 'LOG'; my $pid = 'PID';
-my $SLEEP = 'SLEEP'; my $SUICIDE = 'SUICIDE';
+my $BUG = 'BROOD_BUG'; my $LOG = 'BROOD_LOG'; my $pid = 'BROOD_PID';
+my $SLEEP = 'BROOD_SLEEP'; my $SUICIDE = 'BROOD_SUICIDE';
 # DAEMONIZE ##########################
 my $daemon = Proc::Daemon->new(
     work_dir     => $work,
@@ -18,33 +18,22 @@ my $daemon = Proc::Daemon->new(
 );
 $daemon->Init();
 # INIT ###############################
-my $WORD = 'WORD'; mkfifo($WORD, 0770) or die "mkfifo WORD fail\n"; # wrapped code location
+my $WORD = 'WBROOD'; mkfifo($WORD, 0770) or die "mkfifo WORD fail\n"; # wrapped code location
 open(my $FWfh, '<', $WORD) or die "cant open WORD\n";
-my $POST = 'POST'; mkfifo($POST, 0770) or die "mkfifo POST fail\n"; # $btime
+my $POST = 'RBROOD'; mkfifo($POST, 0770) or die "mkfifo POST fail\n"; # $btime
 open(my $FPfh, '<', $POST) or die "cant open POST\n";
 while(1)
 {
   my $code = <$WORD>; chomp $code;
   if (not defined $code)
-    { sleep 60; next; }
-  my $set_name = gen(); regen($set_name);
-# DIR
-  my $home = "hive/$set_name"; my $dump = "$home/dump"; my $que = 
-
-"$home/que";
-# FILES
-  my $BUG = "BUG"; my $LOG = "LOG"; my $mPID = 'PID';
-# PREP ################################
-  mkdir $home or die "home FAIL\n"; mkdir $que or die "que FAIL\n"; mkdir 
-
-$dump or die "dump FAIL\n";
+    { sleep 600; next; }
 # BIRTH ###############################
   my $embryo = Proc::Daemon->new(
     work_dir => $home,
     child_STDOUT => "+>>$LOG",
     child_STDERR => "+>>$BUG",
     pid_file => $mPID,
-    exec_command => "perl $code",
+    exec_command => "DEMON.pl",
   );
   $embryo->Init() or die "STILLBORN\n";
   my $btime = TIME(); print $FPfh "$set_name $btime\n";
