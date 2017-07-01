@@ -17,17 +17,17 @@ FIFO_WRITE ============================= FIFO_READ
                 (@FACE)                                   DEMON
 FIFO_READ =================================================FIFO_WRITE                                 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% (node2_489)  split 10 files
-% (node1_950)  scrape 100 links
-% (node4_321)  sha 1000 files
-% (node1_843)  wget -m 
-% (node5_732)  split 10 files
+% (host09_489)  split 10 files
+% (host09_950)  scrape 100 links
+% (host03_321)  sha 1000 files
+% (host12_843)  wget -m 
+% (host4_732)  split 10 files
 
 # HIVE STRUCTURE ###################################
  
-[ ==== /bin /pool /sea /g /k /log /tombstone ===== ]
-[ ================================================ ]
-[ =================== ZFS NFS ==================== ]
+[ ==== /bin /pool /sea /g /k /log /tombstone =====
+[ ================================================
+[ =================== ZFS NFS ====================
 ^^      vv     ^^      vv        ^^      vv
 ^^ host vv     ^^ host vv        ^^ host vv
 ^^  09  vv     ^^ 03   vv        ^^ 12   vv
