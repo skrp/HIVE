@@ -103,7 +103,9 @@ sub TIME
 }
 sub name
 {
+  my ($pid) = shift;
   my @set = ("A".."Z", "a".."z", "1".."9");
-  my $name = $chars[rand @chars] for 1..8;
+  my $id = $chars[rand @chars] for 1..8;
+  my $name = $name.$id
   return $name;
 }
