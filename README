@@ -2,22 +2,21 @@
 # DEMON - unix daemon network
 # PROCESS ###################
 ADMIN -> posts (ACTION @IT RACE) -> BROOD_IN_FIFO
-  BROOD - prepares & births DEMON
+  BROOD - births DEMON
 BROOD -> posts (@FACE) -> ADMIN_IN_FIFO
 # ITEMS ########################
 ADMIN: creator
 BROOD: DEMON spawner
 ACTION: what is done over iterations
 @ITER: array of work to be done
-RACE: code version
+@API: api
 @FACE: DEMON attributes
 # FIFO FLOW ####################
-ADMIN                              HOST                               BROOD
-   (actor, iteration_list, code_version)
-FIFO_WRITE ===================== FIFO_READ      (code_location)
-                                 FIFO_WRITE ======================== FIFO_READ
-                (child_stat)                 
-FIFO_READ ========================================================== FIFO_WRITE                                 
+ADMIN                                    BROOD
+   (actor, iteration_list, api)
+FIFO_WRITE ============================= FIFO_READ 
+                (child_stat)                               DEMON
+FIFO_READ =================================================FIFO_WRITE                                 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % (node2_489)  split 10 files
 % (node1_950)  scrape 100 links
