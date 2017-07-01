@@ -1,0 +1,6 @@
+ADMIN                              HOST                               BROOD
+   (actor, iteration_list, code_version)
+FIFO_WRITE ===================== FIFO_READ      (code_location)
+                                 FIFO_WRITE ======================== FIFO_READ
+                (child_stat)                 
+FIFO_READ ========================================================== FIFO_WRITE                                 
