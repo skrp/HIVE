@@ -63,14 +63,18 @@ while (1)
     }
   }
   my $dtime = TIME(); print $Lfh "done $dtime\n";
-
-  `XS $dump /otto/pool`;
-  `ls $dump > $rep`;
-  `rm -r $dump`; 
-  `tar -cf $gravestone $name*`;
-  my $xxtime = TIME(); print $Lfh "farewell $xxtime\n";
+  dumpr();
+  tombstone();
 }
 # SUB ##############################
+sub dumpr
+{
+  `XS $dump /pool`;
+  `ls $dump > $rep`;
+  `rm -r $dump`;
+}
+  `tar -cf $gravestone $name*`;
+  my $xxtime = TIME(); print $Lfh "farewell $xxtime\n";
 sub SUICIDE
 {
   unlink $SUICIDE;
