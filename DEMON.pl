@@ -4,7 +4,7 @@ use Proc::Daemon;
 use File::Path;
 use Archive::Tar;
 #####################################
-# SUMMON SCROLL
+# DEMON - summon scroll shell 
 # INIT ##############################
 my ($que) = @ARGV;
 my @FACE; my $RATE = '100';
