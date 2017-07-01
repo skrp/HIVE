@@ -32,7 +32,7 @@ while (1)
   my @QUE = readline $qfh; chomp @QUE;
   close $qfh;
   my $stime = TIME(); print $Lfh "start $stime\n";
-  my $set_name = shift; print $Lfh "set $set_name\n";
+  my $api = shift @QUE; print $Lfh "set $set_name\n";
   my $count = @QUE; print $Lfh "count $count\n"; my $ttl = $count;
   foreach my $i (@QUE)
   {
@@ -43,7 +43,7 @@ while (1)
     print $Lfh "started $i\n";
 #####################################
 ## CODE #############################
-    
+    run($api);
 #####################################
 ## CLEAN ############################
     shift @QUE; $count--;
@@ -115,4 +115,17 @@ sub face
       $FACE[1] = (($current - $born) / 60);
       $FACE[3] = $set_name . '_' . $count . '/' . $ttl;
       print $wfifo "@FACE";
+}
+sub sha
+{
+    my ($sha) = file_digest($i);
+    if ($sha ne $i)
+      { print $Lfh "ERK! $file ne $sha\n"; }
+}
+sub file_digest 
+{ 
+    my ($filename) = @_;
+    my $digest = Digest::SHA->new(256);
+    $digest->addfile($filename, "b");
+    return $digest->hexdigest();
 }
