@@ -52,15 +52,7 @@ while (1)
     # print $Lfh "ended $i\n"; #### DEBUG
 # RATE ##############################
     if ($count % $RATE == 0)
-    {
-      my $current = gmtime();
-      # FACE (age, name, rep, status)
-      $FACE[0] = $name;
-      $FACE[1] = (($current - $born) / 60);
-      $FACE[3] = $set_name . '_' . $count . '/' . $ttl;
-      open(my $wffh, '>', $wfifo);
-      print $wffh "@FACE";
-    }
+      { face(); }
   }
   my $dtime = TIME(); print $Lfh "done $dtime\n";
   dumpr();
@@ -108,4 +100,12 @@ sub name
   my $id = $chars[rand @chars] for 1..8;
   my $name = $name.$id
   return $name;
+}
+sub face
+{ # FACE (age, name, rep, status)
+      my $current = gmtime();
+      $FACE[0] = $name;
+      $FACE[1] = (($current - $born) / 60);
+      $FACE[3] = $set_name . '_' . $count . '/' . $ttl;
+      print $wffh "@FACE";
 }
