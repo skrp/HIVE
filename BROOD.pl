@@ -42,18 +42,6 @@ while(1)
   my $btime = TIME(); print $FPfh "$set_name $btime\n";
 }
 # FN ################################
-sub gen
-{
-  open(my $Gfh, '<', 'GENERATION') or die "GENERATION fail\n";
-  my $set_name = readline $Gfh; close $Gfh;
-  return $set_name;
-}
-sub regen
-{
-  my ($set_name) = shift; $set_name++;
-  open(my $Gfh, '>', 'GENERATION') or die "REGENERATION fail\n";
-  print $Gfh "$set_name"; close $Gfh;
-}
 sub TIME
 {
   my $t = localtime;
