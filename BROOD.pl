@@ -27,13 +27,16 @@ while(1)
   my $code = <$WORD>; chomp $code;
   if (not defined $code)
     { sleep 600; next; }
+# SETUP ###############################
+  my @set = ("A".."Z", "a".."z", "1".."9");
+  my $id = $chars[rand @chars] for 1..8;
 # BIRTH ###############################
   my $embryo = Proc::Daemon->new(
     work_dir => $home,
     child_STDOUT => "+>>$LOG",
     child_STDERR => "+>>$BUG",
-    pid_file => $mPID,
-    exec_command => "DEMON.pl",
+    pid_file => $pid,
+    exec_command => "DEMON.pl $id $id.'_que'",
   );
   $embryo->Init() or die "STILLBORN\n";
   my $btime = TIME(); print $FPfh "$set_name $btime\n";
