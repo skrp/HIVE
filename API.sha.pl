@@ -46,9 +46,9 @@ while (1)
     print $Lfh "started $i\n";
 #####################################
 ## CODE #############################
-    my ($sha) = file_digest($i) or die "couldn't sha $file";
-    if ($sha != $i)
-      { print $Lfh "ERK! $file != $sha\n"; }
+    my ($sha) = file_digest($i);
+    if ($sha ne $i)
+      { print $Lfh "ERK! $file ne $sha\n"; }
 #####################################
 ## CLEAN ############################
     shift @QUE; $count--;
