@@ -8,9 +8,7 @@ use Digest::SHA ();
 my ($que) = @ARGV;
 my @FACE; my $RATE = '100';
 # BIRTH ###############################
-my $embryo = Proc::Daemon->new(
-  work_dir => "/tmp/",
-);
+my $embryo = Proc::Daemon->new(work_dir => "/tmp/");
 my $pid = $embryo->Init() or die "STILLBORN\n";
 # LOCATION
 my $gravestone = "/graveyard/"$name"."tar";
