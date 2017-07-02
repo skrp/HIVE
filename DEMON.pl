@@ -1,6 +1,6 @@
 #!/usr/local/bin/perl
 use strict; use warnings;
-use Proc::Daemon;
+use Proc::Daemon; use LWP::UserAgent;
 use File::Path; use Archive::Any ();
 use Digest::SHA (); use File::Copy;
 use File::LibMagic; use File::Find::Rule;
@@ -243,4 +243,13 @@ sub new_block
 	open(my $fh, '>', "$name") or die "Cant open $name: $!\n";
 	binmode($fh);
 	return *$fh;
+}
+sub uagent 
+{
+	my $s_ua = LWP::UserAgent->new(
+		agent => "Mozilla/50.0.2", 
+		from => 'punxnotdead',
+		timeout => 45,
+	);
+	return $s_ua;
 }
