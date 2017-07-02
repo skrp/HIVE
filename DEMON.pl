@@ -135,3 +135,8 @@ sub file_digest
     $digest->addfile($filename, "b");
     return $digest->hexdigest();
 }
+sub splitr
+{
+  my $i = shift; my $dir = shift;
+  `SB $i $dir`;
+}
