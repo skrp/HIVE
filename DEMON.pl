@@ -16,7 +16,6 @@ my $pid = $embryo->Init() or die "STILLBORN\n";
 # VAR ####################################
 my $name = name($pid);
 my $dump = "$name"."_dump";
-my $tmp = "$name"."_tmp";
 my $code = "$name"."_code";
 my $tar = "$name"."_tar";
 my $log = "$name"."_log";
@@ -24,7 +23,6 @@ my $SLEEP = "$name"."_SLEEP";
 my $SUICIDE = "$name"."_SUICIDE";
 my $wfifo = "/tmp/HOST";
 mkdir $dump or die "dump FAIL\n";
-mkdir $tmp or die "tmp dir FAIL\n";
 open(my $Lfh, '>>', $log);
 # INHERIT ############################
 my $born = gmtime();
@@ -155,8 +153,8 @@ sub xtrac
  if ($archive->is_naughty)
  	{ print $Lfh "ALERT xtrac naughty $i"; next; }
  my @files = $archive->files; print $Lfh @files;
- $archive->extract($tmp);
- `XS $tmp $path`;
+ $archive->extract($dump);
+ `XS $dump $path`;
  print $Lfh "YAY $i\n";
 }
 sub blockr
