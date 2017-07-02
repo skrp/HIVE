@@ -157,15 +157,16 @@ sub splitr
   my $size = 10000;
   my $st = stat($i);
   my $total = $st->size;
-  ($total % $size)
+  my $count = $total / $size;
   open my $ifh, '<', "$i") || die "Cant open $i: $!\n";
   binmode($ifh);
   my ($block);
-  while (read ($ifh, $block, $size) == $size)
+  while (read ($ifh, $block, $size) <= $count)
   {
-	  my $fh = new($path);
-	  print $fh $block;
-    close $fh;
+  	my $fh = new($path);
+	print $fh $block;
+	close $fh;
+	$count = $count + $block; 
   }
 }
 sub new {
