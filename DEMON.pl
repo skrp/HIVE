@@ -4,6 +4,7 @@ use Proc::Daemon;
 use File::Path;
 use Archive::Tar;
 use Digest::SHA ();
+use File::stat;
 #####################################
 # DEMON - summon scroll shell 
 # INIT ##############################
@@ -149,5 +150,28 @@ sub extract
 {
  my $i = shift;
  my $tar = Archive::Tar->new();
- 
+}
+sub splitr
+{
+  my ($i, $path) = shift;
+  my $size = 10000;
+  my $st = stat($i);
+  my $total = $st->size;
+  ($total % $size)
+  open my $ifh, '<', "$i") || die "Cant open $i: $!\n";
+  binmode($ifh);
+  my ($block);
+  while (read ($ifh, $block, $size) == $size)
+  {
+	  my $fh = new($path);
+	  print $fh $block;
+    close $fh;
+  }
+}
+sub new {
+    my $sha = file_digest($block);
+    my $name = $path . $sha;
+    open(my $fh, '>', "$name") or die "Cant open $name: $!\n";
+    binmode($fh);
+    return *$fh;
 }
