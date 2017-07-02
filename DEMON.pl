@@ -136,23 +136,6 @@ sub sha
     { print $Lfh "ERK! $file ne $sha\n"; }
   print $Lfh "YAY $i\n";
 }
-sub slicr
-{
-  my ($i, $path) = shift;
-  `slicr $i $path`;
-  print $Lfh "YAY $i\n";
-}
-sub xtrac
-{
- my ($i, $path) = shift;
- my $archive = Archive::Tar->new($i);
- if ($archive->is_naughty)
- 	{ print $Lfh "ALERT xtrac naughty $i"; next; }
- my @files = $archive->files; print $Lfh @files;
- $archive->extract($dump);
- `XS $dump $path`;
- print $Lfh "YAY $i\n";
-}
 sub blockr
 {
   my ($i, $path) = shift;
@@ -171,6 +154,39 @@ sub blockr
 	$count += $size; 
   }
   print $Lfh "YAY $i\n";
+}
+sub slicr
+{
+  my ($i, $path) = shift;
+
+  my $st = stat($i);
+  my $total = $st->size;
+  open(my $ifh, '<', "$i") || die "Cant open $i: $!\n";
+  binmode($ifh);
+  my $block = 0; my $position = 0;
+  while ($position <= $total)
+  {
+    my $size = int(rand(99999));
+    if ($position + $size >= $total)
+      { $size = $total - $position; }
+    read($ifh, $block, $size);
+    my $fh = new_block($path, $block);
+    print $fh $block;
+    close $fh;
+    $count += $size; 
+  }
+  print $Lfh "YAY $i\n";
+}
+sub xtrac
+{
+ my ($i, $path) = shift;
+ my $archive = Archive::Tar->new($i);
+ if ($archive->is_naughty)
+ 	{ print $Lfh "ALERT xtrac naughty $i"; next; }
+ my @files = $archive->files; print $Lfh @files;
+ $archive->extract($dump);
+ `XS $dump $path`;
+ print $Lfh "YAY $i\n";
 }
 sub new_block
 {
