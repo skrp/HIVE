@@ -50,6 +50,7 @@ while (1)
 			case "blkr" { blkr($i, $path) }
 			case "slicr" { slicr($i, $path) }
 			case "xtrac" { xtrac($i, $path) }
+			case "vkey" { vkey($i, $path) }
 			case "get" { eval{ get($i) } }
 	}
 ## CLEAN #############################################
@@ -130,7 +131,26 @@ sub get
 	my $ua = uagent();
 	my $response = $ua->get($i, ':content_file'=>"$dump/$i");
 	print $Lfh "YAY $i\n";
-}	
+}
+sub vkey
+{
+	my ($i, $path) = shift;
+	my $ipath = $path.$i;
+	my $tmp = "$dump/tmp"; unlink $tmp;
+	open($ifh, '<', $ipath);
+	open($tfh, '>>', $tmp);
+	my @keys = readline $ifh; chomp @keys;
+	my $data = 0;
+	foreach my $key (@keys)
+	{
+		open(my $bfh, '<', "$path/sea/$key");
+		read($bfh, $data);
+		print $tfh $data;
+	}
+	my $tsha = file_digest($tmp);
+	if ($tsha ne $i)
+		{ print "FKFK $i ne $tsha\n"; }
+}
 # SUB ####################################
 sub dumpr
 {
