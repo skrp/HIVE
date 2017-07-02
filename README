@@ -18,9 +18,9 @@ FIFO_WRITE ============================= FIFO_READ
 FIFO_READ =================================================FIFO_WRITE                                 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % (host09_489)  split 10 files
-% (host09_950)  scrape 100 links
+% (host09_950)  get 100 links
 % (host03_321)  sha 1000 files
-% (host12_843)  wget -m 
+% (host12_843)  slicr 1000 files
 % (host04_732)  split 10 files
 
 # HIVE STRUCTURE ###################################
