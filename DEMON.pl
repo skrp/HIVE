@@ -1,20 +1,17 @@
 #!/usr/local/bin/perl
 use strict; use warnings;
 use Proc::Daemon;
-use File::Path;
-use Archive::Any ();
-use Digest::SHA ();
-use File::Copy;
-use File::LibMagic;
-use File::Find::Rule;
-#####################################
+use File::Path; use Archive::Any ();
+use Digest::SHA (); use File::Copy;
+use File::LibMagic; use File::Find::Rule;
+######################################################
 # DEMON - summon scroll shell 
-# INIT ##############################
+# INIT ###############################################
 my ($que) = @ARGV;
-# BIRTH ###############################
+# BIRTH ##############################################
 my $embryo = Proc::Daemon->new(work_dir => "/tmp/");
 my $pid = $embryo->Init() or die "STILLBORN\n";
-# VAR ####################################
+# VAR ################################################
 my $name = name($pid);
 my $dump = "$name"."_dump";
 my $code = "$name"."_code";
@@ -26,10 +23,10 @@ my $wfifo = "/tmp/HOST";
 my $RATE = '100';
 mkdir $dump or die "dump FAIL\n";
 open(my $Lfh, '>>', $log);
-# INHERIT ############################
+# INHERIT #############################################
 my $born = gmtime();
 my $btime = TIME(); print $Lfh "HELLOWORLD $btime\n";
-# WORK ###############################
+# WORK ################################################
 while (1)
 {
   open(my $qfh, '<', $que) or die "cant open que\n";
@@ -47,8 +44,8 @@ while (1)
       	if (-e $SLEEP)
     		{ SLEEP($Lfh); }
      	print $Lfh "started $i\n";
-#####################################
-## CODE #############################
+######################################################
+## CODE ##############################################
 	switch ($api)
 	{
 		case "sha" { sha($i) }
@@ -57,11 +54,11 @@ while (1)
 		case "xtrac" { xtrac($i, $path) }
 		case "get" { eval{ get($i) } }
 	}
-#####################################
-## CLEAN ############################
+######################################################
+## CLEAN #############################################
 	shift @QUE; $count--;
 	# print $Lfh "ended $i\n"; #### DEBUG
-# RATE ##############################
+# RATE ###############################################
 	if ($count % $RATE == 0)
 		{ face($wfifo); }
 	}
@@ -69,12 +66,73 @@ while (1)
 	dumpr($name, $dump);
 	tombstone($name, $Lfh, $log, $code, $rep);
 }
+# API ##################################################
+sub sha
+{
+  my $i = shift;
+  my ($sha) = file_digest($i);
+  if ($sha ne $i)
+    { print $Lfh "ERK! $file ne $sha\n"; }
+  print $Lfh "YAY $i\n";
+}
+sub blockr
+{
+  my ($i, $path) = shift;
+  my $size = 10000;
+  my $st = stat($i);
+  my $total = $st->size;
+  my $count = $total / $size;
+  open(my $ifh, '<', "$i") || die "Cant open $i: $!\n";
+  binmode($ifh);
+  my $block = 0;
+  while (read ($ifh, $block, $size) <= $count)
+  {
+  	my $fh = new_block($path, $block);
+	print $fh $block;
+	close $fh;
+	$count += $size; 
+  }
+  print $Lfh "YAY $i\n";
+}
+sub slicr
+{
+  my ($i, $path) = shift;
+
+  my $st = stat($i);
+  my $total = $st->size;
+  open(my $ifh, '<', "$i") || die "Cant open $i: $!\n";
+  binmode($ifh);
+  my $block = 0; my $position = 0;
+  while ($position < $total)
+  {
+    my $size = int(rand(99999));
+    if ($position + $size >= $total)
+      { $size = $total - $position; }
+    read($ifh, $block, $size);
+    my $fh = new_block($path, $block);
+    print $fh $block;
+    close $fh;
+    $count += $size; 
+  }
+  print $Lfh "YAY $i\n";
+}
+sub xtrac
+{
+ my ($i, $path) = shift;
+ my $archive = Archive::Tar->new($i);
+ if ($archive->is_naughty)
+ 	{ print $Lfh "ALERT xtrac naughty $i"; next; }
+ my @files = $archive->files; print $Lfh @files;
+ $archive->extract($dump);
+ XS($dump, $path);
+ print $Lfh "YAY $i\n";
+}
 # SUB ##############################
 sub dumpr
 {
   my $name = shift; my $dump = shift;
   my $rep = "$name"."_rep";
-  `XS $dump /`;
+  XS($dump, /);
   `ls $dump > $rep`;
   remove_tree($dump);
 }
@@ -137,7 +195,8 @@ sub XS
 	if (not defined $dump) { die "usage: target argv[0] & DUMP ARGV[1]"; }
 	my $rule = File::Find::Rule->file()->start($target);
 	my $magic = File::LibMagic->new();
-	while (defined( my $file = $rule->match) ) {
+	while (defined( my $file = $rule->match))
+	{
 		my ($sha) = file_digest($file) or die "couldn't sha $file";
 		File::Copy::copy($file, "$dump/pool/$sha");
 		my $cur = "$dump/g/g$sha";
@@ -147,6 +206,7 @@ sub XS
 			xspath($file),
 			xssize($file),
 			file_mime_encoding($file);
+	}
 }
 sub file_digest {
 	my ($filename) = @_;
@@ -187,65 +247,4 @@ sub new_block
 	open(my $fh, '>', "$name") or die "Cant open $name: $!\n";
 	binmode($fh);
 	return *$fh;
-}
-# API ##################################################
-sub sha
-{
-  my $i = shift;
-  my ($sha) = file_digest($i);
-  if ($sha ne $i)
-    { print $Lfh "ERK! $file ne $sha\n"; }
-  print $Lfh "YAY $i\n";
-}
-sub blockr
-{
-  my ($i, $path) = shift;
-  my $size = 10000;
-  my $st = stat($i);
-  my $total = $st->size;
-  my $count = $total / $size;
-  open(my $ifh, '<', "$i") || die "Cant open $i: $!\n";
-  binmode($ifh);
-  my $block = 0;
-  while (read ($ifh, $block, $size) <= $count)
-  {
-  	my $fh = new_block($path, $block);
-	print $fh $block;
-	close $fh;
-	$count += $size; 
-  }
-  print $Lfh "YAY $i\n";
-}
-sub slicr
-{
-  my ($i, $path) = shift;
-
-  my $st = stat($i);
-  my $total = $st->size;
-  open(my $ifh, '<', "$i") || die "Cant open $i: $!\n";
-  binmode($ifh);
-  my $block = 0; my $position = 0;
-  while ($position < $total)
-  {
-    my $size = int(rand(99999));
-    if ($position + $size >= $total)
-      { $size = $total - $position; }
-    read($ifh, $block, $size);
-    my $fh = new_block($path, $block);
-    print $fh $block;
-    close $fh;
-    $count += $size; 
-  }
-  print $Lfh "YAY $i\n";
-}
-sub xtrac
-{
- my ($i, $path) = shift;
- my $archive = Archive::Tar->new($i);
- if ($archive->is_naughty)
- 	{ print $Lfh "ALERT xtrac naughty $i"; next; }
- my @files = $archive->files; print $Lfh @files;
- $archive->extract($dump);
- `XS $dump $path`;
- print $Lfh "YAY $i\n";
 }
