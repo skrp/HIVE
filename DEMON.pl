@@ -123,6 +123,13 @@ sub xtrac
  XS($dump, $path);
  print $Lfh "YAY $i\n";
 }
+sub get
+{
+	my $i = shift;
+	my $ua = uagent();
+	my $response = $ua->get($i, ':content_file'=>"$dump/$i");
+	print $Lfh "YAY $i\n";
+}	
 # SUB ####################################
 sub dumpr
 {
