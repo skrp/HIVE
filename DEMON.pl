@@ -5,7 +5,7 @@ use File::Path; use Archive::Any ();
 use Digest::SHA (); use File::Copy;
 use File::LibMagic; use File::Find::Rule;
 ######################################################
-# DEMON - summon scroll shell 
+# DEMON - daemon summoning scroll
 # INIT ###############################################
 my ($que) = @ARGV;
 # BIRTH ##############################################
