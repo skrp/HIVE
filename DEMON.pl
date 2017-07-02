@@ -2,7 +2,7 @@
 use strict; use warnings;
 use Proc::Daemon;
 use File::Path;
-use Archive::Tar;
+use Archive::Any ();
 use Digest::SHA ();
 use File::stat;
 #####################################
@@ -16,6 +16,7 @@ my $pid = $embryo->Init() or die "STILLBORN\n";
 # VAR ####################################
 my $name = name($pid);
 my $dump = "$name"."_dump";
+my $tmp = "$name"."_tmp";
 my $code = "$name"."_code";
 my $tar = "$name"."_tar";
 my $log = "$name"."_log";
@@ -23,6 +24,7 @@ my $SLEEP = "$name"."_SLEEP";
 my $SUICIDE = "$name"."_SUICIDE";
 my $wfifo = "/tmp/HOST";
 mkdir $dump or die "dump FAIL\n";
+mkdir $tmp or die "tmp dir FAIL\n";
 open(my $Lfh, '>>', $log);
 # INHERIT ############################
 my $born = gmtime();
@@ -52,8 +54,8 @@ while (1)
 		case "sha" { sha($i) }
 		case "blockr" { blockr($i, $path) }
 		case "slicr" { slicr($i, $path) }
-		case "xtrac" { xtrac($i) }
-		case "get" { get($i) }
+		case "xtrac" { xtrac($i, $path) }
+		case "get" { eval{ get($i) } }
 	}
 #####################################
 ## CLEAN ############################
@@ -138,16 +140,24 @@ sub sha
   my ($sha) = file_digest($i);
   if ($sha ne $i)
     { print $Lfh "ERK! $file ne $sha\n"; }
+  print $Lfh "YAY $i\n";
 }
 sub slicr
 {
   my ($i, $path) = shift;
-  `slicr $i $dir`;
+  `slicr $i $path`;
+  print $Lfh "YAY $i\n";
 }
 sub xtrac
 {
- my $i = shift;
- my $tar = Archive::Tar->new();
+ my ($i, $path) = shift;
+ my $archive = Archive::Tar->new($i);
+ if ($archive->is_naughty)
+ 	{ print $Lfh "ALERT xtrac naughty $i"; next; }
+ my @files = $archive->files; print $Lfh @files;
+ $archive->extract($tmp);
+ `XS $tmp $path`;
+ print $Lfh "YAY $i\n";
 }
 sub blockr
 {
@@ -166,6 +176,7 @@ sub blockr
 	close $fh;
 	$count += $size; 
   }
+  print $Lfh "YAY $i\n";
 }
 sub new_block
 {
