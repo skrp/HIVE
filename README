@@ -17,11 +17,11 @@ FIFO_WRITE ============================= FIFO_READ
                 (@FACE)                                   DEMON
 FIFO_READ =================================================FIFO_WRITE                                 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% (host09_489)  split 10 files
+% (host09_489)  blkr 10 files
 % (host09_950)  get 100 links
 % (host03_321)  sha 1000 files
 % (host12_843)  slicr 1000 files
-% (host04_732)  split 10 files
+% (host04_732)  blkr 10 files
 
 # HIVE STRUCTURE ###################################
  
@@ -43,7 +43,7 @@ FIFO_READ =================================================FIFO_WRITE
 *#sha  #**
 *#get  #**
 *#krip #**
-*#split#**
+*#blkr #**
 *#slicr#**
 *#######**
 **********
@@ -57,24 +57,24 @@ FIFO_READ =================================================FIFO_WRITE
 # INTERFACE #########################################
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % NODE1                           NODE2             %
-%   876 sha 102/1000               785 sha 80/1000  %
-%   568 get 20/982                 958 SB 102/2300  %
+%   876 sha 102/1000               785 sha  80/1000 %
+%   568 get 20/982                 958 blkr 102/2300%
 %   
 % sha 21389                           sha 3214389
 % get 3098                            get 430983
-% SB  238902                          SB  5668902
+% blkr  238902                        blkr  5668902
 %
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # 1 kill 876
 1 876 dead
-# SB next_que 1
+# blkr next_que 1
 1 921 SB 10000
-# SB next_que 2 x2
-2 970 SB 1000
-2 971 SB 1000
+# blkr next_que 2 x2
+2 970 blkr 1000
+2 971 blkr 1000
 # ACHIEVEMENTS ###################################
-HORIZON ( 1B SB )
+HORIZON ( 1B BLKR )
 MONSOON ( 100M SLICR )
 ACCOUNTANT ( 100B SHA )
 SCROOGE ( 1M GET )
