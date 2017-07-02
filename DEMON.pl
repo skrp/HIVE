@@ -124,9 +124,9 @@ sub face
 # API ##################################################
 sub sha
 {
-    my ($sha) = file_digest($i);
-    if ($sha ne $i)
-      { print $Lfh "ERK! $file ne $sha\n"; }
+  my ($sha) = file_digest($i);
+  if ($sha ne $i)
+    { print $Lfh "ERK! $file ne $sha\n"; }
 }
 sub splitr
 {
@@ -140,8 +140,14 @@ sub slicr
 }
 sub file_digest 
 { 
-    my ($filename) = @_;
-    my $digest = Digest::SHA->new(256);
-    $digest->addfile($filename, "b");
-    return $digest->hexdigest();
+  my ($filename) = @_;
+  my $digest = Digest::SHA->new(256);
+  $digest->addfile($filename, "b");
+  return $digest->hexdigest();
+}
+sub extract
+{
+ my $i = shift;
+ my $tar = Archive::Tar->new();
+ 
 }
