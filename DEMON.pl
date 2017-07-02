@@ -98,6 +98,7 @@ sub slicr
 	my $total = $st->size;
 	open(my $ifh, '<', "$i") || die "Cant open $i: $!\n";
 	binmode($ifh);
+	my $sha = file_digest($i);
 	my $block = 0; my $position = 0;
 	while ($position < $total)
 	{
@@ -108,6 +109,7 @@ sub slicr
 		my $fh = new_block($path, $block);
 		print $fh $block;
 		close $fh;
+		key($i, $sha, $path, $bsha);
 		$count += $size; 
 	}
 	print $Lfh "YAY $i\n";
@@ -261,4 +263,11 @@ sub uagent
 		timeout => 45,
 	);
 	return $s_ua;
+}
+sub key
+{
+	my ($i, $sha, $path, $bsha) = shift;
+	my $kpath = $path."key\"; $kpath = $kpath.$sha;
+	open($kfh, '>>', "$kpath");
+	print $kfh "$blocksha\n";
 }
