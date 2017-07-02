@@ -106,10 +106,9 @@ sub slicr
 		if ($position + $size >= $total)
 			{ $size = $total - $position; }
 		read($ifh, $block, $size);
-		my $fh = new_block($path, $block);
+		my $fh = new_block($i, $sha, $path, $block);
 		print $fh $block;
 		close $fh;
-		key($i, $sha, $path, $bsha);
 		$count += $size; 
 	}
 	print $Lfh "YAY $i\n";
@@ -248,10 +247,11 @@ sub xssize {
 }
 sub new_block
 {
-	my ($path, $block) = shift;
-	my $sha = sha256_hex($block);
-	my $name = $path . $sha;
-	open(my $fh, '>', "$name") or die "Cant open $name: $!\n";
+	my ($i, $sha, $path, $block) = shift;
+	my $bsha = sha256_hex($block);
+	my $nbname = $path . $bsha;
+	key($i, $sha, $path, $bsha);
+	open(my $fh, '>', "$nbname") or die "Cant open $name: $!\n";
 	binmode($fh);
 	return *$fh;
 }
@@ -269,5 +269,5 @@ sub key
 	my ($i, $sha, $path, $bsha) = shift;
 	my $kpath = $path."key\"; $kpath = $kpath.$sha;
 	open($kfh, '>>', "$kpath");
-	print $kfh "$blocksha\n";
+	print $kfh "$bsha\n";
 }
