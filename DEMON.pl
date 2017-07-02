@@ -151,7 +151,7 @@ sub extract
  my $i = shift;
  my $tar = Archive::Tar->new();
 }
-sub splitr
+sub blockr
 {
   my ($i, $path) = shift;
   my $size = 10000;
@@ -160,19 +160,21 @@ sub splitr
   my $count = $total / $size;
   open my $ifh, '<', "$i") || die "Cant open $i: $!\n";
   binmode($ifh);
-  my ($block);
+  my $block = 0;
   while (read ($ifh, $block, $size) <= $count)
   {
-  	my $fh = new($path);
+  	my $fh = new_block($path, $block);
 	print $fh $block;
 	close $fh;
-	$count = $count + $block; 
+	$count += $size; 
   }
 }
-sub new {
-    my $sha = file_digest($block);
-    my $name = $path . $sha;
-    open(my $fh, '>', "$name") or die "Cant open $name: $!\n";
-    binmode($fh);
-    return *$fh;
+sub new_block
+{
+	my ($path, $block) = shift;
+	my $sha = sha256_hex($block);
+	my $name = $path . $sha;
+	open(my $fh, '>', "$name") or die "Cant open $name: $!\n";
+	binmode($fh);
+	return *$fh;
 }
