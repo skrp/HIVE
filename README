@@ -1,28 +1,30 @@
-#############################
+#################################################
 # DEMON - unix daemon network
-# PROCESS ###################
+# PROCESS #######################################
 ADMIN -> posts (ACTION @IT RACE) -> BROOD_IN_FIFO
   BROOD - births DEMON
 DEMON -> posts (@FACE) -> ADMIN_IN_FIFO
-# ITEMS ########################
+# ITEMS ############################################
 ADMIN: udp requests
 BROOD: DEMON spawner
 ACTION: what is done over iterations
 @ITER: array of work to be done
 @FACE: DEMON attributes
-# FIFO FLOW ####################
+# FIFO FLOW ########################################
 ADMIN                                    BROOD
    (actor, @ITER, api)
 FIFO_WRITE ============================= FIFO_READ 
                 (@FACE)                                   DEMON
 FIFO_READ =================================================FIFO_WRITE                                 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% (host09_489)  blkr 10 files
-% (host09_950)  get 100 links
-% (host03_321)  sha 1000 files
-% (host12_843)  slicr 1000 files
-% (host04_732)  blkr 10 files
-
+# API ##############################################
+sha - sha256 file
+blkr - chop file to even parts
+slicr - chop file to odd parts
+get - http data extraction
+xtrac - archive extraction
+vkey - verify key files created by blkr/slicr
+regx - test contents
+krip - encrypt file
 # HIVE STRUCTURE ###################################
  
 [ ==== /bin /pool /sea /g /k /log /tombstone =====
