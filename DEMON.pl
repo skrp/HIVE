@@ -68,10 +68,6 @@ while (1)
 	tombstone($name, $Lfh, $log, $code, $rep);
 }
 # SUB ##############################
-sub run
-{
-  ;
-}
 sub dumpr
 {
   my $name = shift; my $dump = shift;
