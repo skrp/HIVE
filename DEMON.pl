@@ -128,15 +128,20 @@ sub sha
     if ($sha ne $i)
       { print $Lfh "ERK! $file ne $sha\n"; }
 }
+sub splitr
+{
+  my $i = shift; my $dir = shift;
+  `SB $i $dir`;
+}
+sub slicr
+{
+  my $i = shift; my $dir = shift;
+  `slicr $i $dir`;
+}
 sub file_digest 
 { 
     my ($filename) = @_;
     my $digest = Digest::SHA->new(256);
     $digest->addfile($filename, "b");
     return $digest->hexdigest();
-}
-sub splitr
-{
-  my $i = shift; my $dir = shift;
-  `SB $i $dir`;
 }
