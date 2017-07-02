@@ -133,22 +133,22 @@ sub get
 # SUB ####################################
 sub dumpr
 {
-  my $name = shift; my $dump = shift;
-  my $rep = "$name"."_rep";
-  XS($dump, /);
-  my @files = File::Find::Rule->file->in($dump);
-  open($rfp, '>', $rep);
-  print $rfp @files;
-  remove_tree($dump);
+	my $name = shift; my $dump = shift;
+	my $rep = "$name"."_rep";
+	XS($dump, /);
+	my @files = File::Find::Rule->file->in($dump);
+	open($rfp, '>', $rep);
+	print $rfp @files;
+	remove_tree($dump);
 }
 sub tombstone
 {
-  my ($name, $Lfh, $log, $code, $rep) = @_;
-  my $xxtime = TIME(); print $Lfh "farewell $xxtime\n";
-  close $Lfh;
-  my $tombstone = "/tombstone/$name."."tar";
-  my $tar = Archive::Tar->new($tombstone);
-  $tar->add_files($log, $code, $rep);
+	my ($name, $Lfh, $log, $api, $rep) = shift;
+	my $xxtime = TIME(); print $Lfh "farewell $xxtime\n";
+	close $Lfh;
+	my $tombstone = "/tombstone/$name."."tar";
+	my $tar = Archive::Tar->new($tombstone);
+	$tar->add_files($log, $code, $rep);
 }
 sub SUICIDE
 {
