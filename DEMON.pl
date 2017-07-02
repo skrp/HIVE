@@ -164,7 +164,7 @@ sub slicr
   open(my $ifh, '<', "$i") || die "Cant open $i: $!\n";
   binmode($ifh);
   my $block = 0; my $position = 0;
-  while ($position <= $total)
+  while ($position < $total)
   {
     my $size = int(rand(99999));
     if ($position + $size >= $total)
