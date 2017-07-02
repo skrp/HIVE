@@ -51,6 +51,7 @@ while (1)
 			case "slicr" { slicr($i, $path) }
 			case "xtrac" { xtrac($i, $path) }
 			case "vkey" { vkey($i, $path) }
+			case "regx" { regx($i, $path) }
 			case "get" { eval{ get($i) } }
 	}
 ## CLEAN #############################################
@@ -150,6 +151,15 @@ sub vkey
 	my $tsha = file_digest($tmp);
 	if ($tsha ne $i)
 		{ print "FKFK $i ne $tsha\n"; }
+}
+sub regx
+{ # 2 files $i = list $path = master
+	my ($i, $path) = shift;
+	open(my $fh, '<', $i); open(my $mfh, '<', $path);
+	my @i = readline $fh; chomp @i;
+	my @master = readline $mfh; chomp @master;
+	foreach (@i)
+		{ print $Lfh "no $_\n" unless /$_/ @master; }
 }
 # SUB ####################################
 sub dumpr
