@@ -11,7 +11,9 @@ my ($que) = @ARGV;
 # BIRTH ##############################################
 my $embryo = Proc::Daemon->new(work_dir => "/tmp/");
 my $pid = $embryo->Init() or die "STILLBORN\n";
-# VAR ################################################
+my $born = gmtime();
+my $btime = TIME(); print $Lfh "HELLOWORLD $btime\n";
+# PREP ###############################################
 my $name = name($pid);
 my $dump = "$name"."_dump";
 my $code = "$name"."_code";
@@ -23,9 +25,6 @@ my $wfifo = "/tmp/HOST";
 my $RATE = '100';
 mkdir $dump or die "dump FAIL\n";
 open(my $Lfh, '>>', $log);
-# INHERIT #############################################
-my $born = gmtime();
-my $btime = TIME(); print $Lfh "HELLOWORLD $btime\n";
 # WORK ################################################
 while (1)
 {
@@ -44,8 +43,6 @@ while (1)
       	if (-e $SLEEP)
     		{ SLEEP($Lfh); }
      	print $Lfh "started $i\n";
-######################################################
-## CODE ##############################################
 	switch ($api)
 	{
 		case "sha" { sha($i) }
@@ -54,7 +51,6 @@ while (1)
 		case "xtrac" { xtrac($i, $path) }
 		case "get" { eval{ get($i) } }
 	}
-######################################################
 ## CLEAN #############################################
 	shift @QUE; $count--;
 	# print $Lfh "ended $i\n"; #### DEBUG
@@ -127,7 +123,7 @@ sub xtrac
  XS($dump, $path);
  print $Lfh "YAY $i\n";
 }
-# SUB ##############################
+# SUB ####################################
 sub dumpr
 {
   my $name = shift; my $dump = shift;
