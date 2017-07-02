@@ -4,6 +4,7 @@ use Proc::Daemon; use LWP::UserAgent;
 use File::Path; use Archive::Any ();
 use Digest::SHA (); use File::Copy;
 use File::LibMagic; use File::Find::Rule;
+use Archive::Tar;
 ######################################################
 # DEMON - daemon summoning scroll
 # INIT ###############################################
@@ -142,10 +143,9 @@ sub dumpr
 sub tombstone
 {
   my ($name, $Lfh, $log, $code, $rep) = @_; 
-  my $tombstone = "/tombstone/"$name."tar";
-  my $tar = Archive::Tar->new();
-  $tar->add_files($log, $code, $rep) 
-  `tar -cf $tombstone /tmp/$name*`;
+  my $tombstone = "/tombstone/$name."."tar";
+  my $tar = Archive::Tar->new($tombstone);
+  $tar->add_files($log, $code, $rep);
   my $xxtime = TIME(); print $Lfh "farewell $xxtime\n";
 }
 sub SUICIDE
