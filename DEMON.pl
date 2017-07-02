@@ -9,7 +9,6 @@ use File::stat;
 # DEMON - summon scroll shell 
 # INIT ##############################
 my ($que) = @ARGV;
-my @FACE; my $RATE = '100';
 # BIRTH ###############################
 my $embryo = Proc::Daemon->new(work_dir => "/tmp/");
 my $pid = $embryo->Init() or die "STILLBORN\n";
@@ -22,6 +21,7 @@ my $log = "$name"."_log";
 my $SLEEP = "$name"."_SLEEP";
 my $SUICIDE = "$name"."_SUICIDE";
 my $wfifo = "/tmp/HOST";
+my $RATE = '100';
 mkdir $dump or die "dump FAIL\n";
 open(my $Lfh, '>>', $log);
 # INHERIT ############################
@@ -120,6 +120,7 @@ sub name
 }
 sub face
 { # FACE (age, name, rep, status)
+      my @FACE; 
       my $wfifo = shift;
       my $current = gmtime();
       $FACE[0] = $name;
