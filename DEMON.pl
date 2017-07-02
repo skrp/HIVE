@@ -35,28 +35,37 @@ while (1)
   close $qfh;
   my $stime = TIME(); print $Lfh "start $stime\n";
   my $api = shift @QUE; print $Lfh "set $set_name\n";
+  my @apis = { "sha", "blockr", "xtrac", "get" };
+  die "bad api $api" unless grep(/$api/, @apis);
   my $count = @QUE; print $Lfh "count $count\n"; my $ttl = $count;
   foreach my $i (@QUE)
   {
-    if (-e $SUICIDE)
-      { SUICIDE($Lfh); }
-    if (-e $SLEEP)
-      { SLEEP($Lfh); }
-    print $Lfh "started $i\n";
+  	if (-e $SUICIDE)
+    		{ SUICIDE($Lfh); }
+      	if (-e $SLEEP)
+    		{ SLEEP($Lfh); }
+     	print $Lfh "started $i\n";
 #####################################
 ## CODE #############################
-    run($api);
+	switch ($api)
+	{
+		case "sha" { sha($i) }
+		case "blockr" { blockr($i, $path) }
+		case "slicr" { slicr($i, $path) }
+		case "xtrac" { xtrac($i) }
+		case "get" { get($i) }
+	}
 #####################################
 ## CLEAN ############################
-    shift @QUE; $count--;
-    # print $Lfh "ended $i\n"; #### DEBUG
+	shift @QUE; $count--;
+	# print $Lfh "ended $i\n"; #### DEBUG
 # RATE ##############################
-    if ($count % $RATE == 0)
-      { face($wfifo); }
-  }
-  my $dtime = TIME(); print $Lfh "done $dtime\n";
-  dumpr($name, $dump);
-  tombstone($name, $Lfh, $log, $code, $rep);
+	if ($count % $RATE == 0)
+		{ face($wfifo); }
+	}
+	my $dtime = TIME(); print $Lfh "done $dtime\n";
+	dumpr($name, $dump);
+	tombstone($name, $Lfh, $log, $code, $rep);
 }
 # SUB ##############################
 sub run
@@ -125,28 +134,17 @@ sub face
 # API ##################################################
 sub sha
 {
+  my $i = shift;
   my ($sha) = file_digest($i);
   if ($sha ne $i)
     { print $Lfh "ERK! $file ne $sha\n"; }
 }
-sub splitr
-{
-  my $i = shift; my $dir = shift;
-  `SB $i $dir`;
-}
 sub slicr
 {
-  my $i = shift; my $dir = shift;
+  my ($i, $path) = shift;
   `slicr $i $dir`;
 }
-sub file_digest 
-{ 
-  my ($filename) = @_;
-  my $digest = Digest::SHA->new(256);
-  $digest->addfile($filename, "b");
-  return $digest->hexdigest();
-}
-sub extract
+sub xtrac
 {
  my $i = shift;
  my $tar = Archive::Tar->new();
@@ -158,7 +156,7 @@ sub blockr
   my $st = stat($i);
   my $total = $st->size;
   my $count = $total / $size;
-  open my $ifh, '<', "$i") || die "Cant open $i: $!\n";
+  open(my $ifh, '<', "$i") || die "Cant open $i: $!\n";
   binmode($ifh);
   my $block = 0;
   while (read ($ifh, $block, $size) <= $count)
@@ -177,4 +175,11 @@ sub new_block
 	open(my $fh, '>', "$name") or die "Cant open $name: $!\n";
 	binmode($fh);
 	return *$fh;
+}
+sub file_digest 
+{ 
+  my ($filename) = @_;
+  my $digest = Digest::SHA->new(256);
+  $digest->addfile($filename, "b");
+  return $digest->hexdigest();
 }
