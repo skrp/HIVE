@@ -1,0 +1,162 @@
+#!/usr/local/bin/perl
+use strict; use warnings;
+use Proc::Daemon; use Archive::Tar;
+use File::Path; use File::Copy;
+use Digest::SHA qw(sha256_hex); use File::Find::Rule;
+use File::stat;
+######################################################
+# DEMON - daemon summoning scroll
+# INIT ###############################################
+my ($que) = @ARGV;
+# PREP ###############################################
+my $name = name($$);
+chdir('/tmp/');
+my $wfifo = "/tmp/HOST";
+my $RATE = '100';
+
+my $dump = "$name"."_dump";
+my $tar = "$name"."_tar"; 
+my $log = "$name"."_log";
+my $SLEEP = "$name"."_SLEEP"; 
+my $SUICIDE = "$name"."_SUICIDE";
+
+mkdir $dump or die "dump FAIL\n";
+open(my $Lfh, '>>', $log);
+my $born = gmtime();
+my $btime = TIME(); print $Lfh "HELLOWORLD $btime\n";
+
+# WORK ################################################
+open(my $qfh, '<', $que) or die "cant open que\n";
+my @QUE = readline $qfh; chomp @QUE;
+close $qfh;
+
+my $api = shift @QUE; print $Lfh "api $api\n";
+
+my $ttl = @QUE; 
+print $Lfh "ttl $ttl\n"; 
+
+my $count = 0;
+
+foreach my $i (@QUE)
+{
+		if (-e $SUICIDE)
+    	{ SUICIDE($Lfh); }
+    if (-e $SLEEP)
+    	{ SLEEP($Lfh); }
+
+    print $Lfh "started $i\n";
+		blkr($i);
+		$count++;
+}
+my $dtime = TIME(); print $Lfh "FKTHEWRLD $dtime\n";
+tombstone();
+# SUB ####################################
+sub dumpr
+{
+	my $name = shift; my $dump = shift;
+	my $rep = "$name"."_rep";
+	XS($dump, //);
+	my @files = File::Find::Rule->file->in($dump);
+	open(my $rfp, '>', $rep);
+	print $rfp @files;
+	remove_tree($dump);
+}
+sub tombstone
+{
+#	my ($name, $Lfh, $log, $api, $rep) = shift;
+	my $xxtime = TIME(); print $Lfh "farewell $xxtime\n";
+	close $Lfh;
+	my $tombstone = "$name."."tar";
+	my $tar = Archive::Tar->new;
+	$tar->write($tombstone);
+	my $rep = "$name".'_rep'; 
+	`ls $dump > $rep`;
+	$tar->add_files($log, $rep);
+}
+sub SUICIDE
+{
+	my $Lfh = shift;
+	unlink $SUICIDE;
+	my $xtime = TIME(); print $Lfh "FKTHEWORLD $xtime\n";
+	exit;
+}
+sub SLEEP
+{
+	my $Lfh = shift;
+	open(my $Sfh, '<', $SLEEP);
+	my $timeout = readline $Sfh; chomp $timeout;
+	my $ztime = TIME(); print $Lfh "sleep $ztime $timeout\n";
+	close $Sfh; unlink $SLEEP;
+	sleep $timeout;
+}
+sub TIME
+{
+	my $t = localtime;
+	my $mon = (split(/\s+/, $t))[1];
+	my $day = (split(/\s+/, $t))[2];
+	my $hour = (split(/\s+/, $t))[3];
+	my $time = $mon.'_'.$day.'_'.$hour;
+	return $time;
+}
+sub name
+{
+	my ($pid) = shift;
+	my $id = int(rand(999));
+	my $name = $pid.'_'.$id;
+	return $name;
+}
+sub face
+{ # FACE (age, name, rep, status)
+	my ($api, $count, $ttl) = shift;
+	my @FACE;
+	my $wfifo = shift;
+	my $current = gmtime();
+	$FACE[0] = $name;
+	$FACE[1] = (($current - $born) / 60);
+	$FACE[3] = $api . '_' . $count . '/' . $ttl;
+	print $wfifo "@FACE";
+}
+sub blkr
+{
+	my ($i, $path) = shift;
+	my $block = 0; my $position = 0;
+	my $size = 128000;
+
+	my $st = stat($i);
+	my $total = $st->size;
+
+	open(my $ifh, '<', "$i") || die "Cant open $i: $!\n";
+	binmode($ifh);
+
+	while (read ($ifh, $block, $size, $position) <= $total)
+	{
+		my $fh = bnew_block($path, $block, $i);
+		print $fh $block;
+		close $fh;
+		$position += $size;
+	}
+	print $Lfh "YAY $i\n";
+}
+sub bnew_block
+{
+	my ($path, $block, $i);
+	my $bsha = bsha($block);
+	my $nbname = $path.'sea/'.$bsha;
+	bkey($i, $path, $bsha);
+	open(my $fh, '>', "$nbname");
+	binmode($fh);
+	return *$fh;
+}
+sub bkey
+{
+	my ($i, $path, $bsha) = shift;
+	my $kpath = $path.'key/'.$i;
+	open(my $kfh, '>>', "$kpath");
+	print $kfh "$bsha\n";
+}
+sub bsha
+{
+	my $block = shift;
+	my $sha = sha256_hex($block);
+	return $sha;
+}
