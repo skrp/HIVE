@@ -72,6 +72,7 @@ foreach my $i (@QUE)
 		case 'vsha' { vsha($i); }
 		case 'xtrac' { xtrac($i); }
 		case 'regx' { regx($i); }
+		case 'get' { get($i); }
 	$count++;
 }
 my $dtime = TIME(); print $Lfh "FKTHEWRLD $dtime\n";
@@ -196,6 +197,16 @@ sub file_mime_encoding {
 sub xssize {
 	my $size = [ stat $_[0] ]->[7];
 	return $size;
+}
+sub uagent
+{
+	my $s_ua = LWP::UserAgent->new(
+		agent => "Mozilla/50.0.2",
+		from => 'punxnotdead',
+		timeout => 45,
+	);
+	return $s_ua;
+}
 # API ###########################################################
 sub blkr
 {
@@ -277,4 +288,11 @@ sub regx
 	my @master = readline $mfh; chomp @master;
 	foreach (@i)
 		{ print $Lfh "no $_\n" unless any { /$_/ } @master; }
+}
+sub get
+{
+	my ($i) = @_;
+	my $ua = uagent();
+	my $response = $ua->get($i, ':content_file'=>"$dump/$i");
+	print $Lfh "YAY $i\n";
 }
