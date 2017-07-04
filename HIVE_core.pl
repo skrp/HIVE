@@ -165,4 +165,8 @@ sub build
 	my $block;
 	read($ifh, $block, $size);
 	print $tf $block;
+# DEBUG
+#	my $bsha = sha256_hex($block);
+#	if ($i ne $bsha)
+#		{ print $Lfh "SHAERR $i ne $bsha"; } 
 }
