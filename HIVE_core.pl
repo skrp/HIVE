@@ -3,7 +3,7 @@ use strict; use warnings;
 use Proc::Daemon; use Archive::Tar;
 use File::Path; use File::Copy;
 use Digest::SHA qw(sha256_hex); use File::Find::Rule;
-use File::stat;
+use File::stat; use List::Util qw(any);
 ######################################################
 # DEMON - daemon summoning scroll
 # INIT ###############################################
@@ -48,6 +48,8 @@ my @QUE = readline $qfh; chomp @QUE;
 close $qfh;
 
 my $api = shift @QUE; print $Lfh "api $api\n";
+my @api = { "sha", "blkr", "xtrac", "get" };
+die "bad api $api" unless any { /$api/} @api;
 
 my $ttl = @QUE;
 print $Lfh "ttl $ttl\n";
