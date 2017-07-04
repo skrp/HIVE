@@ -8,6 +8,11 @@ use File::stat;
 # DEMON - daemon summoning scroll
 # INIT ###############################################
 my ($que, $path) = @ARGV;
+# BIRTH ##############################################
+my $embryo = Proc::Daemon->new(work_dir => "/tmp/");
+my $pid = $embryo->Init() or die "STILLBORN\n";
+my $born = gmtime();
+my $btime = TIME(); print $Lfh "HELLOWORLD $btime\n";
 # DIRS ###############################################
 if (not defined $que) { die ('NO ARGV1 que'); }
 if (not defined $path) { die ('NO ARGV2 dir'); }
