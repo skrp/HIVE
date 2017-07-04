@@ -51,7 +51,7 @@ close $qfh;
 
 my $api = shift @QUE; print $Lfh "api $api\n";
 my $api = shift @QUE; print $Lfh "api $api\n";
-my @api = { "sha", "blkr", "xtrac", "get" };
+my @api = { "blkr", "build", "vsha", "xtrac", "rgex", "get" };
 die "bad api $api" unless any { /$api/ } @api;
 
 my $ttl = @QUE; 
