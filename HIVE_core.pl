@@ -13,11 +13,11 @@ if (not defined $que) { die ('NO ARGV1 que'); }
 if (not defined $path) { die ('NO ARGV2 dir'); }
 if (substr($path, -1) eq "/")
 	{ $path .= '/'; }
-# sea/ blkr
-# key/ key
-# tombstone/ graveyard
-# g/ dumpr
-# pool/ dumpr
+# sea/ : blkr()
+# key/ : key()
+# graveyard/ : tombstone()
+# g/ : XS()
+# pool/ : XS()
 # PREP ###############################################
 my $name = name();
 
