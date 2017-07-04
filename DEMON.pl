@@ -148,6 +148,13 @@ sub bsha
 	my $bsha = sha256_hex($block)
 	return $bsha;
 }
+sub key
+{
+	my ($i, $bsha) = @_;
+	my $kpath = $path.'key/'.$i;
+	open(my $kfh, '>>', "$kpath");
+	print $kfh "$bsha\n";
+}
 sub XS
 {
 	my ($i) = @_;
@@ -230,13 +237,6 @@ sub blkr
 		key($i, $bsha);
 	}
 	print $Lfh "YAY $i\n";
-}
-sub key
-{
-	my ($i, $bsha) = @_;
-	my $kpath = $path.'key/'.$i;
-	open(my $kfh, '>>', "$kpath");
-	print $kfh "$bsha\n";
 }
 sub build
 {
