@@ -7,11 +7,22 @@ use File::stat;
 ######################################################
 # DEMON - daemon summoning scroll
 # INIT ###############################################
-my ($que) = @ARGV;
+my ($que, $path) = @ARGV;
+# DIRS ###############################################
+if (not defined $que) { die ('NO ARGV1 que'); }
+if (not defined $path) { die ('NO ARGV2 dir'); }
+if (substr($path, -1) eq "/")
+	{ $path .= '/'; }
+# sea/ blkr
+# key/ key
+# tombstone/ graveyard
+# g/ dumpr
+# pool/ dumpr
 # PREP ###############################################
-my $name = name($$);
+my $name = name();
+
 chdir('/tmp/');
-my $wfifo = "/tmp/HOST";
+my $wfifo = '/tmp/HOST';
 my $RATE = '100';
 
 my $dump = "$name"."_dump";
@@ -40,9 +51,9 @@ my $count = 0;
 foreach my $i (@QUE)
 {
 		if (-e $SUICIDE)
-    	{ SUICIDE($Lfh); }
+    	{ SUICIDE(); }
     if (-e $SLEEP)
-    	{ SLEEP($Lfh); }
+    	{ SLEEP(); }
 
     print $Lfh "started $i\n";
 		blkr($i);
@@ -53,36 +64,34 @@ tombstone();
 # SUB ####################################
 sub dumpr
 {
-	my $name = shift; my $dump = shift;
+	XS($dump, );
+	remove_tree($dump);
+}
+sub rep
+{
 	my $rep = "$name"."_rep";
-	XS($dump, //);
 	my @files = File::Find::Rule->file->in($dump);
 	open(my $rfp, '>', $rep);
 	print $rfp @files;
-	remove_tree($dump);
+	return $rep;
 }
 sub tombstone
 {
-#	my ($name, $Lfh, $log, $api, $rep) = shift;
 	my $xxtime = TIME(); print $Lfh "farewell $xxtime\n";
-	close $Lfh;
-	my $tombstone = "$name."."tar";
-	my $tar = Archive::Tar->new;
-	$tar->write($tombstone);
-	my $rep = "$name".'_rep'; 
-	`ls $dump > $rep`;
-	$tar->add_files($log, $rep);
+#	my $tombstone = "$name."."tar";
+#	my $tar = Archive::Tar->new;
+#	$tar->write($tombstone);
+#	my $rep = rep();
+#	$tar->add_files($log, $rep);
 }
 sub SUICIDE
 {
-	my $Lfh = shift;
 	unlink $SUICIDE;
 	my $xtime = TIME(); print $Lfh "FKTHEWORLD $xtime\n";
 	exit;
 }
 sub SLEEP
 {
-	my $Lfh = shift;
 	open(my $Sfh, '<', $SLEEP);
 	my $timeout = readline $Sfh; chomp $timeout;
 	my $ztime = TIME(); print $Lfh "sleep $ztime $timeout\n";
@@ -100,14 +109,13 @@ sub TIME
 }
 sub name
 {
-	my ($pid) = shift;
 	my $id = int(rand(999));
-	my $name = $pid.'_'.$id;
+	my $name = $$.'_'.$id;
 	return $name;
 }
 sub face
 { # FACE (age, name, rep, status)
-	my ($api, $count, $ttl) = shift;
+	my ($count, $ttl) = @_;
 	my @FACE;
 	my $wfifo = shift;
 	my $current = gmtime();
@@ -118,8 +126,8 @@ sub face
 }
 sub blkr
 {
-	my ($i, $path) = shift;
-	my $block = 0; my $position = 0;
+	my $i = shift;
+	my $block = 0;
 	my $size = 128000;
 
 	my $st = stat($i);
@@ -128,35 +136,23 @@ sub blkr
 	open(my $ifh, '<', "$i") || die "Cant open $i: $!\n";
 	binmode($ifh);
 
-	while (read ($ifh, $block, $size, $position) <= $total)
+	while (read($ifh, $block, $size))
 	{
-		my $fh = bnew_block($path, $block, $i);
+		my $bsha = sha256_hex($block);
+
+		my $bname = $path.'sea/'.$bsha;
+		open(my $fh, '>', "$bname");
+		binmode($fh);
+
 		print $fh $block;
-		close $fh;
-		$position += $size;
+		key($i, $bsha);
 	}
 	print $Lfh "YAY $i\n";
 }
-sub bnew_block
+sub key
 {
-	my ($path, $block, $i);
-	my $bsha = bsha($block);
-	my $nbname = $path.'sea/'.$bsha;
-	bkey($i, $path, $bsha);
-	open(my $fh, '>', "$nbname");
-	binmode($fh);
-	return *$fh;
-}
-sub bkey
-{
-	my ($i, $path, $bsha) = shift;
+	my ($i, $bsha) = @_;
 	my $kpath = $path.'key/'.$i;
 	open(my $kfh, '>>', "$kpath");
 	print $kfh "$bsha\n";
-}
-sub bsha
-{
-	my $block = shift;
-	my $sha = sha256_hex($block);
-	return $sha;
 }
