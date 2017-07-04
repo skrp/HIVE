@@ -10,16 +10,14 @@ use vars qw(@ISA @EXPORT_OK);
 
 sub XS
 {
-	my ($target, $dump) = shift;
-	if (not defined $target) { die "usage: TARGET ARGV[0] & dump argv[1]"; }
-	if (not defined $dump) { die "usage: target argv[0] & DUMP ARGV[1]"; }
-	my $rule = File::Find::Rule->file()->start($target);
+	my ($i) = @_;
+	my $rule = File::Find::Rule->file()->start($i);
 	my $magic = File::LibMagic->new();
 	while (defined( my $file = $rule->match))
 	{
 		my ($sha) = file_digest($file) or die "couldn't sha $file";
 		File::Copy::copy($file, "$dump/pool/$sha");
-		my $cur = "$dump/g/g$sha";
+		my $cur = "$path/g/g$sha";
 		open(my $fh, '>>', $cur) or die "Meta File Creation FAIL $file";
 		printf $fh "%s\n%s\n%s\n%s\n",
 			xsname($file),
