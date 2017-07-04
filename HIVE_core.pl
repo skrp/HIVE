@@ -35,7 +35,6 @@ my $wfifo = '/tmp/HOST';
 my $RATE = '100'; my $size = 128000;
 
 my $dump = "$name"."_dump/";
-my $tar = "$name"."_tar"; 
 my $log = "$name"."_log";
 my $SLEEP = "$name"."_SLEEP"; 
 my $SUICIDE = "$name"."_SUICIDE";
@@ -93,11 +92,11 @@ sub rep
 sub tombstone
 {
 	my $xxtime = TIME(); print $Lfh "farewell $xxtime\n";
-#	my $tombstone = "$name."."tar";
-#	my $tar = Archive::Tar->new;
-#	$tar->write($tombstone);
-#	my $rep = rep();
-#	$tar->add_files($log, $rep);
+	my $tombstone = 'graveyard/'."$name".'.tar';
+	my $tar = Archive::Tar->new;
+	$tar->write($tombstone);
+	my $rep = rep();
+	$tar->add_files($log, $rep);
 }
 sub SUICIDE
 {
