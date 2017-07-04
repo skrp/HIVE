@@ -74,11 +74,13 @@ foreach my $i (@QUE)
 }
 my $dtime = TIME(); print $Lfh "FKTHEWRLD $dtime\n";
 tombstone();
+dumpr($i);
 
 # SUB ###########################################################
 sub dumpr
 {
-	XS($dump, );
+	my ($i) = @_;
+	XS($i);
 	remove_tree($dump);
 }
 sub rep
