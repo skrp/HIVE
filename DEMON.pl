@@ -52,7 +52,7 @@ close $qfh;
 my $api = shift @QUE; print $Lfh "api $api\n";
 my $api = shift @QUE; print $Lfh "api $api\n";
 my @api = { "sha", "blkr", "xtrac", "get" };
-die "bad api $api" unless any { /$api/} @api;
+die "bad api $api" unless any { /$api/ } @api;
 
 my $ttl = @QUE; 
 print $Lfh "ttl $ttl\n"; 
@@ -71,6 +71,7 @@ foreach my $i (@QUE)
 		case 'build' { build($i); }
 		case 'vsha' { vsha($i); }
 		case 'xtrac' { xtrac($i); }
+		case 'regx' { regx($i); }
 	$count++;
 }
 my $dtime = TIME(); print $Lfh "FKTHEWRLD $dtime\n";
@@ -267,4 +268,13 @@ sub xtrac
 	$archive->extract($dump);
 	XS($dump, $path);
 	print $Lfh "YAY $i\n";
+}
+sub regx
+{ # 2 files $i = list $path = master
+	my ($i) = @_;
+	open(my $fh, '<', $i); open(my $mfh, '<', $path);
+	my @i = readline $fh; chomp @i;
+	my @master = readline $mfh; chomp @master;
+	foreach (@i)
+		{ print $Lfh "no $_\n" unless any { /$_/ } @master; }
 }
