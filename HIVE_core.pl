@@ -70,6 +70,7 @@ foreach my $i (@QUE)
 		case 'blkr' { blkr($i); }
 		case 'build' { build($i); }
 		case 'vsha' { vsha($i); }
+		case 'xtrac' { xtrac($i); }
 	$count++;
 }
 my $dtime = TIME(); print $Lfh "FKTHEWRLD $dtime\n";
