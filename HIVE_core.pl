@@ -160,6 +160,7 @@ sub build
 {
 	my ($i) = @_;
 	my $dpath = $dump.'tmp';
-	open(my $tfh, '>>' "$dpath";
-	
+	my $ipath = $path.'sea/'$i;
+	open(my $tfh, '>>', "$dpath");
+	open(my $ifh, '<', "$ipath");
 }
