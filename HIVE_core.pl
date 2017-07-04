@@ -3,7 +3,7 @@ use strict; use warnings;
 use Proc::Daemon; use Archive::Tar;
 use File::Path; use File::Copy;
 use Digest::SHA qw(sha256_hex); use File::Find::Rule;
-use File::stat; use List::Util qw(any);
+use File::stat;
 ######################################################
 # DEMON - daemon summoning scroll
 # INIT ###############################################
@@ -12,11 +12,6 @@ if (not defined $que) { die ('NO ARGV1 que'); }
 if (not defined $path) { die ('NO ARGV2 dir'); }
 if (substr($path, -1) eq "/")
 	{ $path .= '/'; }
-# BIRTH ##############################################
-my $embryo = Proc::Daemon->new(work_dir => "/tmp/");
-my $pid = $embryo->Init() or die "STILLBORN\n";
-my $born = gmtime();
-my $btime = TIME(); print $Lfh "HELLOWORLD $btime\n";
 # DIRS ###############################################
 # sea/ : blkr()
 # key/ : key()
@@ -25,16 +20,15 @@ my $btime = TIME(); print $Lfh "HELLOWORLD $btime\n";
 # pool/ : XS()
 # PREP ###############################################
 my $name = name();
-my $pid = $$;
 
 chdir('/tmp/');
 my $wfifo = '/tmp/HOST';
-my $RATE = '100';
+my $RATE = '100'; my $size = 128000;
 
-my $dump = "$name"."_dump";
-my $tar = "$name"."_tar";
+my $dump = "$name"."_dump/";
+my $tar = "$name"."_tar"; 
 my $log = "$name"."_log";
-my $SLEEP = "$name"."_SLEEP";
+my $SLEEP = "$name"."_SLEEP"; 
 my $SUICIDE = "$name"."_SUICIDE";
 
 mkdir $dump or die "dump FAIL\n";
@@ -48,11 +42,9 @@ my @QUE = readline $qfh; chomp @QUE;
 close $qfh;
 
 my $api = shift @QUE; print $Lfh "api $api\n";
-my @api = { "sha", "blkr", "xtrac", "get" };
-die "bad api $api" unless any { /$api/} @api;
 
-my $ttl = @QUE;
-print $Lfh "ttl $ttl\n";
+my $ttl = @QUE; 
+print $Lfh "ttl $ttl\n"; 
 
 my $count = 0;
 
@@ -64,7 +56,8 @@ foreach my $i (@QUE)
     	{ SLEEP(); }
 
     print $Lfh "started $i\n";
-		blkr($i);
+#		blkr($i);
+		build($i);
 		$count++;
 }
 my $dtime = TIME(); print $Lfh "FKTHEWRLD $dtime\n";
@@ -81,17 +74,16 @@ sub rep
 	my @files = File::Find::Rule->file->in($dump);
 	open(my $rfp, '>', $rep);
 	print $rfp @files;
+	return $rep;
 }
 sub tombstone
 {
 	my $xxtime = TIME(); print $Lfh "farewell $xxtime\n";
-	close $Lfh;
-	my $tombstone = "$name."."tar";
-	my $tar = Archive::Tar->new;
-	$tar->write($tombstone);
-	rep();
-	my $rep = "$name".'rep';
-	$tar->add_files($log, $rep);
+#	my $tombstone = "$name."."tar";
+#	my $tar = Archive::Tar->new;
+#	$tar->write($tombstone);
+#	my $rep = rep();
+#	$tar->add_files($log, $rep);
 }
 sub SUICIDE
 {
@@ -119,12 +111,12 @@ sub TIME
 sub name
 {
 	my $id = int(rand(999));
-	my $name = $pid.'_'.$id;
+	my $name = $$.'_'.$id;
 	return $name;
 }
 sub face
 { # FACE (age, name, rep, status)
-	my ($count, $ttl) = shift;
+	my ($count, $ttl) = @_;
 	my @FACE;
 	my $wfifo = shift;
 	my $current = gmtime();
@@ -135,9 +127,8 @@ sub face
 }
 sub blkr
 {
-	my ($i) = shift;
+	my ($i) = @_;
 	my $block = 0;
-	my $size = 128000;
 
 	my $st = stat($i);
 	my $total = $st->size;
@@ -148,21 +139,42 @@ sub blkr
 	while (read($ifh, $block, $size))
 	{
 		my $bsha = sha256_hex($block);
-		my $bname = $path.'sea/'.$bsha;
 
+		my $bname = $path.'sea/'.$bsha;
 		open(my $fh, '>', "$bname");
 		binmode($fh);
 
 		print $fh $block;
-		key($i, $bsha)
+		key($i, $bsha);
 	}
 	print $Lfh "YAY $i\n";
 }
 sub key
 {
-  my ($i, $bsha) = shift;
+	my ($i, $bsha) = @_;
 	my $kpath = $path.'key/'.$i;
 	open(my $kfh, '>>', "$kpath");
-	print "$i\n";
 	print $kfh "$bsha\n";
+}
+sub build
+{
+	my ($i) = @_;
+	my $kpath = $path.'key/'.$i;
+	my $dpath = $dump.'tmp';
+
+	open(my $kfh, '<', $kpath);
+	my @set = readline $kfh; chomp @set;
+	foreach my $part (@set)
+	{
+		my $ipath = $path.'sea/'.$part;
+		open(my $tfh, '>>', "$dpath");
+		open(my $ifh, '<', "$ipath");
+		my $block;
+		read($ifh, $block, $size);
+		print $tfh $block;
+# DEBUG
+#	my $bsha = sha256_hex($block);
+#	if ($i ne $bsha)
+#		{ print $Lfh "SHAERR $i ne $bsha"; } 
+	}
 }
