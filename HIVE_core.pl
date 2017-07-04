@@ -23,7 +23,7 @@ my $name = name();
 
 chdir('/tmp/');
 my $wfifo = '/tmp/HOST';
-my $RATE = '100';
+my $RATE = '100'; $size = 128000;
 
 my $dump = "$name"."_dump/";
 my $tar = "$name"."_tar"; 
@@ -128,7 +128,6 @@ sub blkr
 {
 	my ($i) = @_;
 	my $block = 0;
-	my $size = 128000;
 
 	my $st = stat($i);
 	my $total = $st->size;
@@ -163,4 +162,7 @@ sub build
 	my $ipath = $path.'sea/'$i;
 	open(my $tfh, '>>', "$dpath");
 	open(my $ifh, '<', "$ipath");
+	my $block;
+	read($ifh, $block, $size);
+	print $tf $block;
 }
