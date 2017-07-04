@@ -62,15 +62,16 @@ my $count = 0;
 
 foreach my $i (@QUE)
 {
-		if (-e $SUICIDE)
-    	{ SUICIDE(); }
-    if (-e $SLEEP)
-    	{ SLEEP(); }
-
-    print $Lfh "started $i\n";
-#		blkr($i);
-		build($i);
-		$count++;
+	if (-e $SUICIDE)
+    		{ SUICIDE(); }
+	if (-e $SLEEP)
+    		{ SLEEP(); }
+	print $Lfh "started $i\n";
+	switch($api) {
+		case 'blkr' { blkr($i); }
+		case 'build' { build($i); }
+		case 'vsha' { vsha($i); }
+	$count++;
 }
 my $dtime = TIME(); print $Lfh "FKTHEWRLD $dtime\n";
 tombstone();
@@ -138,6 +139,60 @@ sub face
 	$FACE[3] = $api . '_' . $count . '/' . $ttl;
 	print $wfifo "@FACE";
 }
+sub bsha
+{
+	my $block = shift;
+	my $bsha = sha256_hex($block)
+	return $bsha;
+}
+sub XS
+{
+	my ($i) = @_;
+	my $rule = File::Find::Rule->file()->start($i);
+	my $magic = File::LibMagic->new();
+	while (defined( my $file = $rule->match))
+	{
+		my ($sha) = file_digest($file) or die "couldn't sha $file";
+		File::Copy::copy($file, "$dump/pool/$sha");
+		my $cur = "$path/g/g$sha";
+		open(my $fh, '>>', $cur) or die "Meta File Creation FAIL $file";
+		printf $fh "%s\n%s\n%s\n%s\n",
+			xsname($file),
+			xspath($file),
+			xssize($file),
+			file_mime_encoding($file);
+	}
+}
+sub file_digest {
+	my ($filename) = @_;
+	my $digester = Digest::SHA->new('sha256');
+	$digester->addfile( $filename, 'b' );
+	return $digester->hexdigest;
+}
+sub xsname {
+	my ($filename) = @_;
+	$filename =~ s#^.*/##;
+	return $filename;
+}
+sub xspath {
+	my ($filename) = @_;
+	$filename =~ s#/#_#g;
+	return $filename;
+}
+sub file_mime_encoding {
+	my ($filename) = @_;
+	my $info = $magic->info_from_filename($filename);
+	my $des = $info->{description};
+	$des =~ s#[/ ]#.#g;
+	$des =~ s/,/_/g;
+	my $md = $info->{mime_type};
+	$md =~ s#[/ ]#.#g;
+	my $enc = sprintf("%s %s %s", $des, $md, $info->{encoding});
+	return $enc;
+}
+sub xssize {
+	my $size = [ stat $_[0] ]->[7];
+	return $size;
 # API ###########################################################
 sub blkr
 {
@@ -191,4 +246,23 @@ sub build
 #	if ($i ne $bsha)
 #		{ print $Lfh "SHAERR $i ne $bsha"; } 
 	}
+}
+sub vsha
+{
+	my ($i) = @_;
+	my ($sha) = file_digest($i);
+	if ($sha ne $i)
+		{ print $Lfh "ERK! $file ne $sha\n"; }
+	print $Lfh "YAY $i\n";
+}
+sub xtrac
+{
+	my ($i) = @_;
+	my $archive = Archive::Any->new($i);
+	if ($archive->is_naughty)
+		{ print $Lfh "ALERT xtrac naughty $i"; next; }
+	my @files = $archive->files; print $Lfh @files;
+	$archive->extract($dump);
+	XS($dump, $path);
+	print $Lfh "YAY $i\n";
 }
