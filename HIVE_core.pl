@@ -13,22 +13,23 @@ if (not defined $que) { die ('NO ARGV1 que'); }
 if (not defined $path) { die ('NO ARGV2 dir'); }
 if (substr($path, -1) eq "/")
 	{ $path .= '/'; }
-# sea/ : blkr()
-# key/ : key()
-# graveyard/ : tombstone()
-# g/ : XS()
-# pool/ : XS()
+# sea/ blkr
+# key/ key
+# tombstone/ graveyard
+# g/ dumpr
+# pool/ dumpr
 # PREP ###############################################
 my $name = name();
+my $pid = $$;
 
 chdir('/tmp/');
 my $wfifo = '/tmp/HOST';
-my $RATE = '100'; $size = 128000;
+my $RATE = '100';
 
-my $dump = "$name"."_dump/";
-my $tar = "$name"."_tar"; 
+my $dump = "$name"."_dump";
+my $tar = "$name"."_tar";
 my $log = "$name"."_log";
-my $SLEEP = "$name"."_SLEEP"; 
+my $SLEEP = "$name"."_SLEEP";
 my $SUICIDE = "$name"."_SUICIDE";
 
 mkdir $dump or die "dump FAIL\n";
@@ -43,8 +44,8 @@ close $qfh;
 
 my $api = shift @QUE; print $Lfh "api $api\n";
 
-my $ttl = @QUE; 
-print $Lfh "ttl $ttl\n"; 
+my $ttl = @QUE;
+print $Lfh "ttl $ttl\n";
 
 my $count = 0;
 
@@ -73,16 +74,17 @@ sub rep
 	my @files = File::Find::Rule->file->in($dump);
 	open(my $rfp, '>', $rep);
 	print $rfp @files;
-	return $rep;
 }
 sub tombstone
 {
 	my $xxtime = TIME(); print $Lfh "farewell $xxtime\n";
-#	my $tombstone = "$name."."tar";
-#	my $tar = Archive::Tar->new;
-#	$tar->write($tombstone);
-#	my $rep = rep();
-#	$tar->add_files($log, $rep);
+	close $Lfh;
+	my $tombstone = "$name."."tar";
+	my $tar = Archive::Tar->new;
+	$tar->write($tombstone);
+	rep();
+	my $rep = "$name".'rep';
+	$tar->add_files($log, $rep);
 }
 sub SUICIDE
 {
@@ -110,12 +112,12 @@ sub TIME
 sub name
 {
 	my $id = int(rand(999));
-	my $name = $$.'_'.$id;
+	my $name = $pid.'_'.$id;
 	return $name;
 }
 sub face
 { # FACE (age, name, rep, status)
-	my ($count, $ttl) = @_;
+	my ($count, $ttl) = shift;
 	my @FACE;
 	my $wfifo = shift;
 	my $current = gmtime();
@@ -126,8 +128,9 @@ sub face
 }
 sub blkr
 {
-	my ($i) = @_;
+	my ($i) = shift;
 	my $block = 0;
+	my $size = 128000;
 
 	my $st = stat($i);
 	my $total = $st->size;
@@ -138,35 +141,21 @@ sub blkr
 	while (read($ifh, $block, $size))
 	{
 		my $bsha = sha256_hex($block);
-
 		my $bname = $path.'sea/'.$bsha;
+
 		open(my $fh, '>', "$bname");
 		binmode($fh);
 
 		print $fh $block;
-		key($i, $bsha);
+		key($i, $bsha)
 	}
 	print $Lfh "YAY $i\n";
 }
 sub key
 {
-	my ($i, $bsha) = @_;
+  my ($i, $bsha) = shift;
 	my $kpath = $path.'key/'.$i;
 	open(my $kfh, '>>', "$kpath");
+	print "$i\n";
 	print $kfh "$bsha\n";
-}
-sub build
-{
-	my ($i) = @_;
-	my $dpath = $dump.'tmp';
-	my $ipath = $path.'sea/'$i;
-	open(my $tfh, '>>', "$dpath");
-	open(my $ifh, '<', "$ipath");
-	my $block;
-	read($ifh, $block, $size);
-	print $tf $block;
-# DEBUG
-#	my $bsha = sha256_hex($block);
-#	if ($i ne $bsha)
-#		{ print $Lfh "SHAERR $i ne $bsha"; } 
 }
