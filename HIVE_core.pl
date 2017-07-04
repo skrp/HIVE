@@ -6,18 +6,27 @@ use Digest::SHA qw(sha256_hex); use File::Find::Rule;
 use File::stat; use List::Util qw(any);
 ######################################################
 # DEMON - daemon summoning scroll
+
 # INIT ###############################################
 my ($que, $path) = @ARGV;
 if (not defined $que) { die ('NO ARGV1 que'); }
 if (not defined $path) { die ('NO ARGV2 dir'); }
 if (substr($path, -1) eq "/")
 	{ $path .= '/'; }
+
+# BIRTH ##############################################
+my $embryo = Proc::Daemon->new(work_dir => "/tmp/");
+my $pid = $embryo->Init() or die "STILLBORN\n";
+my $born = gmtime();
+my $btime = TIME(); print $Lfh "HELLOWORLD $btime\n";
+
 # DIRS ###############################################
 # sea/ : blkr()
 # key/ : key()
 # graveyard/ : tombstone()
 # g/ : XS()
 # pool/ : XS()
+
 # PREP ###############################################
 my $name = name();
 
@@ -65,7 +74,8 @@ foreach my $i (@QUE)
 }
 my $dtime = TIME(); print $Lfh "FKTHEWRLD $dtime\n";
 tombstone();
-# SUB ####################################
+
+# SUB ###########################################################
 sub dumpr
 {
 	XS($dump, );
