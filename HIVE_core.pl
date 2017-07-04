@@ -25,7 +25,7 @@ chdir('/tmp/');
 my $wfifo = '/tmp/HOST';
 my $RATE = '100';
 
-my $dump = "$name"."_dump";
+my $dump = "$name"."_dump/";
 my $tar = "$name"."_tar"; 
 my $log = "$name"."_log";
 my $SLEEP = "$name"."_SLEEP"; 
@@ -126,7 +126,7 @@ sub face
 }
 sub blkr
 {
-	my $i = shift;
+	my ($i) = @_;
 	my $block = 0;
 	my $size = 128000;
 
@@ -155,4 +155,11 @@ sub key
 	my $kpath = $path.'key/'.$i;
 	open(my $kfh, '>>', "$kpath");
 	print $kfh "$bsha\n";
+}
+sub build
+{
+	my ($i) = @_;
+	my $dpath = $dump.'tmp';
+	open(my $tfh, '>>' "$dpath";
+	
 }
