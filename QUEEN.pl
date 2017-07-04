@@ -1,5 +1,4 @@
 #!/usr/local/bin/perl
-package HIVE::queen;
 use strict; use warnings;
 use Proc::Daemon; use POSIX qw(mkfifo);
 #######################################
