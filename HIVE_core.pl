@@ -8,21 +8,21 @@ use File::stat;
 # DEMON - daemon summoning scroll
 # INIT ###############################################
 my ($que, $path) = @ARGV;
+if (not defined $que) { die ('NO ARGV1 que'); }
+if (not defined $path) { die ('NO ARGV2 dir'); }
+if (substr($path, -1) eq "/")
+	{ $path .= '/'; }
 # BIRTH ##############################################
 my $embryo = Proc::Daemon->new(work_dir => "/tmp/");
 my $pid = $embryo->Init() or die "STILLBORN\n";
 my $born = gmtime();
 my $btime = TIME(); print $Lfh "HELLOWORLD $btime\n";
 # DIRS ###############################################
-if (not defined $que) { die ('NO ARGV1 que'); }
-if (not defined $path) { die ('NO ARGV2 dir'); }
-if (substr($path, -1) eq "/")
-	{ $path .= '/'; }
-# sea/ blkr
-# key/ key
-# tombstone/ graveyard
-# g/ dumpr
-# pool/ dumpr
+# sea/ : blkr()
+# key/ : key()
+# graveyard/ : tombstone()
+# g/ : XS()
+# pool/ : XS()
 # PREP ###############################################
 my $name = name();
 my $pid = $$;
