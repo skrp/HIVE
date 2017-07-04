@@ -29,10 +29,11 @@ my $btime = TIME(); print $Lfh "HELLOWORLD $btime\n";
 
 # PREP ###############################################
 my $name = name();
-
 chdir('/tmp/');
 my $wfifo = '/tmp/HOST';
-my $RATE = '100'; my $size = 128000;
+my $RATE = '100'; 
+my $size = 128000;
+my $count = 0;
 
 my $dump = "$name"."_dump/";
 my $log = "$name"."_log";
@@ -42,12 +43,12 @@ my $SUICIDE = "$name"."_SUICIDE";
 mkdir $dump or die "dump FAIL\n";
 open(my $Lfh, '>>', $log);
 my $born = gmtime();
-my $btime = TIME(); print $Lfh "HELLOWORLD $btime\n";
+my $btime = TIME(); 
+print $Lfh "HELLOWORLD $btime\n";
 
 # WORK ################################################
 open(my $qfh, '<', $que) or die "cant open que\n";
 my @QUE = readline $qfh; chomp @QUE;
-close $qfh;
 
 my $api = shift @QUE; print $Lfh "api $api\n";
 my $api = shift @QUE; print $Lfh "api $api\n";
@@ -56,8 +57,6 @@ die "bad api $api" unless any { /$api/ } @api;
 
 my $ttl = @QUE; 
 print $Lfh "ttl $ttl\n"; 
-
-my $count = 0;
 
 foreach my $i (@QUE)
 {
