@@ -21,10 +21,10 @@ my $daemon = Proc::Daemon->new(
 );
 $daemon->Init();
 # INIT ###############################
-my $WORD = 'WBROOD'; mkfifo($WORD, 0770) or die "mkfifo WORD fail\n"; # wrapped code location
-open(my $FWfh, '<', $WORD) or die "cant open WORD\n";
-my $POST = 'RBROOD'; mkfifo($POST, 0770) or die "mkfifo POST fail\n"; # $btime
-open(my $FPfh, '<', $POST) or die "cant open POST\n";
+#my $WORD = 'WBROOD'; mkfifo($WORD, 0770) or die "mkfifo WORD fail\n"; # wrapped code location
+#open(my $FWfh, '<', $WORD) or die "cant open WORD\n";
+#my $POST = 'RBROOD'; mkfifo($POST, 0770) or die "mkfifo POST fail\n"; # $btime
+#open(my $FPfh, '<', $POST) or die "cant open POST\n";
 while(1)
 {
   my $code = <$WORD>; chomp $code;
