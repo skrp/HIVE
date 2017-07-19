@@ -11,7 +11,7 @@ use File::stat; use List::Util qw(any);
 my ($que, $path) = @ARGV;
 if (not defined $que) { die ('NO ARGV1 que'); }
 if (not defined $path) { die ('NO ARGV2 dir'); }
-if (substr($path, -1) eq "/") { $path .= '/'; }
+if (substr($path, -1) ne "/") { $path .= '/'; }
 
 # BIRTH ##############################################
 my $embryo = Proc::Daemon->new(work_dir => "/tmp/");
