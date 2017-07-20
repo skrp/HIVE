@@ -18,6 +18,7 @@ my $embryo = Proc::Daemon->new(work_dir => "/tmp/");
 my $pid = $embryo->Init() or die "STILLBORN\n";
 my $born = gmtime();
 my $btime = TIME(); print $Lfh "HELLOWORLD $btime\n";
+my $LIFE = 1000; # error tolerance
 
 # DIRS ###############################################
 # sea/ : blkr()
@@ -211,6 +212,15 @@ sub uagent
 		timeout => 45,
 	);
 	return $s_ua;
+}
+sub life
+{
+	my ($life) = @_;
+	$life--;
+	if ($life > 0)
+		{ next; }
+	else
+		{ tombstone(); exit; }
 }
 # API ###########################################################
 sub blkr
