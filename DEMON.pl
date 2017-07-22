@@ -78,7 +78,7 @@ sub blkr
 	my ($i) = @_;
 	my $block = 0;
 	my $ipath = $path.'pool/'.$i;
-	open(my $ifh, '<', "$ipath") || die "Cant open $i: $!\n";
+	open(my $ifh, '<', "$ipath") || print $Lfh "Cant open $i: $!\n";
 	binmode($ifh);
 	
 	while (read($ifh, $block, $size))
