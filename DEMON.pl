@@ -1,9 +1,9 @@
 #!/usr/local/bin/perl
 use strict; use warnings;
 use POSIX 'setsuid' 'close';
-use Proc::Daemon;
 use File::Path; use File::Copy;
 use Digest::SHA 'sha256_hex';
+use File::LibMagic;
 ######################################################
 # DEMON - daemon summoning scroll
 
