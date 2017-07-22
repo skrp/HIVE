@@ -28,23 +28,20 @@ my $demon = daemon() or die "FAIL daemon\n";
 use constant {
 	NAME => "name()",
 	BIRTH => "TIME()",
-	
+	QUE => NAME.'_que',
 	DUMP => NAME.'_dump',
 	TOMB => "$path".'cemetery/'.NAME,
-	
 	SLEEP => NAME.'_SLEEP',
 	SUICIDE => NAME.'_SUICIDE',
-	
-	
 	SIZE => 128000
 	RATE => 100,
 }
 # GLOBAL VARIABLE ####################################
-
+my $YAY = 0;
 # PREP ###############################################
 chdir('/tmp/');
 
-mkdir $dump or die "dump FAIL\n";
+mkdir DUMP or die "dump FAIL\n";
 open(my $Lfh, '>>', TOMB);
 $Lfh->autoflush(1);
 
@@ -52,13 +49,12 @@ printf $Lfh ("HELLOWORLD %s\n", TIME());
 
 while (1)
 { # WORK ################################################
-	unless (-e $que)
+	unless (-e QUE)
 		{ sleep 3600; next; }
-	open(my $qfh, '<', $que) or die "cant open que\n";
+	open(my $qfh, '<', QUE) or die "cant open QUE\n";
 	my @QUE = readline $qfh; chomp @QUE;
 
 	my $api = shift @QUE; 
-	print $Lfh "api $api\n";
 	api($api);
 	
 	my $ttl = @QUE; 
@@ -253,14 +249,14 @@ sub api
 {
 	my ($api) = @_;
 	my @api = { "blkr", "build", "vsha", "xtrac", "rgex", "get" };
-	
-	 unless (/$api/, @api)
-	 {
-	 	print $Lfh "FAIL_API $api\n";
+	unless (/$api/, @api)
+	{
+		print $Lfh "FAIL_API $api\n";
 		copy($que, "$path".'zombie_'."$name");
 		unlink $que;
 		next;
-	 }
+	}
+	print $Lfh "api $api\n";
 	
 }
 sub SUICIDE
