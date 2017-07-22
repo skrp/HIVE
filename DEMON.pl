@@ -299,10 +299,10 @@ sub tombstone
 	my @FACE;
 	$FACE[0] = $name;	
 	$FACE[1] = ((gmtime() - $born) / 60);
-	$FACE[2] = $api . '_' . $suk . '_' . $count . '_' . $ttl;
+	$FACE[2] = $api . '_' . $count . '_' . $ttl;
 	
-	open(my $Tfh, '>>', $tombstone); 
-	printf $Tfh ("%s %d %s\n", $FACE[0], $FACE[1], $FACE[2]);
+	open(my $Tfh, '>>', TOMB); 
+	printf $Tfh ("%d %s %d %s\n", $YAY, $FACE[0], $FACE[1], $FACE[2]);
 }
 sub bsha
 {
