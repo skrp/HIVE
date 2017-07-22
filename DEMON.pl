@@ -1,5 +1,6 @@
 #!/usr/local/bin/perl
 use strict; use warnings;
+use POSIX 'setsuid' 'close';
 use Proc::Daemon; use Archive::Tar;
 use File::Path; use File::Copy;
 use Digest::SHA qw(sha256_hex); use File::Find::Rule;
@@ -12,13 +13,6 @@ my ($que, $path) = @ARGV;
 if (not defined $que) { die ('NO ARGV1 que'); }
 if (not defined $path) { die ('NO ARGV2 dir'); }
 if (substr($path, -1) ne "/") { $path .= '/'; }
-
-# BIRTH ##############################################
-my $embryo = Proc::Daemon->new(work_dir => "/tmp/");
-my $pid = $embryo->Init() or die "STILLBORN\n";
-my $born = gmtime();
-my $btime = TIME(); print $Lfh "HELLOWORLD $btime\n";
-my $LIFE = 1000; # error tolerance
 
 # DIRS ###############################################
 # sea/ : blkr()
@@ -34,6 +28,7 @@ my $wfifo = '/tmp/HOST';
 my $RATE = '100'; 
 my $size = 128000;
 my $count = 0;
+my $LIFE = 1000; # error tolerance
 
 my $dump = "$name"."_dump/";
 my $log = "$name"."_log";
@@ -42,7 +37,6 @@ my $SUICIDE = "$name"."_SUICIDE";
 
 mkdir $dump or die "dump FAIL\n";
 open(my $Lfh, '>>', $log);
-my $born = gmtime();
 my $btime = TIME(); 
 print $Lfh "HELLOWORLD $btime\n";
 
@@ -79,6 +73,21 @@ tombstone();
 dumpr($i);
 
 # SUB ###########################################################
+sub daemonize {
+   setsid() or die "FAIL_SETSID $!";
+   my $pid = fork();
+   die "FAIL $!" if ($pid < 0);
+   exit 0;
+   chdir('/tmp');
+   umask 0;
+   my $fds = 1024;
+   my $des = '/dev/null';
+   while ($fd > 0)
+      { close $fds; $fds--;  }
+   open(STDIN, "<$des");
+   open(STDOUT, ">$des");
+   open(STDERR, ">$des");
+}
 sub dumpr
 {
 	my ($i) = @_;
@@ -227,25 +236,34 @@ sub blkr
 {
 	my ($i) = @_;
 	my $block = 0;
-
-	my $st = stat($i);
-	my $total = $st->size;
-
-	open(my $ifh, '<', "$i") || die "Cant open $i: $!\n";
+	my $ipath = $path.'pool/'.$i;
+	open(my $ifh, '<', "$ipath") || die "Cant open $i: $!\n";
 	binmode($ifh);
-
+	
+	my $istart = gettimeofday();
+	my $cunt = 0;
 	while (read($ifh, $block, $size))
 	{
 		my $bsha = sha256_hex($block);
-
 		my $bname = $path.'sea/'.$bsha;
 		open(my $fh, '>', "$bname");
 		binmode($fh);
 
 		print $fh $block;
 		key($i, $bsha);
+		$cunt++;
 	}
 	print $Lfh "YAY $i\n";
+
+	my $elapsed = gettimeofday()-$istart;
+	print "$i : $cunt : $elapsed \n";	
+}
+sub key
+{
+	my ($i, $bsha) = @_;
+	my $kpath = $path.'key/'.$i;
+	open(my $kfh, '>>', "$kpath");
+	print $kfh "$bsha\n";
 }
 sub build
 {
