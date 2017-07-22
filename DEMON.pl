@@ -135,9 +135,10 @@ sub xtrac
 	print $Lfh "YAY $i\n"; $YAY++;
 }
 sub regx
-{ # 2 files $i = list $path = master
+{
 	my ($i) = @_;
-	open(my $fh, '<', $i); open(my $mfh, '<', $path);
+	open(my $fh, '<', $i); 
+	open(my $mfh, '<', PATH);
 	my @i = readline $fh; chomp @i;
 	my @master = readline $mfh; chomp @master;
 	foreach (@i)
@@ -185,8 +186,8 @@ sub XS
 {
 	my ($file) = shift;
 	my ($sha) = file_digest($file) or die "couldn't sha $file";
-	File::Copy::copy($file, "$path"."pool/$sha");
-	my $cur = "$path"."g/g$sha";
+	File::Copy::copy($file, PATH."pool/$sha");
+	my $cur = PATH."g/g$sha";
 	open(my $fh, '>>', $cur) or die "Meta File Creation FAIL $file";
 	printf $fh "%s\n%s\n%s\n%s\n", 
 		xsname($file),
