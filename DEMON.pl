@@ -124,7 +124,7 @@ sub sha
 	my ($i) = @_;
 	my ($sha) = file_digest($i);
 	if ($sha ne $i)
-		{ print $Lfh "ERK! $file ne $sha\n"; }
+		{ print $Lfh "ERK $file ne $sha\n"; }
 	print $Lfh "YAY $i\n";
 }
 sub xtrac
@@ -135,7 +135,8 @@ sub xtrac
 		{ print $Lfh "ALERT xtrac naughty $i"; next; }
 	my @files = $archive->files; print $Lfh @files;
 	$archive->extract($dump);
-	XS($dump, $path);
+	XS($dump, $path) && rmtree($dump);
+	mkdir $dump;
 	print $Lfh "YAY $i\n";
 }
 sub regx
