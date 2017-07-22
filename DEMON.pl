@@ -56,7 +56,7 @@ while (1)
 	my @QUE = readline $qfh; chomp @QUE;
 
 	my $api = shift @QUE; 
-	api($api);
+	next if (api($api) < 0);
 	
 	my $ttl = @QUE; 
 	my $count = 0;
