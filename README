@@ -1,21 +1,6 @@
 #################################################
-# DEMON - unix daemon network
-# PROCESS #######################################
-ADMIN -> posts (ACTION @IT RACE) -> BROOD_IN_FIFO
-  BROOD - births DEMON
-DEMON -> posts (@FACE) -> ADMIN_IN_FIFO
-# ITEMS ############################################
-ADMIN: udp requests
-BROOD: DEMON spawner
-ACTION: what is done over iterations
-@ITER: array of work to be done
-@FACE: DEMON attributes
-# FIFO FLOW ########################################
-ADMIN                                    BROOD
-   (actor, @ITER, api)
-FIFO_WRITE ============================= FIFO_READ 
-                (@FACE)                                   DEMON
-FIFO_READ =================================================FIFO_WRITE                                 
+# DEMON - unix daemon network                  
+
 # API ##############################################
 sha - sha256 file
 blkr - chop file to even parts
@@ -25,9 +10,9 @@ xtrac - archive extraction
 vkey - verify key files created by blkr/slicr
 regx - test contents
 krip - encrypt file
+
 # HIVE STRUCTURE ###################################
- 
-[ ==== /bin /pool /sea /g /k /log /tombstone =====
+[ ==== /pool /sea /g /key /cemetery =====
 [ ================================================
 [ =================== ZFS NFS ====================
 ^^      vv     ^^      vv        ^^      vv
@@ -50,13 +35,12 @@ krip - encrypt file
 *#vkey #**
 *#######**
 **********
-  |     |
-  | UDP |
+  |    |
+  |    |
 |         |
 ( dynamic code )
 ( actor @iterations )
 
-######################################################
 # INTERFACE #########################################
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % NODE1                           NODE2             %
@@ -76,11 +60,9 @@ krip - encrypt file
 # blkr next_que 2 x2
 2 970 blkr 1000
 2 971 blkr 1000
+
 # ACHIEVEMENTS ###################################
 HORIZON ( 1B BLKR )
 MONSOON ( 100M SLICR )
 ACCOUNTANT ( 100B SHA )
 SCROOGE ( 1M GET )
-
-SCROOGE Hubbub0 : well look what life is like now
-HORIZON ACCOUNTANT nomicron : stfu
