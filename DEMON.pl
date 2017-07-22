@@ -2,7 +2,6 @@
 use strict; use warnings;
 use POSIX;
 use File::Path; use File::Copy;
-use Digest::SHA 'sha256_hex';
 use File::LibMagic;
 use LWP::UserAgent;
 ######################################################
@@ -149,7 +148,7 @@ sub get
 {
 	my ($i) = @_;
 	my $ua = uagent();
-	my $response = $ua->get($i, ':content_file'=>DUMP$i");
+	my $response = $ua->get($i, ':content_file'=>"DUMP$i");
 	print $Lfh "YAY $i\n"; $YAY++;
 	XS($i) && unlink($i);
 }
