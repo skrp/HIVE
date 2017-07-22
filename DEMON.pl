@@ -147,6 +147,7 @@ sub get
 	my $ua = uagent();
 	my $response = $ua->get($i, ':content_file'=>"$dump/$i");
 	print $Lfh "YAY $i\n";
+	XS($i) && unlink($i);
 }
 sub arki
 {
