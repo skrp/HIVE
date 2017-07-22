@@ -120,7 +120,7 @@ sub sha
 	my ($sha) = file_digest($i);
 	if ($sha ne $i)
 		{ print $Lfh "ERK $file ne $sha\n"; }
-	print $Lfh "YAY $i\n"; $YAY++;
+	$YAY++;
 }
 sub xtrac
 {
@@ -168,7 +168,9 @@ sub arki
 	else
 	{ 
 		my $eresp = $ua->get("$base/$i", ':content_file'=>"$dump/tmp");
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		my $redo = `grep pdf $dump/tmp | sed 's?</a>.*??' | sed 's/.*>//'`;
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		my $rresp = $ua->get("$base/$i/$redo", ':content_file'=>$file);
 		if (-f $file) 
 			{ print $Lfh "YAY $i\n"; $YAY++; }
@@ -250,7 +252,7 @@ sub daemon {
 sub api
 {
 	my ($api) = @_;
-	my @api = { "blkr", "build", "vsha", "xtrac", "rgex", "get" };
+	my @api = { "pop", "chkmeta", "index, "blkr", "build", "vsha", "xtrac", "rgex", "get" };
 	unless (/$api/, @api)
 	{
 		print $Lfh "FAIL_API $api\n";
