@@ -157,8 +157,8 @@ sub arki
 	my ($i) = @_;
 	sleep 1;
 	my $ua = uagent();
-	my $file = "$dump"."$i.pdf";
-	my $mfile = "$dump"."$i".'_meta.xml';
+	my $file = DUMP."$i.pdf";
+	my $mfile = DUMP."$i".'_meta.xml';
 	my $url = "$base/$i/$i.pdf";
 	my $murl = "$base/$i/$i".'_meta.xml';	
 	my $resp = $ua->get($url, ':content_file'=>$file); 
@@ -169,7 +169,7 @@ sub arki
 	{ 
 		my $eresp = $ua->get("$base/$i", ':content_file'=>"$dump/tmp");
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		my $redo = `grep pdf $dump/tmp | sed 's?</a>.*??' | sed 's/.*>//'`;
+		my $redo = `grep pdf DUMP.'tmp' | sed 's?</a>.*??' | sed 's/.*>//'`;
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		my $rresp = $ua->get("$base/$i/$redo", ':content_file'=>$file);
 		if (-f $file) 
