@@ -49,11 +49,12 @@ while (1)
 	open(my $qfh, '<', $que) or die "cant open que\n";
 	my @QUE = readline $qfh; chomp @QUE;
 
-	my $api = shift @QUE; print $Lfh "api $api\n";
-	my @api = { "blkr", "build", "vsha", "xtrac", "rgex", "get" };
-	die "bad api $api" unless (/$api/, @api);
-
-	my $ttl = @QUE; print $Lfh "ttl $ttl\n"; 
+	my $api = shift @QUE; 
+	print $Lfh "api $api\n";
+	api($api);
+	
+	my $ttl = @QUE; 
+	print $Lfh "ttl $ttl\n"; 
 
 	foreach my $i (@QUE)
 	{
@@ -84,6 +85,20 @@ sub daemon {
    open(STDIN, "<$des");
    open(STDOUT, ">$des");
    open(STDERR, ">$des");
+}
+sub api
+{
+	my ($api) = @_;
+	my @api = { "blkr", "build", "vsha", "xtrac", "rgex", "get" };
+	
+	 unless (/$api/, @api)
+	 {
+	 	print $Lfh "FAIL_API $api\n";
+		copy($que, "$path".'zombie_'."$name");
+		unlink $que;
+		next;
+	 }
+	
 }
 sub tombstone
 {
