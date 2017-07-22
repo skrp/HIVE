@@ -304,12 +304,6 @@ sub tombstone
 	open(my $Tfh, '>>', TOMB); 
 	printf $Tfh ("%d %s %d %s\n", $YAY, $FACE[0], $FACE[1], $FACE[2]);
 }
-sub bsha
-{
-	my $block = shift;
-	my $bsha = sha256_hex($block)
-	return $bsha;
-}
 sub key
 {
 	my ($i, $bsha) = @_;
