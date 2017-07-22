@@ -307,7 +307,7 @@ sub tombstone
 sub key
 {
 	my ($i, $bsha) = @_;
-	my $kpath = $path.'key/'.$i;
+	my $kpath = PATH.'key/'.$i;
 	open(my $kfh, '>>', "$kpath");
 	print $kfh "$bsha\n";
 }
