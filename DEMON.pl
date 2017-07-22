@@ -76,14 +76,14 @@ sub blkr
 {
 	my ($i) = @_;
 	my $block = 0;
-	my $ipath = $path.'pool/'.$i;
+	my $ipath = PATH.'pool/'.$i;
 	open(my $ifh, '<', "$ipath") || print $Lfh "Cant open $i: $!\n";
 	binmode($ifh);
 	
 	while (read($ifh, $block, $size))
 	{
 		my $bsha = sha256_hex($block);
-		my $bname = $path.'sea/'.$bsha;
+		my $bname = PATH.'sea/'.$bsha;
 		open(my $fh, '>', "$bname");
 		binmode($fh);
 		print $fh $block;
