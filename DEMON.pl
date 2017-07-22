@@ -29,7 +29,7 @@ use constant {
 	NAME => name(),
 	BIRTH => gmtime(),
 	QUE => NAME.'_que',
-	DUMP => NAME.'_dump',
+	DUMP => NAME.'_dump/',
 	TOMB => "$path".'cemetery/'.NAME,
 	SLEEP => NAME.'_SLEEP',
 	SUICIDE => NAME.'_SUICIDE',
@@ -149,7 +149,7 @@ sub get
 {
 	my ($i) = @_;
 	my $ua = uagent();
-	my $response = $ua->get($i, ':content_file'=>"$dump/$i");
+	my $response = $ua->get($i, ':content_file'=>DUMP$i");
 	print $Lfh "YAY $i\n"; $YAY++;
 	XS($i) && unlink($i);
 }
