@@ -180,6 +180,53 @@ sub arki
 	XS($file) && unlink($file);
 	XS($mfile) && unlink($mfile);
 }
+# XS ###########################################################
+sub XS
+{
+	my ($file) = shift;
+	my ($sha) = file_digest($file) or die "couldn't sha $file";
+	File::Copy::copy($file, "$path"."pool/$sha");
+	my $cur = "$path"."g/g$sha";
+	open(my $fh, '>>', $cur) or die "Meta File Creation FAIL $file";
+	printf $fh "%s\n%s\n%s\n%s\n", 
+		xsname($file),
+		xspath($file),
+		xssize($file),
+		file_mime_encoding($file);
+}
+sub file_digest {
+	my ($file) = @_;
+	my $digester = Digest::SHA->new('sha256');
+	$digester->addfile( $file, 'b' );
+	return $digester->hexdigest;
+}
+sub xsname {
+	my ($file) = @_;
+	$file =~ s?^.*/??;
+	return $file;
+}
+sub xspath {
+	my ($file) = @_;
+	$file =~ s?/?_?g;
+	return $file; 
+}
+sub file_mime_encoding {
+	my ($file) = @_;
+	my $magic = File::LibMagic->new();
+	my $info = $magic->info_from_filename($file);
+	my $des = $info->{description};
+	$des =~ s?[/ ]?.?g;
+	$des =~ s/,/_/g;
+	my $md = $info->{mime_type};
+	$md =~ s?[/ ]?.?g;
+	my $enc = sprintf("%s %s %s", $des, $md, $info->{encoding}); 
+	return $enc;
+}
+sub xssize {
+	my ($file) = @_;
+	my $size = -s $file;
+	return $size;
+}
 # SUB ###########################################################
 sub daemon {
 #  fork() && exit 0;
@@ -273,52 +320,7 @@ sub key
 	open(my $kfh, '>>', "$kpath");
 	print $kfh "$bsha\n";
 }
-sub XS
-{
-	my ($file) = shift;
-	my ($sha) = file_digest($file) or die "couldn't sha $file";
-	File::Copy::copy($file, "$path"."pool/$sha");
-	my $cur = "$path"."g/g$sha";
-	open(my $fh, '>>', $cur) or die "Meta File Creation FAIL $file";
-	printf $fh "%s\n%s\n%s\n%s\n", 
-		xsname($file),
-		xspath($file),
-		xssize($file),
-		file_mime_encoding($file);
-}
-sub file_digest {
-	my ($file) = @_;
-	my $digester = Digest::SHA->new('sha256');
-	$digester->addfile( $file, 'b' );
-	return $digester->hexdigest;
-}
-sub xsname {
-	my ($file) = @_;
-	$file =~ s?^.*/??;
-	return $file;
-}
-sub xspath {
-	my ($file) = @_;
-	$file =~ s?/?_?g;
-	return $file; 
-}
-sub file_mime_encoding {
-	my ($file) = @_;
-	my $magic = File::LibMagic->new();
-	my $info = $magic->info_from_filename($file);
-	my $des = $info->{description};
-	$des =~ s?[/ ]?.?g;
-	$des =~ s/,/_/g;
-	my $md = $info->{mime_type};
-	$md =~ s?[/ ]?.?g;
-	my $enc = sprintf("%s %s %s", $des, $md, $info->{encoding}); 
-	return $enc;
-}
-sub xssize {
-	my ($file) = @_;
-	my $size = -s $file;
-	return $size;
-}
+
 sub uagent
 {
 	my $s_ua = LWP::UserAgent->new(
