@@ -4,6 +4,7 @@ use POSIX 'setsuid' 'close';
 use File::Path; use File::Copy;
 use Digest::SHA 'sha256_hex';
 use File::LibMagic;
+use LWP::UserAgent;
 ######################################################
 # DEMON - daemon summoning scroll
 
