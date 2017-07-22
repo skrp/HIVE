@@ -47,7 +47,6 @@ open(my $Lfh, '>>', TOMB);
 $Lfh->autoflush(1);
 
 printf $Lfh ("HELLOWORLD %s\n", TIME());
-
 while (1)
 { # WORK ################################################
 	unless (-e QUE)
@@ -311,7 +310,6 @@ sub key
 	open(my $kfh, '>>', "$kpath");
 	print $kfh "$bsha\n";
 }
-
 sub uagent
 {
 	my $s_ua = LWP::UserAgent->new(
