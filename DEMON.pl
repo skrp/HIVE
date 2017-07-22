@@ -261,7 +261,7 @@ sub api
 sub SUICIDE
 {
 	unlink $SUICIDE;
-	my $xtime = TIME(); print $Lfh "FKTHEWORLD $xtime\n";
+	printf $Lfh ("FKTHEWORLD %s\n", TIME());
 	tombstone();
 	exit;
 }
