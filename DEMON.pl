@@ -253,7 +253,7 @@ sub api
 	{
 		print $Lfh "FAIL_API $api\n";
 		close $qfh;
-		move($que, PATH.'zombie_'.NAME) && unlink $que; 
+		move($que, PATH.'cemetery/zombie_'.NAME) && unlink $que; 
 	}
 	
 }
