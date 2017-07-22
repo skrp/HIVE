@@ -43,25 +43,29 @@ open(my $Lfh, '>>', $log);
 my $btime = TIME(); 
 print $Lfh "HELLOWORLD $btime\n";
 
-# WORK ################################################
-open(my $qfh, '<', $que) or die "cant open que\n";
-my @QUE = readline $qfh; chomp @QUE;
+while (1)
+{ # WORK ################################################
+	unless (-e $que)
+		{ sleep 3600; next; }
+	open(my $qfh, '<', $que) or die "cant open que\n";
+	my @QUE = readline $qfh; chomp @QUE;
 
-my $api = shift @QUE; print $Lfh "api $api\n";
-my @api = { "blkr", "build", "vsha", "xtrac", "rgex", "get" };
-die "bad api $api" unless any { /$api/ } @api;
+	my $api = shift @QUE; print $Lfh "api $api\n";
+	my @api = { "blkr", "build", "vsha", "xtrac", "rgex", "get" };
+	die "bad api $api" unless (/$api/, @api);
 
-my $ttl = @QUE; print $Lfh "ttl $ttl\n"; 
+	my $ttl = @QUE; print $Lfh "ttl $ttl\n"; 
 
-foreach my $i (@QUE)
-{
-	if (-e $SUICIDE)
-    		{ SUICIDE(); }
-	if (-e $SLEEP)
-    		{ SLEEP(); }
-	\&$api($i)
-	print $Lfh "started $i\n";
-	$count++;
+	foreach my $i (@QUE)
+	{
+		if (-e $SUICIDE)
+    			{ SUICIDE(); }
+		if (-e $SLEEP)
+   	 		{ SLEEP(); }
+		\&$api($i)
+		print $Lfh "started $i\n";
+		$count++;
+	}
 }
 my $dtime = TIME(); print $Lfh "FKTHEWRLD $dtime\n";
 tombstone();
