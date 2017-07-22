@@ -72,6 +72,128 @@ while (1)
 			{ print $Lfh "$$ $count : $ttl\n"; tombstone(); }
 	}
 }
+# API ###########################################################
+sub blkr
+{
+	my ($i) = @_;
+	my $block = 0;
+	my $ipath = $path.'pool/'.$i;
+	open(my $ifh, '<', "$ipath") || die "Cant open $i: $!\n";
+	binmode($ifh);
+	
+	my $istart = gettimeofday();
+	my $cunt = 0;
+	while (read($ifh, $block, $size))
+	{
+		my $bsha = sha256_hex($block);
+		my $bname = $path.'sea/'.$bsha;
+		open(my $fh, '>', "$bname");
+		binmode($fh);
+
+		print $fh $block;
+		key($i, $bsha);
+		$cunt++;
+	}
+	print $Lfh "YAY $i\n";
+
+	my $elapsed = gettimeofday()-$istart;
+	print "$i : $cunt : $elapsed \n";	
+}
+sub key
+{
+	my ($i, $bsha) = @_;
+	my $kpath = $path.'key/'.$i;
+	open(my $kfh, '>>', "$kpath");
+	print $kfh "$bsha\n";
+}
+sub build
+{
+	my ($i) = @_;
+	my $kpath = $path.'key/'.$i;
+	my $dpath = $dump.'tmp';
+
+	open(my $kfh, '<', $kpath);
+	my @set = readline $kfh; chomp @set;
+	foreach my $part (@set)
+	{
+		my $ipath = $path.'sea/'.$part;
+		open(my $tfh, '>>', "$dpath");
+		open(my $ifh, '<', "$ipath");
+		my $block;
+		read($ifh, $block, $size);
+		print $tfh $block;
+# DEBUG
+#	my $bsha = sha256_hex($block);
+#	if ($i ne $bsha)
+#		{ print $Lfh "SHAERR $i ne $bsha"; } 
+	}
+}
+sub sha
+{
+	my ($i) = @_;
+	my ($sha) = file_digest($i);
+	if ($sha ne $i)
+		{ print $Lfh "ERK! $file ne $sha\n"; }
+	print $Lfh "YAY $i\n";
+}
+sub xtrac
+{
+	my ($i) = @_;
+	my $archive = Archive::Any->new($i);
+	if ($archive->is_naughty)
+		{ print $Lfh "ALERT xtrac naughty $i"; next; }
+	my @files = $archive->files; print $Lfh @files;
+	$archive->extract($dump);
+	XS($dump, $path);
+	print $Lfh "YAY $i\n";
+}
+sub regx
+{ # 2 files $i = list $path = master
+	my ($i) = @_;
+	open(my $fh, '<', $i); open(my $mfh, '<', $path);
+	my @i = readline $fh; chomp @i;
+	my @master = readline $mfh; chomp @master;
+	foreach (@i)
+		{ print $Lfh "no $_\n" unless any { /$_/ } @master; }
+}
+sub get
+{
+	my ($i) = @_;
+	my $ua = uagent();
+	my $response = $ua->get($i, ':content_file'=>"$dump/$i");
+	print $Lfh "YAY $i\n";
+}
+sub arki
+{
+	my ($i) = @_;
+	sleep 1;
+	my $ua = uagent();
+	my $file = "$dump"."$i.pdf";
+	my $mfile = "$dump"."$i".'_meta.xml';
+	my $url = "$base/$i/$i.pdf";
+	my $murl = "$base/$i/$i".'_meta.xml';	
+	my $resp = $ua->get($url, ':content_file'=>$file); 
+	my $mresp = $ua->get($murl, ':content_file'=>$mfile);
+	if (-f $file) 
+		{ print $Lfh "YAY $i\n"; }
+	else
+	{ 
+		my $eresp = $ua->get("$base/$i", ':content_file'=>"$dump/tmp");
+		my $redo = `grep pdf $dump/tmp | sed 's?</a>.*??' | sed 's/.*>//'`;
+		my $rresp = $ua->get("$base/$i/$redo", ':content_file'=>$file);
+		if (-f $file) 
+			{ print $Lfh "YAY $i\n"; }
+		else 
+		{ 
+			unlink($mfile);
+			print $Lfh "FAIL $i\n";  
+			print $Ffh "$i\n";
+			next;
+		}
+	}
+	XS($file) && unlink($file);
+	XS($mfile) && unlink($mfile);
+}
 # SUB ###########################################################
 sub daemon {
 #  fork() && exit 0;
@@ -219,126 +341,4 @@ sub uagent
 		timeout => 45,
 	);
 	return $s_ua;
-}
-# API ###########################################################
-sub blkr
-{
-	my ($i) = @_;
-	my $block = 0;
-	my $ipath = $path.'pool/'.$i;
-	open(my $ifh, '<', "$ipath") || die "Cant open $i: $!\n";
-	binmode($ifh);
-	
-	my $istart = gettimeofday();
-	my $cunt = 0;
-	while (read($ifh, $block, $size))
-	{
-		my $bsha = sha256_hex($block);
-		my $bname = $path.'sea/'.$bsha;
-		open(my $fh, '>', "$bname");
-		binmode($fh);
-
-		print $fh $block;
-		key($i, $bsha);
-		$cunt++;
-	}
-	print $Lfh "YAY $i\n";
-
-	my $elapsed = gettimeofday()-$istart;
-	print "$i : $cunt : $elapsed \n";	
-}
-sub key
-{
-	my ($i, $bsha) = @_;
-	my $kpath = $path.'key/'.$i;
-	open(my $kfh, '>>', "$kpath");
-	print $kfh "$bsha\n";
-}
-sub build
-{
-	my ($i) = @_;
-	my $kpath = $path.'key/'.$i;
-	my $dpath = $dump.'tmp';
-
-	open(my $kfh, '<', $kpath);
-	my @set = readline $kfh; chomp @set;
-	foreach my $part (@set)
-	{
-		my $ipath = $path.'sea/'.$part;
-		open(my $tfh, '>>', "$dpath");
-		open(my $ifh, '<', "$ipath");
-		my $block;
-		read($ifh, $block, $size);
-		print $tfh $block;
-# DEBUG
-#	my $bsha = sha256_hex($block);
-#	if ($i ne $bsha)
-#		{ print $Lfh "SHAERR $i ne $bsha"; } 
-	}
-}
-sub sha
-{
-	my ($i) = @_;
-	my ($sha) = file_digest($i);
-	if ($sha ne $i)
-		{ print $Lfh "ERK! $file ne $sha\n"; }
-	print $Lfh "YAY $i\n";
-}
-sub xtrac
-{
-	my ($i) = @_;
-	my $archive = Archive::Any->new($i);
-	if ($archive->is_naughty)
-		{ print $Lfh "ALERT xtrac naughty $i"; next; }
-	my @files = $archive->files; print $Lfh @files;
-	$archive->extract($dump);
-	XS($dump, $path);
-	print $Lfh "YAY $i\n";
-}
-sub regx
-{ # 2 files $i = list $path = master
-	my ($i) = @_;
-	open(my $fh, '<', $i); open(my $mfh, '<', $path);
-	my @i = readline $fh; chomp @i;
-	my @master = readline $mfh; chomp @master;
-	foreach (@i)
-		{ print $Lfh "no $_\n" unless any { /$_/ } @master; }
-}
-sub get
-{
-	my ($i) = @_;
-	my $ua = uagent();
-	my $response = $ua->get($i, ':content_file'=>"$dump/$i");
-	print $Lfh "YAY $i\n";
-}
-sub arki
-{
-	my ($i) = @_;
-	sleep 1;
-	my $ua = uagent();
-	my $file = "$dump"."$i.pdf";
-	my $mfile = "$dump"."$i".'_meta.xml';
-	my $url = "$base/$i/$i.pdf";
-	my $murl = "$base/$i/$i".'_meta.xml';	
-	my $resp = $ua->get($url, ':content_file'=>$file); 
-	my $mresp = $ua->get($murl, ':content_file'=>$mfile);
-	if (-f $file) 
-		{ print $Lfh "YAY $i\n"; }
-	else
-	{ 
-		my $eresp = $ua->get("$base/$i", ':content_file'=>"$dump/tmp");
-		my $redo = `grep pdf $dump/tmp | sed 's?</a>.*??' | sed 's/.*>//'`;
-		my $rresp = $ua->get("$base/$i/$redo", ':content_file'=>$file);
-		if (-f $file) 
-			{ print $Lfh "YAY $i\n"; }
-		else 
-		{ 
-			unlink($mfile);
-			print $Lfh "FAIL $i\n";  
-			print $Ffh "$i\n";
-			next;
-		}
-	}
-	XS($file) && unlink($file);
-	XS($mfile) && unlink($mfile);
 }
