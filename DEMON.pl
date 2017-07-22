@@ -68,8 +68,6 @@ while (1)
 			{ print $Lfh "$$ $count : $ttl\n"; tombstone(); }
 	}
 }
-my $dtime = TIME(); print $Lfh "FKTHEWRLD $dtime\n";
-tombstone();
 # SUB ###########################################################
 sub daemon {
 #  fork() && exit 0;
@@ -89,7 +87,13 @@ sub daemon {
 }
 sub tombstone
 {
-	my $tombstone = 'graveyard/'."$name";
+	my $tombstone = $path.'graveyard/'.$name;
+	open(my $Tfh, '>>', $tombstone); 
+	open(my $LLfh, '<', $log);
+	my @llfh = readline $LLfh;
+	my @YAY = grep /^YAY / @llfh;
+	my $suk = @YAY;
+	printf $Tfh ("%s $s\n", $suk, TIME());
 }
 sub SUICIDE
 {
