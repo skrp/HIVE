@@ -26,8 +26,8 @@ daemon() or die "FAIL daemon\n";
 # GLOBAL CONST #######################################
 use constant {
 	PATH => $path,
-	NAME => "name()",
-	BIRTH => "TIME()",
+	NAME => name(),
+	BIRTH => gmtime(),
 	QUE => NAME.'_que',
 	DUMP => NAME.'_dump',
 	TOMB => "$path".'cemetery/'.NAME,
@@ -292,16 +292,13 @@ sub tombstone
 {
 	my ($count, $ttl) = @_;
 	my $tombstone = NAME.'cemetery/'.NAME;
-	my $current = gmtime();
 	
-	open(my $LLfh, '<', $log);
-	my @llfh = readline $LLfh;
-	my @YAY = grep /^YAY / @llfh;
-	my $suk= @YAY;
-
+#	open(my $LLfh, '<', TOMB);
+#	my @llfh = readline $LLfh;
+#	my @yay = grep /^YAY / @llfh; $yay = @yay;
 	my @FACE;
 	$FACE[0] = $name;	
-	$FACE[1] = (($current - $born) / 60);
+	$FACE[1] = ((gmtime() - $born) / 60);
 	$FACE[2] = $api . '_' . $suk . '_' . $count . '_' . $ttl;
 	
 	open(my $Tfh, '>>', $tombstone); 
