@@ -14,6 +14,9 @@ if (not defined $que) { die ('NO ARGV1 que'); }
 if (not defined $path) { die ('NO ARGV2 dir'); }
 if (substr($path, -1) ne "/") { $path .= '/'; }
 
+# BIRTH ##############################################
+my $demon = daemon() do die "FAIL daemon\n";
+
 # DIRS ###############################################
 # sea/ : blkr()
 # key/ : key()
@@ -73,16 +76,16 @@ tombstone();
 dumpr($i);
 
 # SUB ###########################################################
-sub daemonize {
+sub daemon {
    setsid() or die "FAIL_SETSID $!";
    my $pid = fork();
-   die "FAIL $!" if ($pid < 0);
+   die "FAIL_FORK $!" if ($pid < 0);
    exit 0;
    chdir('/tmp');
    umask 0;
    my $fds = 1024;
    my $des = '/dev/null';
-   while ($fd > 0)
+   while ($fds > 0)
       { close $fds; $fds--;  }
    open(STDIN, "<$des");
    open(STDOUT, ">$des");
