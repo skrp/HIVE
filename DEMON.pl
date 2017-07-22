@@ -54,6 +54,15 @@ die "bad api $api" unless any { /$api/ } @api;
 
 my $ttl = @QUE; 
 print $Lfh "ttl $ttl\n"; 
+switch($api) {
+
+	case 'blkr' { blkr(); }
+	case 'build' { build(); }
+	case 'sha' { sha(); }
+	case 'xtrac' { xtrac(); }
+	case 'regx' { regx(); }
+	case 'get' { get(); }
+}
 
 foreach my $i (@QUE)
 {
@@ -61,14 +70,8 @@ foreach my $i (@QUE)
     		{ SUICIDE(); }
 	if (-e $SLEEP)
     		{ SLEEP(); }
+	\&api($i)
 	print $Lfh "started $i\n";
-	switch($api) {
-		case 'blkr' { blkr($i); }
-		case 'build' { build($i); }
-		case 'vsha' { vsha($i); }
-		case 'xtrac' { xtrac($i); }
-		case 'regx' { regx($i); }
-		case 'get' { get($i); }
 	$count++;
 }
 my $dtime = TIME(); print $Lfh "FKTHEWRLD $dtime\n";
@@ -287,7 +290,7 @@ sub build
 #		{ print $Lfh "SHAERR $i ne $bsha"; } 
 	}
 }
-sub vsha
+sub sha
 {
 	my ($i) = @_;
 	my ($sha) = file_digest($i);
