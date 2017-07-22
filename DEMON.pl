@@ -3,7 +3,7 @@ use strict; use warnings;
 use POSIX 'setsuid' 'close';
 use Proc::Daemon;
 use File::Path; use File::Copy;
-use Digest::SHA 'sha256_hex'; use File::Find::Rule;
+use Digest::SHA 'sha256_hex';
 ######################################################
 # DEMON - daemon summoning scroll
 
@@ -68,8 +68,6 @@ while (1)
 }
 my $dtime = TIME(); print $Lfh "FKTHEWRLD $dtime\n";
 tombstone();
-dumpr($i);
-
 # SUB ###########################################################
 sub daemon {
 #  fork() && exit 0;
@@ -87,28 +85,10 @@ sub daemon {
    open(STDOUT, ">$des");
    open(STDERR, ">$des");
 }
-sub dumpr
-{
-	my ($i) = @_;
-	XS($i);
-	remove_tree($dump);
-}
-sub rep
-{
-	my $rep = "$name"."_rep";
-	my @files = File::Find::Rule->file->in($dump);
-	open(my $rfp, '>', $rep);
-	print $rfp @files;
-	return $rep;
-}
 sub tombstone
 {
 	my $xxtime = TIME(); print $Lfh "farewell $xxtime\n";
 	my $tombstone = 'graveyard/'."$name".'.tar';
-	my $tar = Archive::Tar->new;
-	$tar->write($tombstone);
-	my $rep = rep();
-	$tar->add_files($log, $rep);
 }
 sub SUICIDE
 {
