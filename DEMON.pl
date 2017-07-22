@@ -9,9 +9,8 @@ use LWP::UserAgent;
 # DEMON - daemon summoning scroll
 
 # INIT ###############################################
-my ($que, $path) = @ARGV;
-if (not defined $que) { die ('NO ARGV1 que'); }
-if (not defined $path) { die ('NO ARGV2 dir'); }
+my ($path) = @ARGV;
+if (not defined $path) { die ('NO ARGV1 dir'); }
 if (substr($path, -1) ne "/") { $path .= '/'; }
 
 # BIRTH ##############################################
@@ -26,6 +25,7 @@ my $demon = daemon() or die "FAIL daemon\n";
 
 # GLOBAL CONST #######################################
 use constant {
+	PATH => $path,
 	NAME => "name()",
 	BIRTH => "TIME()",
 	QUE => NAME.'_que',
@@ -58,8 +58,8 @@ while (1)
 	api($api);
 	
 	my $ttl = @QUE; 
-	print $Lfh "ttl $ttl\n"; 
-
+	my $count = 0;
+	
 	foreach my $i (@QUE)
 	{
 		if (-e $SUICIDE)
@@ -69,8 +69,7 @@ while (1)
 		\&$api($i)
 		print $Lfh "started $i\n";
 		$count++;
-		if ($count % 100 == 0)
-			{ print $Lfh "$$ $count : $ttl\n"; tombstone(); }
+		tombstone() if ($count % 100 == 0);
 	}
 } # API ##################################################
 sub blkr
@@ -162,14 +161,14 @@ sub arki
 	my $resp = $ua->get($url, ':content_file'=>$file); 
 	my $mresp = $ua->get($murl, ':content_file'=>$mfile);
 	if (-f $file) 
-		{ print $Lfh "YAY $i\n"; }
+		{ print $Lfh "YAY $i\n"; $YAY++; }
 	else
 	{ 
 		my $eresp = $ua->get("$base/$i", ':content_file'=>"$dump/tmp");
 		my $redo = `grep pdf $dump/tmp | sed 's?</a>.*??' | sed 's/.*>//'`;
 		my $rresp = $ua->get("$base/$i/$redo", ':content_file'=>$file);
 		if (-f $file) 
-			{ print $Lfh "YAY $i\n"; }
+			{ print $Lfh "YAY $i\n"; $YAY++; }
 		else 
 		{ 
 			unlink($mfile);
@@ -252,7 +251,7 @@ sub api
 	unless (/$api/, @api)
 	{
 		print $Lfh "FAIL_API $api\n";
-		copy($que, "$path".'zombie_'."$name");
+		copy($que, PATH.'zombie_'.NAME);
 		unlink $que;
 		next;
 	}
@@ -270,7 +269,7 @@ sub SLEEP
 {
 	open(my $Sfh, '<', $SLEEP);
 	my $timeout = readline $Sfh; chomp $timeout;
-	my $ztime = TIME(); print $Lfh "sleep $ztime $timeout\n";
+	print $Lfh ("sleep %s %s\n", $timeout, TIME());
 	close $Sfh; unlink $SLEEP;
 	sleep $timeout;
 }
@@ -292,7 +291,7 @@ sub name
 sub tombstone
 {
 	my ($count, $ttl) = @_;
-	my $tombstone = $path.'graveyard/'.$name;
+	my $tombstone = NAME.'cemetery/'.NAME;
 	my $current = gmtime();
 	
 	open(my $LLfh, '<', $log);
