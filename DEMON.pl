@@ -94,14 +94,14 @@ sub blkr
 sub build
 {
 	my ($i) = @_;
-	my $kpath = $path.'key/'.$i;
+	my $kpath = PATH.'key/'.$i;
 	my $dpath = $dump.'tmp';
 
 	open(my $kfh, '<', $kpath);
 	my @set = readline $kfh; chomp @set;
 	foreach my $part (@set)
 	{
-		my $ipath = $path.'sea/'.$part;
+		my $ipath = PATH.'sea/'.$part;
 		open(my $tfh, '>>', "$dpath");
 		open(my $ifh, '<', "$ipath");
 		my $block;
@@ -129,9 +129,9 @@ sub xtrac
 	if ($archive->is_naughty)
 		{ print $Lfh "ALERT xtrac naughty $i"; next; }
 	my @files = $archive->files; print $Lfh @files;
-	$archive->extract($dump);
-	XS($dump, $path) && rmtree($dump);
-	mkdir $dump;
+	$archive->extract(DUMP);
+	XS(DUMP, PATH) && rmtree(DUMP);
+	mkdir DUMP;
 	print $Lfh "YAY $i\n"; $YAY++;
 }
 sub regx
