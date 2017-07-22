@@ -30,7 +30,6 @@ my $wfifo = '/tmp/HOST';
 my $RATE = '100'; 
 my $size = 128000;
 my $count = 0;
-my $LIFE = 1000; # error tolerance
 
 my $dump = "$name"."_dump/";
 my $log = "$name"."_log";
@@ -39,6 +38,8 @@ my $SUICIDE = "$name"."_SUICIDE";
 
 mkdir $dump or die "dump FAIL\n";
 open(my $Lfh, '>>', $log);
+
+my $current = gmtime(); # tombstone();
 my $btime = TIME(); 
 print $Lfh "HELLOWORLD $btime\n";
 
@@ -100,16 +101,6 @@ sub api
 	 }
 	
 }
-sub tombstone
-{
-	my $tombstone = $path.'graveyard/'.$name;
-	open(my $Tfh, '>>', $tombstone); 
-	open(my $LLfh, '<', $log);
-	my @llfh = readline $LLfh;
-	my @YAY = grep /^YAY / @llfh;
-	my $suk = @YAY;
-	printf $Tfh ("%s $s\n", $suk, TIME());
-}
 sub SUICIDE
 {
 	unlink $SUICIDE;
@@ -140,16 +131,27 @@ sub name
 	my $name = $$.'_'.$id;
 	return $name;
 }
-sub face
-{ # FACE (age, name, rep, status)
+sub tombstone
+{
 	my ($count, $ttl) = @_;
+	my $tombstone = $path.'graveyard/'.$name;
+
 	my @FACE;
-	my $wfifo = shift;
+	$FACE[0] = $name;	
 	my $current = gmtime();
-	$FACE[0] = $name;
-	$FACE[1] = (($current - $born) / 60);
-	$FACE[3] = $api . '_' . $count . '/' . $ttl;
-	print $wfifo "@FACE";
+	$FACE[1] = (($current - $born) / 60);	
+	$FACE[2] = $api . '_' . $count . '/' . $ttl;
+	
+	open(my $Tfh, '>>', $tombstone); 
+	open(my $LLfh, '<', $log);
+	my @llfh = readline $LLfh;
+	my @YAY = grep /^YAY / @llfh;
+	my $suk= @YAY;
+	$FACE[3] = $suk;
+	
+	printf $Tfh ("%s $s\n", $suk, TIME());
+	
+	
 }
 sub bsha
 {
@@ -218,15 +220,6 @@ sub uagent
 		timeout => 45,
 	);
 	return $s_ua;
-}
-sub life
-{
-	my ($life) = @_;
-	$life--;
-	if ($life > 0)
-		{ next; }
-	else
-		{ tombstone(); exit; }
 }
 # API ###########################################################
 sub blkr
