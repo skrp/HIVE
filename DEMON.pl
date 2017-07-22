@@ -95,7 +95,7 @@ sub build
 {
 	my ($i) = @_;
 	my $kpath = PATH.'key/'.$i;
-	my $dpath = $dump.'tmp';
+	my $dpath = DUMP.'tmp';
 
 	open(my $kfh, '<', $kpath);
 	my @set = readline $kfh; chomp @set;
