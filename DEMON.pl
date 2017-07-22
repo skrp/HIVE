@@ -290,7 +290,7 @@ sub name
 sub tombstone
 {
 	my ($count, $ttl) = @_;
-	my $tombstone = NAME.'cemetery/'.NAME;
+	my $tombstone = PATH.'cemetery/'.NAME;
 	
 	open(my $LLfh, '<', TOMB);
 	my @llfh = readline $LLfh;
