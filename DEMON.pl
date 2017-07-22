@@ -48,19 +48,18 @@ open(my $qfh, '<', $que) or die "cant open que\n";
 my @QUE = readline $qfh; chomp @QUE;
 
 my $api = shift @QUE; print $Lfh "api $api\n";
-my $api = shift @QUE; print $Lfh "api $api\n";
 my @api = { "blkr", "build", "vsha", "xtrac", "rgex", "get" };
 die "bad api $api" unless any { /$api/ } @api;
 
-my $ttl = @QUE; 
-print $Lfh "ttl $ttl\n"; 
+my $ttl = @QUE; print $Lfh "ttl $ttl\n"; 
+
 foreach my $i (@QUE)
 {
 	if (-e $SUICIDE)
     		{ SUICIDE(); }
 	if (-e $SLEEP)
     		{ SLEEP(); }
-	\&api($i)
+	\&$api($i)
 	print $Lfh "started $i\n";
 	$count++;
 }
