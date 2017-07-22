@@ -25,9 +25,9 @@ my $demon = daemon() or die "FAIL daemon\n";
 # pool/ : XS()
 
 # PREP ###############################################
-my $name = name();
 chdir('/tmp/');
-my $wfifo = '/tmp/HOST';
+my $name = name();
+
 my $RATE = '100'; 
 my $size = 128000;
 my $count = 0;
@@ -71,8 +71,7 @@ while (1)
 		if ($count % 100 == 0)
 			{ print $Lfh "$$ $count : $ttl\n"; tombstone(); }
 	}
-}
-# API ###########################################################
+} # API ##################################################
 sub blkr
 {
 	my ($i) = @_;
