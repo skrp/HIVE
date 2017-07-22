@@ -80,6 +80,7 @@ dumpr($i);
 
 # SUB ###########################################################
 sub daemon {
+#  fork() && exit 0;
    setsid() or die "FAIL_SETSID $!";
    my $pid = fork();
    die "FAIL_FORK $!" if ($pid < 0);
