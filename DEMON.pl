@@ -35,6 +35,7 @@ use constant {
 	SUICIDE => NAME.'_SUICIDE',
 	SIZE => 128000
 	RATE => 100,
+	@API => 'pop', 'chkmeta', 'index', 'blkr', 'build', 'vsha', 'xtrac', 'rgex', 'get';
 }
 # GLOBAL VARIABLE ####################################
 my $YAY = 0;
@@ -175,12 +176,7 @@ sub arki
 		if (-f $file) 
 			{ print $Lfh "YAY $i\n"; $YAY++; }
 		else 
-		{ 
-			unlink($mfile);
-			print $Lfh "FAIL $i\n";  
-			print $Ffh "$i\n";
-			next;
-		}
+			{ print $Lfh "FAIL $i\n"; unlink($mfile); next; }
 	}
 	XS($file) && unlink($file);
 	XS($mfile) && unlink($mfile);
@@ -252,8 +248,7 @@ sub daemon {
 sub api
 {
 	my ($api) = @_;
-	my @api = { "pop", "chkmeta", "index, "blkr", "build", "vsha", "xtrac", "rgex", "get" };
-	unless (/$api/, @api)
+	unless (/$api/, @API)
 	{
 		print $Lfh "FAIL_API $api\n";
 		copy($que, PATH.'zombie_'.NAME);
