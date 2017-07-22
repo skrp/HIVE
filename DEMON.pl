@@ -64,6 +64,8 @@ while (1)
 		\&$api($i)
 		print $Lfh "started $i\n";
 		$count++;
+		if ($count % 100 == 0)
+			{ print $Lfh "$$ $count : $ttl\n"; tombstone(); }
 	}
 }
 my $dtime = TIME(); print $Lfh "FKTHEWRLD $dtime\n";
@@ -87,13 +89,13 @@ sub daemon {
 }
 sub tombstone
 {
-	my $xxtime = TIME(); print $Lfh "farewell $xxtime\n";
-	my $tombstone = 'graveyard/'."$name".'.tar';
+	my $tombstone = 'graveyard/'."$name";
 }
 sub SUICIDE
 {
 	unlink $SUICIDE;
 	my $xtime = TIME(); print $Lfh "FKTHEWORLD $xtime\n";
+	tombstone();
 	exit;
 }
 sub SLEEP
