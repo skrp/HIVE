@@ -230,17 +230,17 @@ sub xssize {
 }
 # SUB ###########################################################
 sub daemon {
-#  fork() && exit 0;
-   setsid() or die "FAIL_SETSID $!";
-   my $pid = fork();
-   die "FAIL_FORK $!" if ($pid < 0);
+   die "FAIL daemon1 $!\n" if (fork() < 0);
+   exit 0;
+   setsid() or die "FAIL setsid $!";
+   die "FAIL daemon2 $!\n" if (fork() < 0);
    exit 0;
    chdir('/tmp');
    umask 0;
-   my $fds = 1024;
+   my $fds = 0;
+   while ($fds < 1024)
+      { close $fds; $fds++;  }
    my $des = '/dev/null';
-   while ($fds > 0)
-      { close $fds; $fds--;  }
    open(STDIN, "<$des");
    open(STDOUT, ">$des");
    open(STDERR, ">$des");
