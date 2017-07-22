@@ -3,7 +3,7 @@ use strict; use warnings;
 use POSIX 'setsuid' 'close';
 use Proc::Daemon;
 use File::Path; use File::Copy;
-use Digest::SHA qw(sha256_hex); use File::Find::Rule;
+use Digest::SHA 'sha256_hex'; use File::Find::Rule;
 ######################################################
 # DEMON - daemon summoning scroll
 
