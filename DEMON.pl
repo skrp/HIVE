@@ -248,14 +248,13 @@ sub daemon {
 sub api
 {
 	my ($api) = @_;
+	print $Lfh "api $api\n";
 	unless (/$api/, @API)
 	{
 		print $Lfh "FAIL_API $api\n";
-		copy($que, PATH.'zombie_'.NAME);
-		unlink $que;
-		next;
+		close $qfh;
+		move($que, PATH.'zombie_'.NAME) && unlink $que; 
 	}
-	print $Lfh "api $api\n";
 	
 }
 sub SUICIDE
