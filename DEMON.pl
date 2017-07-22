@@ -54,16 +54,6 @@ die "bad api $api" unless any { /$api/ } @api;
 
 my $ttl = @QUE; 
 print $Lfh "ttl $ttl\n"; 
-switch($api) {
-
-	case 'blkr' { blkr(); }
-	case 'build' { build(); }
-	case 'sha' { sha(); }
-	case 'xtrac' { xtrac(); }
-	case 'regx' { regx(); }
-	case 'get' { get(); }
-}
-
 foreach my $i (@QUE)
 {
 	if (-e $SUICIDE)
