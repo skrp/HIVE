@@ -81,23 +81,15 @@ sub blkr
 	open(my $ifh, '<', "$ipath") || die "Cant open $i: $!\n";
 	binmode($ifh);
 	
-	my $istart = gettimeofday();
-	my $cunt = 0;
 	while (read($ifh, $block, $size))
 	{
 		my $bsha = sha256_hex($block);
 		my $bname = $path.'sea/'.$bsha;
 		open(my $fh, '>', "$bname");
 		binmode($fh);
-
 		print $fh $block;
 		key($i, $bsha);
-		$cunt++;
-	}
-	print $Lfh "YAY $i\n";
-
-	my $elapsed = gettimeofday()-$istart;
-	print "$i : $cunt : $elapsed \n";	
+	}	
 }
 sub key
 {
