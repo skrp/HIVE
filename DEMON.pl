@@ -1,6 +1,6 @@
 #!/usr/local/bin/perl
 use strict; use warnings;
-use POSIX 'setsuid' 'close';
+use POSIX;
 use File::Path; use File::Copy;
 use Digest::SHA 'sha256_hex';
 use File::LibMagic;
@@ -232,14 +232,14 @@ sub xssize {
 sub daemon {
    die "FAIL daemon1 $!\n" if (fork() < 0);
    exit 0;
-   setsid() or die "FAIL setsid $!";
+   POSIX::setsid() or die "FAIL setsid $!";
    die "FAIL daemon2 $!\n" if (fork() < 0);
    exit 0;
    chdir('/tmp');
    umask 0;
    my $fds = 0;
    while ($fds < 1024)
-      { close $fds; $fds++;  }
+      { POSIX::close($fds); $fds++;  }
    my $des = '/dev/null';
    open(STDIN, "<$des");
    open(STDOUT, ">$des");
