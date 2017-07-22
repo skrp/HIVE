@@ -20,30 +20,35 @@ my $demon = daemon() or die "FAIL daemon\n";
 # DIRS ###############################################
 # sea/ : blkr()
 # key/ : key()
-# graveyard/ : tombstone()
+# cemetery/ : tombstone()
 # g/ : XS()
 # pool/ : XS()
 
+# GLOBAL CONST #######################################
+use constant {
+	NAME => "name()",
+	BIRTH => "TIME()",
+	
+	DUMP => NAME.'_dump',
+	TOMB => "$path".'cemetery/'.NAME,
+	
+	SLEEP => NAME.'_SLEEP',
+	SUICIDE => NAME.'_SUICIDE',
+	
+	
+	SIZE => 128000
+	RATE => 100,
+}
+# GLOBAL VARIABLE ####################################
+
 # PREP ###############################################
 chdir('/tmp/');
-my $name = name();
-
-my $RATE = '100'; 
-my $size = 128000;
-my $count = 0;
-
-my $dump = "$name"."_dump/";
-my $log = "$name"."_log";
-my $SLEEP = "$name"."_SLEEP"; 
-my $SUICIDE = "$name"."_SUICIDE";
 
 mkdir $dump or die "dump FAIL\n";
-open(my $Lfh, '>>', $log);
+open(my $Lfh, '>>', TOMB);
 $Lfh->autoflush(1);
 
-my $current = gmtime(); # tombstone();
-my $btime = TIME(); 
-print $Lfh "HELLOWORLD $btime\n";
+printf $Lfh ("HELLOWORLD %s\n", TIME());
 
 while (1)
 { # WORK ################################################
