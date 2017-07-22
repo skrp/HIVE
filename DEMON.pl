@@ -38,6 +38,7 @@ my $SUICIDE = "$name"."_SUICIDE";
 
 mkdir $dump or die "dump FAIL\n";
 open(my $Lfh, '>>', $log);
+$Lfh->autoflush(1);
 
 my $current = gmtime(); # tombstone();
 my $btime = TIME(); 
