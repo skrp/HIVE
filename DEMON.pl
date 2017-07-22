@@ -1,10 +1,9 @@
 #!/usr/local/bin/perl
 use strict; use warnings;
 use POSIX 'setsuid' 'close';
-use Proc::Daemon; use Archive::Tar;
+use Proc::Daemon;
 use File::Path; use File::Copy;
 use Digest::SHA qw(sha256_hex); use File::Find::Rule;
-use File::stat; use List::Util qw(any);
 ######################################################
 # DEMON - daemon summoning scroll
 
