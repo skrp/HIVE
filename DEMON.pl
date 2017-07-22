@@ -293,13 +293,13 @@ sub tombstone
 	my ($count, $ttl) = @_;
 	my $tombstone = NAME.'cemetery/'.NAME;
 	
-#	open(my $LLfh, '<', TOMB);
-#	my @llfh = readline $LLfh;
-#	my @yay = grep /^YAY / @llfh; $yay = @yay;
+	open(my $LLfh, '<', TOMB);
+	my @llfh = readline $LLfh;
+	my @yay = grep /^YAY / @llfh; $yay = @yay;
 	my @FACE;
 	$FACE[0] = $name;	
 	$FACE[1] = ((gmtime() - $born) / 60);
-	$FACE[2] = $api . '_' . $count . '_' . $ttl;
+	$FACE[2] = $api . '_' $yay . '_' . $count . '_' . $ttl;
 	
 	open(my $Tfh, '>>', TOMB); 
 	printf $Tfh ("%d %s %d %s\n", $YAY, $FACE[0], $FACE[1], $FACE[2]);
