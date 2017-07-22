@@ -14,7 +14,7 @@ if (not defined $path) { die ('NO ARGV1 dir'); }
 if (substr($path, -1) ne "/") { $path .= '/'; }
 
 # BIRTH ##############################################
-my $demon = daemon() or die "FAIL daemon\n";
+daemon() or die "FAIL daemon\n";
 
 # DIRS ###############################################
 # sea/ : blkr()
