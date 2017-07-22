@@ -88,7 +88,8 @@ sub blkr
 		binmode($fh);
 		print $fh $block;
 		key($i, $bsha);
-	}	
+	}
+	$YAY++;
 }
 sub build
 {
@@ -111,6 +112,7 @@ sub build
 #	if ($i ne $bsha)
 #		{ print $Lfh "SHAERR $i ne $bsha"; } 
 	}
+	$YAY++;
 }
 sub sha
 {
@@ -118,7 +120,7 @@ sub sha
 	my ($sha) = file_digest($i);
 	if ($sha ne $i)
 		{ print $Lfh "ERK $file ne $sha\n"; }
-	print $Lfh "YAY $i\n";
+	print $Lfh "YAY $i\n"; $YAY++;
 }
 sub xtrac
 {
@@ -130,7 +132,7 @@ sub xtrac
 	$archive->extract($dump);
 	XS($dump, $path) && rmtree($dump);
 	mkdir $dump;
-	print $Lfh "YAY $i\n";
+	print $Lfh "YAY $i\n"; $YAY++;
 }
 sub regx
 { # 2 files $i = list $path = master
@@ -140,13 +142,14 @@ sub regx
 	my @master = readline $mfh; chomp @master;
 	foreach (@i)
 		{ print $Lfh "no $_\n" unless any { /$_/ } @master; }
+	$YAY++;
 }
 sub get
 {
 	my ($i) = @_;
 	my $ua = uagent();
 	my $response = $ua->get($i, ':content_file'=>"$dump/$i");
-	print $Lfh "YAY $i\n";
+	print $Lfh "YAY $i\n"; $YAY++;
 	XS($i) && unlink($i);
 }
 sub arki
