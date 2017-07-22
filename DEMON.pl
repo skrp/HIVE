@@ -169,51 +169,48 @@ sub key
 }
 sub XS
 {
-	my ($i) = @_;
-	my $rule = File::Find::Rule->file()->start($i);
-	my $magic = File::LibMagic->new();
-	while (defined( my $file = $rule->match))
-	{
-		my ($sha) = file_digest($file) or die "couldn't sha $file";
-		File::Copy::copy($file, "$dump/pool/$sha");
-		my $cur = "$path/g/g$sha";
-		open(my $fh, '>>', $cur) or die "Meta File Creation FAIL $file";
-		printf $fh "%s\n%s\n%s\n%s\n",
-			xsname($file),
-			xspath($file),
-			xssize($file),
-			file_mime_encoding($file);
-	}
+	my ($file) = shift;
+	my ($sha) = file_digest($file) or die "couldn't sha $file";
+	File::Copy::copy($file, "$path"."pool/$sha");
+	my $cur = "$path"."g/g$sha";
+	open(my $fh, '>>', $cur) or die "Meta File Creation FAIL $file";
+	printf $fh "%s\n%s\n%s\n%s\n", 
+		xsname($file),
+		xspath($file),
+		xssize($file),
+		file_mime_encoding($file);
 }
 sub file_digest {
-	my ($filename) = @_;
+	my ($file) = @_;
 	my $digester = Digest::SHA->new('sha256');
-	$digester->addfile( $filename, 'b' );
+	$digester->addfile( $file, 'b' );
 	return $digester->hexdigest;
 }
 sub xsname {
-	my ($filename) = @_;
-	$filename =~ s#^.*/##;
-	return $filename;
+	my ($file) = @_;
+	$file =~ s?^.*/??;
+	return $file;
 }
 sub xspath {
-	my ($filename) = @_;
-	$filename =~ s#/#_#g;
-	return $filename;
+	my ($file) = @_;
+	$file =~ s?/?_?g;
+	return $file; 
 }
 sub file_mime_encoding {
-	my ($filename) = @_;
-	my $info = $magic->info_from_filename($filename);
+	my ($file) = @_;
+	my $magic = File::LibMagic->new();
+	my $info = $magic->info_from_filename($file);
 	my $des = $info->{description};
-	$des =~ s#[/ ]#.#g;
+	$des =~ s?[/ ]?.?g;
 	$des =~ s/,/_/g;
 	my $md = $info->{mime_type};
-	$md =~ s#[/ ]#.#g;
-	my $enc = sprintf("%s %s %s", $des, $md, $info->{encoding});
+	$md =~ s?[/ ]?.?g;
+	my $enc = sprintf("%s %s %s", $des, $md, $info->{encoding}); 
 	return $enc;
 }
 sub xssize {
-	my $size = [ stat $_[0] ]->[7];
+	my ($file) = @_;
+	my $size = -s $file;
 	return $size;
 }
 sub uagent
