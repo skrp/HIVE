@@ -183,6 +183,23 @@ sub arki
 	XS($file) && unlink($file);
 	XS($mfile) && unlink($mfile);
 }
+sub neo
+{ #only one main loop
+	my ($point) = @_;
+	my $i = 0;
+	while ($i < $RATE)
+	{
+		sleep 5;
+		my $ua = uagent();
+		my $url = "$base$point";
+		my $resp = $ua->get($url, ':content_file'=>"$dump/$point"); 
+		if (-f "$dump/$point") 
+			{ print $Lfh "YAY $point\n"; }
+		else
+			{ print $Lfh "FAIL $point\n"; }
+		$i++;
+	}
+}
 # XS ###########################################################
 sub XS
 {
