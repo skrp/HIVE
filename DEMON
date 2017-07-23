@@ -282,13 +282,13 @@ sub api
 	unless (/$api/, @API)
 	{
 		print $Lfh "FAIL_API $api\n";
-		close $qfh;
+		# close $qfh; 
 		move($QUE, $PATH.'cemetery/zombie_'.$NAME);
 		return -1;
 	}
 	return 0;	
 }
-sub $SUICIDE
+sub SUICIDE
 {
 	my ($api, $count, $ttl) = @_;
 	unlink $SUICIDE;
@@ -296,7 +296,7 @@ sub $SUICIDE
 	tombstone($api, $count, $ttl);
 	exit;
 }
-sub $SLEEP
+sub SLEEP
 {
 	my ($api, $count, $ttl) = @_;
 	open(my $Sfh, '<', $SLEEP);
