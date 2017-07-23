@@ -72,7 +72,7 @@ while (1)
     			{ SUICIDE(); }
 		if (-e $SLEEP)
    	 		{ SLEEP(); }
-		\&$api($i);
+		&$api($i); #\&$api($i);
 		print $Lfh "started $i\n";
 		$count++;
 		tombstone($api, $count, $ttl) if ($count % $RATE == 0);
