@@ -29,12 +29,13 @@ use constant {
 	BIRTH => gmtime(),
 	QUE => NAME.'_que',
 	DUMP => NAME.'_dump/',
-	TOMB => "$path".'cemetery/'.NAME,
+	TOMB => PATH.'cemetery/'.NAME,
 	SLEEP => NAME.'_SLEEP',
 	SUICIDE => NAME.'_SUICIDE',
-	SIZE => 128000
+	SIZE => 128000,
 	RATE => 100,
 	@API => 'pop', 'chkmeta', 'index', 'blkr', 'build', 'vsha', 'xtrac', 'rgex', 'get';
+	ARK => 'https://archive.org/download/'
 }
 # GLOBAL VARIABLE ####################################
 my $YAY = 0;
@@ -61,14 +62,14 @@ while (1)
 	
 	foreach my $i (@QUE)
 	{
-		if (-e $SUICIDE)
+		if (-e SUICIDE)
     			{ SUICIDE(); }
-		if (-e $SLEEP)
+		if (-e SLEEP)
    	 		{ SLEEP(); }
-		\&$api($i)
+		\&$api($i);
 		print $Lfh "started $i\n";
 		$count++;
-		tombstone() if ($count % 100 == 0);
+		tombstone($api, $count, $ttl) if ($count % 100 == 0);
 	}
 } # API ##################################################
 sub blkr
@@ -79,7 +80,7 @@ sub blkr
 	open(my $ifh, '<', "$ipath") || print $Lfh "Cant open $i: $!\n";
 	binmode($ifh);
 	
-	while (read($ifh, $block, $size))
+	while (read($ifh, $block, SIZE))
 	{
 		my $bsha = sha256_hex($block);
 		my $bname = PATH.'sea/'.$bsha;
@@ -104,7 +105,7 @@ sub build
 		open(my $tfh, '>>', "$dpath");
 		open(my $ifh, '<', "$ipath");
 		my $block;
-		read($ifh, $block, $size);
+		read($ifh, $block, SIZE);
 		print $tfh $block;
 # DEBUG
 #	my $bsha = sha256_hex($block);
@@ -118,7 +119,7 @@ sub sha
 	my ($i) = @_;
 	my ($sha) = file_digest($i);
 	if ($sha ne $i)
-		{ print $Lfh "ERK $file ne $sha\n"; }
+		{ print $Lfh "ERK $i ne $sha\n"; }
 	$YAY++;
 }
 sub xtrac
@@ -159,19 +160,19 @@ sub arki
 	my $ua = uagent();
 	my $file = DUMP."$i.pdf";
 	my $mfile = DUMP."$i".'_meta.xml';
-	my $url = "$base/$i/$i.pdf";
-	my $murl = "$base/$i/$i".'_meta.xml';	
+	my $url = ARK."$i/$i.pdf";
+	my $murl = ARK."$i/$i".'_meta.xml';	
 	my $resp = $ua->get($url, ':content_file'=>$file); 
 	my $mresp = $ua->get($murl, ':content_file'=>$mfile);
 	if (-f $file) 
 		{ print $Lfh "YAY $i\n"; $YAY++; }
 	else
 	{ 
-		my $eresp = $ua->get("$base/$i", ':content_file'=>"$dump/tmp");
+		my $eresp = $ua->get(ARK.$i, ':content_file'=>DUMP.'/tmp');
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		my $redo = `grep pdf DUMP.'tmp' | sed 's?</a>.*??' | sed 's/.*>//'`;
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		my $rresp = $ua->get("$base/$i/$redo", ':content_file'=>$file);
+		my $rresp = $ua->get(ARK."$i/$redo", ':content_file'=>$file);
 		if (-f $file) 
 			{ print $Lfh "YAY $i\n"; $YAY++; }
 		else 
@@ -252,24 +253,27 @@ sub api
 	{
 		print $Lfh "FAIL_API $api\n";
 		close $qfh;
-		move($que, PATH.'cemetery/zombie_'.NAME) && unlink $que;
+		move(QUE, PATH.'cemetery/zombie_'.NAME);
 		return -1;
 	}
 	return 0;	
 }
 sub SUICIDE
 {
-	unlink $SUICIDE;
+	my ($api, $count, $ttl) = @_;
+	unlink SUICIDE;
 	printf $Lfh ("FKTHEWORLD %s\n", TIME());
-	tombstone();
+	tombstone($api, $count, $ttl);
 	exit;
 }
 sub SLEEP
 {
-	open(my $Sfh, '<', $SLEEP);
+	my ($api, $count, $ttl) = @_;
+	open(my $Sfh, '<', SLEEP);
 	my $timeout = readline $Sfh; chomp $timeout;
 	print $Lfh ("sleep %s %s\n", $timeout, TIME());
-	close $Sfh; unlink $SLEEP;
+	close $Sfh; unlink SLEEP;
+	tombstone($api, $count, $ttl);
 	sleep $timeout;
 }
 sub TIME
@@ -289,15 +293,14 @@ sub name
 }
 sub tombstone
 {
-	my ($count, $ttl) = @_;
-	my $tombstone = PATH.'cemetery/'.NAME;
+	my ($api, $count, $ttl) = @_;
 	
 	open(my $LLfh, '<', TOMB);
 	my @llfh = readline $LLfh;
-	my @yay = grep /^YAY / @llfh; $yay = @yay;
+	my @yay = grep /^YAY / @llfh; my $yay = @yay;
 	my @FACE;
-	$FACE[0] = $name;	
-	$FACE[1] = ((gmtime() - $born) / 60);
+	$FACE[0] = NAME;	
+	$FACE[1] = ((gmtime() - BIRTH) / 60);
 	$FACE[2] = $api . '_' $yay . '_' . $count . '_' . $ttl;
 	
 	open(my $Tfh, '>>', TOMB); 
