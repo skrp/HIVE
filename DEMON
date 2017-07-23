@@ -38,6 +38,7 @@ const my $SIZE => 128000;
 const my $RATE => 100;
 const my @API => 'pop', 'chkmeta', 'index', 'blkr', 'build', 'vsha', 'xtrac', 'rgex', 'get';
 const my $ARK => 'https://archive.org/download/';
+const my $CODE => 'http://searchcode.com/codesearch/raw/';
 # GLOBAL VARIABLE ####################################
 my $YAY = 0;
 
@@ -184,21 +185,16 @@ sub arki
 	XS($mfile) && unlink($mfile);
 }
 sub neo
-{ #only one main loop
+{
 	my ($point) = @_;
-	my $i = 0;
-	while ($i < $RATE)
-	{
-		sleep 5;
-		my $ua = uagent();
-		my $url = "$base$point";
-		my $resp = $ua->get($url, ':content_file'=>"$dump/$point"); 
-		if (-f "$dump/$point") 
-			{ print $Lfh "YAY $point\n"; }
-		else
-			{ print $Lfh "FAIL $point\n"; }
-		$i++;
-	}
+	sleep 5;
+	my $ua = uagent();
+	my $url = $CODE.$point;
+	my $resp = $ua->get($url, ':content_file'=>"$dump/$point"); 
+	if (-f "$dump/$point") 
+		{ print $Lfh "YAY $point\n"; }
+	else
+		{ print $Lfh "FAIL $point\n"; }
 }
 # XS ###########################################################
 sub XS
