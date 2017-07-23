@@ -53,20 +53,20 @@ while (1)
 	unless (-e $QUE)
 		{ $SLEEP 3600; next; }
 	open(my $qfh, '<', $QUE) or die "cant open $QUE\n";
-	my @$QUE = readline $qfh; chomp @$QUE;
+	my @QUE = readline $qfh; chomp @QUE;
 
-	my $api = shift @$QUE; 
+	my $api = shift @QUE; 
 	next if (api($api) < 0);
 	
-	my $ttl = @$QUE; 
+	my $ttl = @QUE; 
 	my $count = 0;
 	
-	foreach my $i (@$QUE)
+	foreach my $i (@QUE)
 	{
 		if (-e $SUICIDE)
-    			{ $SUICIDE(); }
+    			{ SUICIDE(); }
 		if (-e $SLEEP)
-   	 		{ $SLEEP(); }
+   	 		{ SLEEP(); }
 		\&$api($i);
 		print $Lfh "started $i\n";
 		$count++;
