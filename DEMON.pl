@@ -71,7 +71,7 @@ while (1)
 		\&$api($i);
 		print $Lfh "started $i\n";
 		$count++;
-		$tombstone($api, $count, $ttl) if ($count % $RATE == 0);
+		tombstone($api, $count, $ttl) if ($count % $RATE == 0);
 	}
 } # API ##################################################
 sub blkr
@@ -85,8 +85,8 @@ sub blkr
 	while (read($ifh, $block, $SIZE))
 	{
 		my $bsha = sha256_hex($block);
-		my $b$NAME = $PATH.'sea/'.$bsha;
-		open(my $fh, '>', "$b$NAME");
+		my $bname = $PATH.'sea/'.$bsha;
+		open(my $fh, '>', "$bname");
 		binmode($fh);
 		print $fh $block;
 		key($i, $bsha);
