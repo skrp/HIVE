@@ -2,8 +2,15 @@
 # DEMON - unix daemon network                  
 
 # TODO #############################################
+Devel::DTrace::Provider;
 API -
 fix grep arki()
+
+# FACE #############################################
+AGE_IN_HOURS
+SUCCESS_ITERATIONS
+NAME
+COMPOSURE (dtrace)
 
 # API ##############################################
 sha - sha256 file
