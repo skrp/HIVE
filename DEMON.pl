@@ -158,7 +158,7 @@ sub get
 sub arki
 {
 	my ($i) = @_;
-	$SLEEP 1;
+	sleep 5;
 	my $ua = uagent();
 	my $file = $DUMP."$i.pdf";
 	my $mfile = $DUMP."$i".'_meta.xml';
