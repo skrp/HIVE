@@ -21,7 +21,7 @@ daemon() or die "FAIL daemon\n";
 # DIRS ###############################################
 # sea/ : blkr()
 # key/ : key()
-# cemetery/ : $TOMBstone()
+# cemetery/ : tombstone()
 # g/ : XS()
 # pool/ : XS()
 
@@ -265,7 +265,7 @@ sub $SUICIDE
 	my ($api, $count, $ttl) = @_;
 	unlink $SUICIDE;
 	printf $Lfh ("FKTHEWORLD %s\n", TIME());
-	$TOMBstone($api, $count, $ttl);
+	tombstone($api, $count, $ttl);
 	exit;
 }
 sub $SLEEP
@@ -275,7 +275,7 @@ sub $SLEEP
 	my $timeout = readline $Sfh; chomp $timeout;
 	print $Lfh ("$SLEEP %s %s\n", $timeout, TIME());
 	close $Sfh; unlink $SLEEP;
-	$TOMBstone($api, $count, $ttl);
+	tombstone($api, $count, $ttl);
 	$SLEEP $timeout;
 }
 sub TIME
@@ -293,7 +293,7 @@ sub name
 	my $name = $$.'_'.$id;
 	return $name;
 }
-sub $TOMBstone
+sub tombstone
 {
 	my ($api, $count, $ttl) = @_;
 	
