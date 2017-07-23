@@ -27,11 +27,11 @@ daemon() or die "FAIL daemon\n";
 
 # GLOBAL CONST #######################################
 const my $PATH => $path;
-const my $NAME => $NAME();
+const my $NAME => name();
 const my $BIRTH => gmtime();
 const my $QUE => $NAME.'_que';
 const my $DUMP => $NAME.'_dump/';
-const my $$TOMB => $PATH.'cemetery/'.$NAME;
+const my $TOMB => $PATH.'cemetery/'.$NAME;
 const my $SLEEP => $NAME.'_SLEEP';
 const my $SUICIDE => $NAME.'_SUICIDE';
 const my $SIZE => 128000;
@@ -286,11 +286,11 @@ sub TIME
 	my $time = $mon.'_'.$day.'_'.$hour;
 	return $time;
 }
-sub $NAME
+sub name
 {
 	my $id = int(rand(999));
-	my $$NAME = $$.'_'.$id;
-	return $$NAME;
+	my $name = $$.'_'.$id;
+	return $name;
 }
 sub $TOMBstone
 {
