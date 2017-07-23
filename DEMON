@@ -39,7 +39,7 @@ const my $SIZE => 128000;
 const my $RATE => 100;
 const my @API => 'pop', 'chkmeta', 'index', 'blkr', 'arx', 'neo', 'build', 'vsha', 'xtrac', 'rgex', 'get';
 const my $ARK => 'https://archive.org/download/';
-const my $CODE => 'http://searchcode.com/codesearch/raw/';
+const my $NEO => 'http://searchcode.com/codesearch/raw/';
 const my $ARX => 'https://arxiv.org/pdf/';
 # GLOBAL VARIABLE ####################################
 my $YAY = 0;
@@ -191,7 +191,7 @@ sub neo
 	my ($point) = @_;
 	sleep 5;
 	my $ua = uagent();
-	my $url = $CODE.$point;
+	my $url = $NEO.$point;
 	my $resp = $ua->get($url, ':content_file'=>"$dump/$point"); 
 	if (-e $DUMP.$point) 
 		{ print $Lfh "YAY $point\n"; }
