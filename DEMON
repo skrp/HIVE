@@ -37,7 +37,14 @@ const my $SLEEP => $NAME.'_SLEEP';
 const my $SUICIDE => $NAME.'_SUICIDE';
 const my $SIZE => 128000;
 const my $RATE => 100;
-const my @API => 'pop', 'chkmeta', 'index', 'blkr', 'arki','arx', 'neo', 'build', 'vsha', 'xtrac', 'rgex', 'get';
+const my @API => (
+	'fs_pop', 'fs_chkmeta', 'fs_index', 'fs_blkr', 
+	'fs_build', 'fs_sha', 'fs_xtrac','fs_bkup',
+	'xs_arki','xs_arx', 'xs_neo', 'rgex', 'xs_get',
+	'k_krip', 'k_dkrip',
+	'sec_snort', 'sec_troll', 'sec_perlparselog', 
+	'sec_dtracesig'
+);
 const my $ARK => 'https://archive.org/download/';
 const my $NEO => 'http://searchcode.com/codesearch/raw/';
 const my $ARX => 'https://arxiv.org/pdf/';
