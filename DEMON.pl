@@ -40,6 +40,7 @@ const my @API => 'pop', 'chkmeta', 'index', 'blkr', 'build', 'vsha', 'xtrac', 'r
 const my $ARK => 'https://archive.org/download/';
 # GLOBAL VARIABLE ####################################
 my $YAY = 0;
+
 # PREP ###############################################
 chdir('/tmp/');
 
@@ -51,7 +52,7 @@ printf $Lfh ("HELLOWORLD %s\n", TIME());
 while (1)
 { # WORK ################################################
 	unless (-e $QUE)
-		{ $SLEEP 3600; next; }
+		{ sleep 3600; next; }
 	open(my $qfh, '<', $QUE) or die "cant open $QUE\n";
 	my @QUE = readline $qfh; chomp @QUE;
 
@@ -70,7 +71,7 @@ while (1)
 		\&$api($i);
 		print $Lfh "started $i\n";
 		$count++;
-		$TOMBstone($api, $count, $ttl) if ($count % $RATE == 0);
+		$tombstone($api, $count, $ttl) if ($count % $RATE == 0);
 	}
 } # API ##################################################
 sub blkr
