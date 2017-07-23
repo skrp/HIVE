@@ -60,7 +60,7 @@ while (1)
 	my @QUE = readline $qfh; chomp @QUE;
 
 	my $api = shift @QUE; 
-	next if (api($api) < 0);
+	next if (api($api, $qfh) < 0);
 	
 	my $ttl = @QUE; 
 	my $count = 0;
@@ -277,12 +277,12 @@ sub daemon {
 }
 sub api
 {
-	my ($api) = @_;
+	my ($api, $qfh) = @_;
 	print $Lfh "api $api\n";
 	unless (/$api/, @API)
 	{
 		print $Lfh "FAIL_API $api\n";
-		# close $qfh; 
+		close $qfh; 
 		move($QUE, $PATH.'cemetery/zombie_'.$NAME);
 		return -1;
 	}
