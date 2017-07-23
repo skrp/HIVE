@@ -1,7 +1,10 @@
 #!/usr/local/bin/perl
 use strict; use warnings;
+use Const::Fast 'const';
+use Digest::SHA 'sha256_hex';
 use POSIX;
-use File::Path; use File::Copy;
+use File::Path; 
+use File::Copy;
 use File::LibMagic;
 use LWP::UserAgent;
 ######################################################
@@ -23,20 +26,18 @@ daemon() or die "FAIL daemon\n";
 # pool/ : XS()
 
 # GLOBAL CONST #######################################
-use constant {
-	PATH => $path,
-	NAME => name(),
-	BIRTH => gmtime(),
-	QUE => NAME.'_que',
-	DUMP => NAME.'_dump/',
-	TOMB => PATH.'cemetery/'.NAME,
-	SLEEP => NAME.'_SLEEP',
-	SUICIDE => NAME.'_SUICIDE',
-	SIZE => 128000,
-	RATE => 100,
-	@API => 'pop', 'chkmeta', 'index', 'blkr', 'build', 'vsha', 'xtrac', 'rgex', 'get';
-	ARK => 'https://archive.org/download/'
-}
+const my $PATH => $path;
+const my $NAME => name();
+const my $BIRTH => gmtime();
+const my $QUE => NAME.'_que';
+const my $DUMP => NAME.'_dump/';
+const my $TOMB => $PATH.'cemetery/'.NAME;
+const my $SLEEP => NAME.'_SLEEP';
+const my $SUICIDE => NAME.'_SUICIDE';
+const my $SIZE => 128000;
+const my $RATE => 100;
+const my @API => 'pop', 'chkmeta', 'index', 'blkr', 'build', 'vsha', 'xtrac', 'rgex', 'get';
+const my $ARK => 'https://archive.org/download/';
 # GLOBAL VARIABLE ####################################
 my $YAY = 0;
 # PREP ###############################################
@@ -76,14 +77,14 @@ sub blkr
 {
 	my ($i) = @_;
 	my $block = 0;
-	my $ipath = PATH.'pool/'.$i;
+	my $ipath = $PATH.'pool/'.$i;
 	open(my $ifh, '<', "$ipath") || print $Lfh "Cant open $i: $!\n";
 	binmode($ifh);
 	
 	while (read($ifh, $block, SIZE))
 	{
 		my $bsha = sha256_hex($block);
-		my $bname = PATH.'sea/'.$bsha;
+		my $bname = $PATH.'sea/'.$bsha;
 		open(my $fh, '>', "$bname");
 		binmode($fh);
 		print $fh $block;
@@ -94,14 +95,14 @@ sub blkr
 sub build
 {
 	my ($i) = @_;
-	my $kpath = PATH.'key/'.$i;
+	my $kpath = $PATH.'key/'.$i;
 	my $dpath = DUMP.'tmp';
 
 	open(my $kfh, '<', $kpath);
 	my @set = readline $kfh; chomp @set;
 	foreach my $part (@set)
 	{
-		my $ipath = PATH.'sea/'.$part;
+		my $ipath = $PATH.'sea/'.$part;
 		open(my $tfh, '>>', "$dpath");
 		open(my $ifh, '<', "$ipath");
 		my $block;
@@ -130,7 +131,7 @@ sub xtrac
 		{ print $Lfh "ALERT xtrac naughty $i"; next; }
 	my @files = $archive->files; print $Lfh @files;
 	$archive->extract(DUMP);
-	XS(DUMP, PATH) && rmtree(DUMP);
+	XS(DUMP, $PATH) && rmtree(DUMP);
 	mkdir DUMP;
 	print $Lfh "YAY $i\n"; $YAY++;
 }
@@ -138,7 +139,7 @@ sub regx
 {
 	my ($i) = @_;
 	open(my $fh, '<', $i); 
-	open(my $mfh, '<', PATH);
+	open(my $mfh, '<', $PATH);
 	my @i = readline $fh; chomp @i;
 	my @master = readline $mfh; chomp @master;
 	foreach (@i)
@@ -186,8 +187,8 @@ sub XS
 {
 	my ($file) = shift;
 	my ($sha) = file_digest($file) or die "couldn't sha $file";
-	File::Copy::copy($file, PATH."pool/$sha");
-	my $cur = PATH."g/g$sha";
+	File::Copy::copy($file, $PATH."pool/$sha");
+	my $cur = $PATH."g/g$sha";
 	open(my $fh, '>>', $cur) or die "Meta File Creation FAIL $file";
 	printf $fh "%s\n%s\n%s\n%s\n", 
 		xsname($file),
@@ -253,7 +254,7 @@ sub api
 	{
 		print $Lfh "FAIL_API $api\n";
 		close $qfh;
-		move(QUE, PATH.'cemetery/zombie_'.NAME);
+		move(QUE, $PATH.'cemetery/zombie_'.NAME);
 		return -1;
 	}
 	return 0;	
@@ -297,7 +298,8 @@ sub tombstone
 	
 	open(my $LLfh, '<', TOMB);
 	my @llfh = readline $LLfh;
-	my @yay = grep /^YAY / @llfh; my $yay = @yay;
+	my @yay = grep { /^YAY / } @llfh; 
+	my $yay = @yay;
 	my @FACE;
 	$FACE[0] = NAME;	
 	$FACE[1] = ((gmtime() - BIRTH) / 60);
@@ -309,7 +311,7 @@ sub tombstone
 sub key
 {
 	my ($i, $bsha) = @_;
-	my $kpath = PATH.'key/'.$i;
+	my $kpath = $PATH.'key/'.$i;
 	open(my $kfh, '>>', "$kpath");
 	print $kfh "$bsha\n";
 }
