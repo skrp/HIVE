@@ -7,6 +7,7 @@ use File::Path;
 use File::Copy;
 use File::LibMagic;
 use LWP::UserAgent;
+use LWP::Protocol::https;
 ######################################################
 # DEMON - daemon summoning scroll
 
@@ -39,6 +40,7 @@ const my $RATE => 100;
 const my @API => 'pop', 'chkmeta', 'index', 'blkr', 'build', 'vsha', 'xtrac', 'rgex', 'get';
 const my $ARK => 'https://archive.org/download/';
 const my $CODE => 'http://searchcode.com/codesearch/raw/';
+const my $ARX => 'https://arxiv.org/pdf/';
 # GLOBAL VARIABLE ####################################
 my $YAY = 0;
 
@@ -191,10 +193,23 @@ sub neo
 	my $ua = uagent();
 	my $url = $CODE.$point;
 	my $resp = $ua->get($url, ':content_file'=>"$dump/$point"); 
-	if (-f "$dump/$point") 
+	if (-e $DUMP.$point) 
 		{ print $Lfh "YAY $point\n"; }
 	else
 		{ print $Lfh "FAIL $point\n"; }
+}
+sub arx
+{
+	my ($i) = @_;
+	sleep 5;
+	my $url = $ARX.$i;
+	my $file =~ s?https://??; $file =~ s?/?_?g;
+	my $ua = uagent();
+	my $resp = $ua->get($url, ':content_file'=>$dump.$file); 
+	if (-e $DUMP.$file)
+		{ print $Lfh "YAY $i\n"; }
+	else
+		{ print $Lfh "FAIL $i\n"; }		
 }
 # XS ###########################################################
 sub XS
