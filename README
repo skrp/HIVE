@@ -2,7 +2,7 @@
 # DEMON - unix daemon network                  
 
 # TODO #############################################
-Devel::DTrace::Provider;
+dtrace providers
 API -
 fix grep arki()
 
@@ -10,7 +10,8 @@ fix grep arki()
 AGE_IN_HOURS
 SUCCESS_ITERATIONS
 NAME
-COMPOSURE (dtrace)
+GEAR (mem, nice, threads)
+STATE (dtrace)
 
 # API ##############################################
 sha - sha256 file
