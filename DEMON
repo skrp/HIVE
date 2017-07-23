@@ -59,6 +59,7 @@ while (1)
 	open(my $qfh, '<', $QUE) or die "cant open $QUE\n";
 	my @QUE = readline $qfh; chomp @QUE;
 
+	# $QUE[0] = api; $QUE[1] = iteration; $QUE[$ttl] = interation;
 	my $api = shift @QUE; 
 	next if (api($api, $qfh) < 0);
 	
