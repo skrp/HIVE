@@ -192,7 +192,7 @@ sub neo
 	sleep 5;
 	my $ua = uagent();
 	my $url = $NEO.$point;
-	my $resp = $ua->get($url, ':content_file'=>"$dump/$point"); 
+	my $resp = $ua->get($url, ':content_file'=>$DUMP.$point); 
 	if (-e $DUMP.$point) 
 		{ print $Lfh "YAY $point\n"; }
 	else
@@ -205,7 +205,7 @@ sub arx
 	my $url = $ARX.$i;
 	my $file =~ s?https://??; $file =~ s?/?_?g;
 	my $ua = uagent();
-	my $resp = $ua->get($url, ':content_file'=>$dump.$file); 
+	my $resp = $ua->get($url, ':content_file'=>$DUMP.$file); 
 	if (-e $DUMP.$file)
 		{ print $Lfh "YAY $i\n"; }
 	else
@@ -220,7 +220,7 @@ sub XS
 	my $cur = $PATH."g/g$sha";
 	open(my $fh, '>>', $cur) or die "Meta File Creation FAIL $file";
 	printf $fh "%s\n%s\n%s\n%s\n", 
-		xs$NAME($file),
+		xsname($file),
 		xspath($file),
 		xssize($file),
 		file_mime_encoding($file);
@@ -231,7 +231,7 @@ sub file_digest {
 	$digester->addfile( $file, 'b' );
 	return $digester->hexdigest;
 }
-sub xs$NAME {
+sub xsname {
 	my ($file) = @_;
 	$file =~ s?^.*/??;
 	return $file;
@@ -244,7 +244,7 @@ sub xspath {
 sub file_mime_encoding {
 	my ($file) = @_;
 	my $magic = File::LibMagic->new();
-	my $info = $magic->info_from_file$NAME($file);
+	my $info = $magic->info_from_filename($file);
 	my $des = $info->{description};
 	$des =~ s?[/ ]?.?g;
 	$des =~ s/,/_/g;
