@@ -3,7 +3,7 @@
 
 # TODO #############################################
 dtrace providers
-API -
+API - pop(), chk_meta(), index(), getcode();
 fix grep arki()
 
 # FACE #############################################
