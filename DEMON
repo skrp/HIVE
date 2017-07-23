@@ -304,7 +304,7 @@ sub SLEEP
 	print $Lfh ("$SLEEP %s %s\n", $timeout, TIME());
 	close $Sfh; unlink $SLEEP;
 	tombstone($api, $count, $ttl);
-	$SLEEP $timeout;
+	sleep $timeout;
 }
 sub TIME
 {
@@ -332,7 +332,7 @@ sub tombstone
 	my @FACE;
 	$FACE[0] = $NAME;	
 	$FACE[1] = ((gmtime() - $BIRTH) / 60);
-	$FACE[2] = $api . '_' $yay . '_' . $count . '_' . $ttl;
+	$FACE[2] = $api.'_'.$yay.'_'.$count.'_'.$ttl;
 	
 	open(my $Tfh, '>>', $TOMB); 
 	printf $Tfh ("%d %s %d %s\n", $YAY, $FACE[0], $FACE[1], $FACE[2]);
