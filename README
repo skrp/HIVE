@@ -6,9 +6,9 @@ blkr_que -> state_awareness->face->irc->sha_que
 # LIFECYCLES #######################################
 # awareness of self_state, host_state & network_state
 Work que
-Dtrace probes post-run analysis to influence work ques
-Get accurace FACE of demon in host_enviornment
-irc FACE to influence work ques
+Get FACE by dtrace-probes analysis of self_state
+Get FACE by top anaylysis in host_enviornment
+scp FACE and get input on network
 Work que
 Work que
 # TODO #############################################
