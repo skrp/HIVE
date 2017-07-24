@@ -1,22 +1,13 @@
 ####################################################
 # DEMON - unix daemon network                  
-# METAMORPH ########################################
-blkr_que -> state_awareness->face->irc->sha_que
 
 # LIFECYCLES #######################################
 # awareness of self_state, host_state & network_state
 Work que
 Get FACE by dtrace-probes analysis of self_state
 Get FACE by top anaylysis in host_enviornment
-scp FACE and get input on network
+scp FACE and get input on net_clan
 Work que
-.
-.
-.
-# TODO #############################################
-dtrace providers
-API - pop(), chk_meta(), index(), getcode();
-fix grep arki()
 
 # FACE #############################################
 AGE_IN_HOURS
@@ -34,6 +25,11 @@ xtrac - archive extraction
 vkey - verify key files created by blkr/slicr
 regx - test contents
 krip - encrypt file
+
+# TODO #############################################
+dtrace providers
+API - pop(), chk_meta(), index(), getcode();
+fix grep arki()
 
 # HIVE STRUCTURE ###################################
 [ ==== /pool /sea /g /key /cemetery =====
