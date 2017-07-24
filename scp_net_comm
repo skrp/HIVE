@@ -6,7 +6,13 @@ server scp UPDATE
 scp RESPONE to server
 
 # FACE ##################
+AGE_IN_HOURS
+SUCCESS_ITERATIONS
+NAME
+GEAR (mem, nice, threads)
+STATE (dtrace)
 
 # UPDATE ################
+MAP
 
 # RESPONSE ##############
