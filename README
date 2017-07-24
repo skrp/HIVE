@@ -10,7 +10,9 @@ Get FACE by dtrace-probes analysis of self_state
 Get FACE by top anaylysis in host_enviornment
 scp FACE and get input on network
 Work que
-Work que
+.
+.
+.
 # TODO #############################################
 dtrace providers
 API - pop(), chk_meta(), index(), getcode();
