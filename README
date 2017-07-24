@@ -1,6 +1,16 @@
 ####################################################
 # DEMON - unix daemon network                  
+# METAMORPH ########################################
+blkr_que -> state_awareness->face->irc->sha_que
 
+# LIFECYCLES #######################################
+# awareness of self_state, host_state & network_state
+Work que
+Dtrace probes post-run analysis to influence work ques
+Get accurace FACE of demon in host_enviornment
+irc FACE to influence work ques
+Work que
+Work que
 # TODO #############################################
 dtrace providers
 API - pop(), chk_meta(), index(), getcode();
