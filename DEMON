@@ -44,9 +44,6 @@ const my @API => (
 	'sec_snort', 'sec_troll', 'sec_perlparselog', 
 	'sec_dtracesig'
 );
-const my $ARK => 'https://archive.org/download/';
-const my $NEO => 'http://searchcode.com/codesearch/raw/';
-const my $ARX => 'https://arxiv.org/pdf/';
 # GLOBAL VARIABLE ####################################
 my $YAY = 0;
 
