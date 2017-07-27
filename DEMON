@@ -79,8 +79,8 @@ while (1)
 		if (-e $SLEEP)
    	 		{ SLEEP(); }
 		my $i_start = gettimeofday();
-		&$api($i); #\&$api($i);
-		printf $Lfh "start %.3f %s\n", gettimeofday()-$i_start, $i;
+		&$api($i);
+		printf $Lfh "%.3f %s\n", gettimeofday()-$i_start, $i;
 		$count++;
 		tombstone($api, $count, $ttl) if ($count % $RATE == 0);
 	}
