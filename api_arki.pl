@@ -1,3 +1,4 @@
+const my $ARK => 'https://archive.org/download/';
 sub arki
 {
 	my ($i) = @_;
