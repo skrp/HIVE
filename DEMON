@@ -1,6 +1,7 @@
 #!/usr/local/bin/perl
 use strict; use warnings;
 use Const::Fast 'const';
+use Time::HiRes;
 use Digest::SHA 'sha256_hex';
 use POSIX;
 use File::Path; 
