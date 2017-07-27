@@ -71,15 +71,16 @@ while (1)
 	
 	my $ttl = @QUE; 
 	my $count = 0;
-	
+
 	foreach my $i (@QUE)
 	{
 		if (-e $SUICIDE)
     			{ SUICIDE(); }
 		if (-e $SLEEP)
    	 		{ SLEEP(); }
+		my $i_start = gettimeofday();
 		&$api($i); #\&$api($i);
-		print $Lfh "started $i\n";
+		printf $Lfh "start %.3f %s\n", gettimeofday()-$i_start, $i;
 		$count++;
 		tombstone($api, $count, $ttl) if ($count % $RATE == 0);
 	}
