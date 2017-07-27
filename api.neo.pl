@@ -1,6 +1,7 @@
 use LWP::UserAgent;
 use LWP::Protocol::https;
 const my $NEO => 'http://searchcode.com/codesearch/raw/';
+const my $ARX => 'https://arxiv.org/pdf/';
 sub neo
 {
 	my ($point) = @_;
