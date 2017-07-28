@@ -24,6 +24,7 @@ daemon() or die "FAIL daemon\n";
 # cemetery/ : tombstone()
 # g/ : XS()
 # pool/ : XS()
+# DIO : DEMON CHK-IN CHK-OUT
 
 # GLOBAL CONST #######################################
 const my $PATH => $path;
@@ -160,4 +161,11 @@ sub tombstone
 	
 	open(my $Tfh, '>>', $TOMB); 
 	printf $Tfh ("%d %s %d %s\n", $YAY, $FACE[0], $FACE[1], $FACE[2]);
+}
+sub dio
+{
+	my $status = (@_);
+	open(my $Dfh, '>>', $PATH.'DIO');
+	printf $Dfh "%s %s\n", $status, TIME();
+	close $Dfh;
 }
