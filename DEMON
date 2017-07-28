@@ -54,7 +54,7 @@ chdir('/tmp/');
 mkdir $DUMP or die "$DUMP FAIL\n";
 open(my $Lfh, '>>', $TOMB);
 $Lfh->autoflush(1);
-
+dio('IN');
 printf $Lfh ("HELLOWORLD %s\n", TIME());
 while (1)
 { # WORK ################################################
@@ -118,6 +118,7 @@ sub SUICIDE
 	my ($api, $count, $ttl) = @_;
 	unlink $SUICIDE;
 	printf $Lfh ("FKTHEWORLD %s\n", TIME());
+	dio('OUT');
 	tombstone($api, $count, $ttl);
 	exit;
 }
