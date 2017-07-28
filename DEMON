@@ -165,7 +165,7 @@ sub tombstone
 sub dio
 {
 	my $status = (@_);
-	open(my $Dfh, '>>', $PATH.'DIO');
+	open(my $Dfh, '>>', $PATH.'cemetery/DIO');
 	printf $Dfh "%s %s\n", $status, TIME();
 	close $Dfh;
 }
