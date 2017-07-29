@@ -30,7 +30,6 @@ die "STILLBORN" if ((my $birth = daemon()) != 0);
 const my $PATH => $path;
 const my $NAME => name();
 const my $BIRTH => time();
-ping();
 const my $QUE => $NAME.'_que';
 const my $DUMP => $NAME.'_dump/';
 const my $TOMB => $PATH.'cemetery/'.$NAME;
@@ -51,7 +50,7 @@ my $YAY = 0;
 
 # PREP ###############################################
 chdir('/tmp/');
-$SIG{INT} = \&sig_handler;
+$SIG{INT} = \&SUICIDE; $SIG{HUP} = \&tombstone; 
 
 mkdir $DUMP or die "$DUMP FAIL\n";
 open(my $Lfh, '>>', $TOMB);
@@ -188,4 +187,3 @@ sub ping
 	$Pfh->autoflush(1);
 	printf $Pfh "%ld %s ping!\n", time(), $$;
 }
-
