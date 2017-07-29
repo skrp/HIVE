@@ -20,18 +20,18 @@ if (substr($path, -1) ne "/") { $path .= '/'; }
 die "STILLBORN" if ((my $birth = daemon()) != 0);
 
 # DIRS ###############################################
+# api/ : LIST OF QUE BY API
 # sea/ : blkr()
 # key/ : key()
 # cemetery/ : tombstone()
+# cemetery/DIO : DEMON CHK-IN CHK-OUT
 # g/ : XS()
 # pool/ : XS()
-# DIO : DEMON CHK-IN CHK-OUT
 
 # GLOBAL CONST #######################################
 const my $PATH => $path;
 const my $NAME => name();
 const my $BIRTH => time();
-#const my $QUE => $PATH.'api/'.$init_api;
 const my $DUMP => $NAME.'_dump/';
 const my $TOMB => $PATH.'cemetery/'.$NAME;
 const my $SLEEP => $NAME.'_SLEEP';
@@ -51,7 +51,7 @@ my $YAY = 0;
 
 # PREP ###############################################
 chdir('/tmp/');
-$SIG{INT} = \&SUICIDE; $SIG{HUP} = \&tombstone; 
+$SIG{INT} = \&SUICIDE; $SIG{HUP} = \&ch_que; 
 
 mkdir $DUMP or die "$DUMP FAIL\n";
 open(my $Lfh, '>>', $TOMB);
@@ -188,4 +188,8 @@ sub ping
 	open(my $Pfh, '>>', '/tmp/PING');
 	$Pfh->autoflush(1);
 	printf $Pfh "%ld %s ping!\n", time(), $$;
+}
+sub ch_que
+{
+	
 }
