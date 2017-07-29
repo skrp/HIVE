@@ -65,8 +65,8 @@ ping();
 while (1)
 { # WORK ################################################
 	my $QUE = que_up($init_api);
-#	unless (-e $QUE)
-#		{ $QUE = que_up(\&ch_que); }
+	unless (-e $QUE)
+		{ $QUE = que_up(\&ch_que); }
 	unless (-e $QUE)
 		{ sleep 3600; next; }
 	open(my $qfh, '<', $QUE);
@@ -200,8 +200,21 @@ sub ping
 }
 sub ch_que
 {
-	
-}
+	my ($next_api) = @_;
+	if (!defined $next_api)
+	{ 
+		my $hostname = `hostname`;
+		open(my $Nfh, '<', $PATH.'api/'.$hostname);
+		my @approved = readline $Nfh; chomp $Nfh;
+		foreach (@approved)
+		{
+			if (defined que_up($_))
+				{  $next_api = $_; break; }
+			}
+		}
+	}
+	return $next_que;
+}	
 sub que_up
 {
 	my $init_api = (@_);
