@@ -60,7 +60,7 @@ while (1)
 { # WORK ################################################
 	unless (-e $QUE)
 		{ sleep 3600; next; }
-	open(my $qfh, '<', $QUE) or die "cant open $QUE\n";
+	open(my $qfh, '<', $QUE);
 	my @QUE = readline $qfh; chomp @QUE;
 
 	# $QUE[0] = api; $QUE[1] = iteration; $QUE[$ttl] = interation;
