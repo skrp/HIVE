@@ -16,7 +16,7 @@ if (not defined $path) { die ('NO ARGV1 dir'); }
 if (substr($path, -1) ne "/") { $path .= '/'; }
 
 # BIRTH ##############################################
-daemon() or die "FAIL daemon\n";
+die "STILLBORN" if ((my $birth = daemon()) != 0);
 
 # DIRS ###############################################
 # sea/ : blkr()
@@ -101,6 +101,7 @@ sub daemon {
    open(STDIN, "<$des");
    open(STDOUT, ">$des");
    open(STDERR, ">$des");
+   return 0;
 }
 sub api
 {
