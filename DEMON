@@ -174,3 +174,9 @@ sub dio
 	printf $Dfh ("%s %s\n", $dstatus, TIME());
 	close $Dfh;
 }
+sub ping
+{
+	open(my $Pfh, '>>', '/tmp/PING');
+	$Pfh->autoflush(1);
+	print $Pfh "$$ ping!\n";
+}
