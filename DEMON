@@ -11,8 +11,9 @@ use File::LibMagic;
 # DEMON - daemon summoning scroll
 
 # INIT ###############################################
-my ($path) = @ARGV;
+my ($path, $init_que) = @ARGV;
 if (not defined $path) { die ('NO ARGV1 dir'); }
+if (not defined $init_que) { die ('NO ARGV2 init_que'); }
 if (substr($path, -1) ne "/") { $path .= '/'; }
 
 # BIRTH ##############################################
