@@ -11,7 +11,7 @@ use File::LibMagic;
 # DEMON - daemon summoning scroll
 
 # INIT ###############################################
-my ($path, $init_que) = @ARGV;
+my ($path, $init_api) = @ARGV;
 if (not defined $path) { die ('NO ARGV1 dir'); }
 if (not defined $init_que) { die ('NO ARGV2 init_que'); }
 if (substr($path, -1) ne "/") { $path .= '/'; }
@@ -31,7 +31,7 @@ die "STILLBORN" if ((my $birth = daemon()) != 0);
 const my $PATH => $path;
 const my $NAME => name();
 const my $BIRTH => time();
-const my $QUE => $NAME.'_que';
+#const my $QUE => $PATH.'api/'.$init_api;
 const my $DUMP => $NAME.'_dump/';
 const my $TOMB => $PATH.'cemetery/'.$NAME;
 const my $SLEEP => $NAME.'_SLEEP';
@@ -61,7 +61,8 @@ printf $Lfh ("HELLOWORLD %s\n", TIME());
 
 # WAIT FOR INITIAL QUE ##################################
 ping();
-sleep 60; 
+opendir(my $dh, $PATH.'api/'.$init_api);
+my @ls = readdir($dh); my $QUE = $ls[0];
 
 while (1)
 { # WORK ################################################
