@@ -94,7 +94,7 @@ sub daemon {
    	{ exit(0); }
    chdir('/tmp');
    umask 0;
-   my $fds = 0;
+   my $fds = 3;
    while ($fds < 1024)
       { POSIX::close($fds); $fds++;  }
    my $des = '/dev/null';
