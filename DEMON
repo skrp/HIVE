@@ -57,16 +57,14 @@ $SIG{INT} = \&SUICIDE; $SIG{HUP} = \&ch_que;
 mkdir $DUMP or die "$DUMP FAIL\n";
 open(my $Lfh, '>>', $TOMB);
 $Lfh->autoflush(1);
+
 dio('IN');
 printf $Lfh ("HELLOWORLD %s\n", TIME());
-
-# WAIT FOR INITIAL QUE ##################################
 ping();
-my $QUE = que_up($init_apit);
 
 while (1)
 { # WORK ################################################
-	$QUE = 
+	$my $QUE = que_up($init_api);
 	unless (-e $QUE)
 		{ sleep 3600; next; }
 	open(my $qfh, '<', $QUE);
@@ -204,6 +202,7 @@ sub ch_que
 }
 sub que_up
 {
+	my $init_api = (@_);
 	opendir(my $dh, $PATH.'api/'.$init_api);
 	my @ls = readdir($dh); 
 	return $ls[0];
