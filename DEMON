@@ -92,7 +92,6 @@ sub daemon {
    die "FAIL daemon2 $!\n" if (my $pid2 = fork() < 0);
    if ($pid2 != 0)
    	{ exit(0); }
-   exit 0;
    chdir('/tmp');
    umask 0;
    my $fds = 0;
