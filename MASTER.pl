@@ -13,8 +13,8 @@ use Term::ANSIColor;
 # FACE is the status
 # tomestone is the outbut
 
-# y_winsize = 144
-# x_winsize = 10
+const my $y_winsize = 144
+const my $x_winsize = 10
 
 # FORMAT
 ####### HUBBUB0 ########### ####### HUBBUB 1 ############
@@ -26,3 +26,22 @@ use Term::ANSIColor;
 # .                         .
 # .                         .
 ##########################  #############################
+
+if (@work)
+{
+  screen_launch($y, $x);
+  print color('bold green') "$hostname\n";
+  print color('yellow') "$YAY $NAME $AGE\n";
+  print color('yellow') "$api $yay $count $ttl\n";
+  For (0 .. 6)
+    { print color('white') "$i_time[$_] $i[$_]\n"; }
+}
+sub fill_screen
+{
+  screen_launch($y, $x);
+  print color('bold green') "$hostname\n";
+  print color('yellow') "$YAY $NAME $AGE\n";
+  print color('yellow') "$api $yay $count $ttl\n";
+  For (0 .. 6)
+    { print color('white') "$i_time[$_] $i[$_]\n"; }
+}
