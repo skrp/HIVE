@@ -23,8 +23,9 @@ die "STILLBORN" if ((my $birth = daemon()) != 0);
 # api/ : LIST OF QUE BY API
 # sea/ : blkr()
 # key/ : key()
+# work/ : stdout
+# work/DIO : DEMON CHK-IN CHK-OUT
 # cemetery/ : tombstone()
-# cemetery/DIO : DEMON CHK-IN CHK-OUT
 # g/ : XS()
 # pool/ : XS()
 
