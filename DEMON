@@ -62,11 +62,11 @@ printf $Lfh ("HELLOWORLD %s\n", TIME());
 
 # WAIT FOR INITIAL QUE ##################################
 ping();
-opendir(my $dh, $PATH.'api/'.$init_api);
-my @ls = readdir($dh); my $QUE = $ls[0];
+my $QUE = que_up($init_apit);
 
 while (1)
 { # WORK ################################################
+	$QUE = 
 	unless (-e $QUE)
 		{ sleep 3600; next; }
 	open(my $qfh, '<', $QUE);
@@ -201,4 +201,10 @@ sub ping
 sub ch_que
 {
 	
+}
+sub que_up
+{
+	opendir(my $dh, $PATH.'api/'.$init_api);
+	my @ls = readdir($dh); 
+	return $ls[0];
 }
