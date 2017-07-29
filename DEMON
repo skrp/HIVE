@@ -29,7 +29,8 @@ die "STILLBORN" if ((my $birth = daemon()) != 0);
 # GLOBAL CONST #######################################
 const my $PATH => $path;
 const my $NAME => name();
-const my $BIRTH => gmtime();
+const my $BIRTH => time();
+ping();
 const my $QUE => $NAME.'_que';
 const my $DUMP => $NAME.'_dump/';
 const my $TOMB => $PATH.'cemetery/'.$NAME;
@@ -47,7 +48,6 @@ const my @API => (
 );
 # GLOBAL VARIABLE ####################################
 my $YAY = 0;
-ping();
 
 # PREP ###############################################
 chdir('/tmp/');
@@ -57,6 +57,7 @@ open(my $Lfh, '>>', $TOMB);
 $Lfh->autoflush(1);
 dio('IN');
 printf $Lfh ("HELLOWORLD %s\n", TIME());
+ping();
 while (1)
 { # WORK ################################################
 	unless (-e $QUE)
@@ -160,8 +161,9 @@ sub tombstone
 	my @yay = grep { /^YAY / } @llfh; 
 	my $yay = @yay;
 	my @FACE;
-	$FACE[0] = $NAME;	
-	$FACE[1] = ((gmtime() - $BIRTH) / 60);
+	$FACE[0] = $NAME;
+	my $Ttime = time();	
+	$FACE[1] = ((($Ttime - $BIRTH)/60)/60);
 	$FACE[2] = $api.'_'.$yay.'_'.$count.'_'.$ttl;
 	
 	open(my $Tfh, '>>', $TOMB); 
@@ -179,5 +181,5 @@ sub ping
 {
 	open(my $Pfh, '>>', '/tmp/PING');
 	$Pfh->autoflush(1);
-	print $Pfh "$$ ping!\n";
+	printf $Pfh "%ld %s ping!\n", time(), $$;
 }
