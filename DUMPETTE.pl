@@ -11,3 +11,11 @@ sub fuk_payload
 			{ XSscp($server, $_); }
 	}
 }
+sub key_up
+{
+  sleep 60;
+  my ($offset) = @_;
+  my $key;
+  read($Kfh, $key, $offset);
+  return $key;
+}
