@@ -19,3 +19,17 @@ sub key_up
   read($Kfh, $key, $offset);
   return $key;
 }
+sub tarit
+{
+
+}
+sub kripit
+{
+	my ($tarball, $path_server) = @_;
+	my $key = keyup();
+	my $name = dumpname();
+	`openssl enc -aes-256-ecb -in $tarball -out $name -pass:stdin $key`;
+	update_pskey();
+	my $return = `scp $name $path_server`;
+	print $Lfh "$return\n";
+}
