@@ -36,8 +36,8 @@ dtrace providers
 API - pop(), chk_meta(), index(), getcode();
 fix grep arki()
 
-# HIVE STRUCTURE ###################################
-[ ==== /pool /sea /g /key /cemetery =====
+# HIVE STRUCTURE #################################
+[ ==== /pool /sea /g /key /cemetery /api /work ===
 [ ================================================
 [ =================== ZFS NFS ====================
 ^^      vv     ^^      vv        ^^      vv
