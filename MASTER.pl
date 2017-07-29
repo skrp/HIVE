@@ -31,7 +31,7 @@ my $y = $cnt/10
 my $x = $cnt/10;
 if (@work)
 {
-  screen_launch($y, $x);
+  `screenrc $y $x`;
   while (1)
     { fill_screen($_); }
 }
@@ -57,7 +57,3 @@ sub fill_screen
     { print color('white') "$i_time[$_] $i[$_]\n"; }
   sleep 10;
  }
-sub screen_launch
-{
-  my ($y, $x) = @_;
-}
