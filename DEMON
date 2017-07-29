@@ -195,7 +195,6 @@ sub dio
 sub ping
 {
 	open(my $Pfh, '>>', '/tmp/PING');
-	$Pfh->autoflush(1);
 	printf $Pfh "%ld %s ping!\n", time(), $$;
 }
 sub ch_que
