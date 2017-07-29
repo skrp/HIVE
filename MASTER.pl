@@ -32,9 +32,14 @@ my $x = $cnt/10;
 if (@work)
 {
   screen_launch($y, $x);
+  while (1)
+    { fill_screen(); }
+}
+sub fill_screen
+{
   print color('bold green') "$hostname\n";
   print color('yellow') "$YAY $NAME $AGE\n";
   print color('yellow') "$api $yay $count $ttl\n";
   For (0 .. 6)
     { print color('white') "$i_time[$_] $i[$_]\n"; }
-}
+ }
