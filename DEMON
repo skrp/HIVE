@@ -34,6 +34,7 @@ const my $NAME => name();
 const my $BIRTH => time();
 const my $DUMP => $NAME.'_dump/';
 const my $TOMB => $PATH.'cemetery/'.$NAME;
+const my $TODO => $TOMB.'TODO';
 const my $SLEEP => $NAME.'_SLEEP';
 const my $SUICIDE => $NAME.'_SUICIDE';
 const my $SIZE => 128000;
@@ -71,25 +72,33 @@ while (1)
 	open(my $qfh, '<', $QUE);
 	my @QUE = readline $qfh; chomp @QUE;
 
-	# $QUE[0] = api; $QUE[1] = iteration; $QUE[$ttl] = interation;
+	# QUE[0] = api; $QUE[1] = iteration; $QUE[$ttl] = interation;
 	my $api = shift @QUE; 
 	next if (api($api, $qfh) < 0);
 	
 	my $ttl = @QUE; 
 	my $count = 0;
 
-	foreach my $i (@QUE)
+	foreach (@QUE)
 	{
 		if (-e $SUICIDE)
     			{ SUICIDE(); }
 		if (-e $SLEEP)
    	 		{ SLEEP(); }
+		my $i = shift @QUE;
 		my $i_start = gettimeofday();
-		&$api($i);
+		if ((&$api($i) != 0)
+			{ print $FAILfh "$i\n"; }
 		printf $Lfh "%.3f %s\n", gettimeofday()-$i_start, $i;
 		$count++;
-		tombstone($api, $count, $ttl) if ($count % $RATE == 0);
+		if ($count % $RATE == 0)
+		{
+			tombstone($api, $count, $ttl);
+			open(my $LOfh, '>', $TODO);
+			print $LOfh @QUE;
+		}
 	}
+	unlink $TODO;
 }
 # SUB ###########################################################
 sub daemon {
