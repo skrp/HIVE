@@ -33,14 +33,27 @@ if (@work)
 {
   screen_launch($y, $x);
   while (1)
-    { fill_screen(); }
+    { fill_screen($_); }
 }
 sub fill_screen
 {
+  my ($demonite) = @_;
+  open($deFAfh, '<', $demonite);
+  my @FACE = readline $deFAfh; chomp @FACE;
+  my $hostname = @FACE[1];
+  my $YAY = shift @FACE;
+  my $NAME = shift @FACE;
+  my $AGE = shift @FACE;
+  my $api = shift @FACE;
+  my $yay = shift @FACE;
+  my $count = shift @FACE;
+  my $ttl = shift @FACE;
+  
   print color('bold green') "$hostname\n";
   print color('yellow') "$YAY $NAME $AGE\n";
   print color('yellow') "$api $yay $count $ttl\n";
-  For (0 .. 6)
+  
+  foreach (@FACE)
     { print color('white') "$i_time[$_] $i[$_]\n"; }
   sleep 10;
  }
