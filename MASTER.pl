@@ -26,17 +26,10 @@ const my $x_winsize = 10
 # .                         .
 # .                         .
 ##########################  #############################
-
+my $cnt = @work;
+my $y = $cnt/10
+my $x = $cnt/10;
 if (@work)
-{
-  screen_launch($y, $x);
-  print color('bold green') "$hostname\n";
-  print color('yellow') "$YAY $NAME $AGE\n";
-  print color('yellow') "$api $yay $count $ttl\n";
-  For (0 .. 6)
-    { print color('white') "$i_time[$_] $i[$_]\n"; }
-}
-sub fill_screen
 {
   screen_launch($y, $x);
   print color('bold green') "$hostname\n";
