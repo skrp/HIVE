@@ -42,4 +42,9 @@ sub fill_screen
   print color('yellow') "$api $yay $count $ttl\n";
   For (0 .. 6)
     { print color('white') "$i_time[$_] $i[$_]\n"; }
+  sleep 10;
  }
+sub screen_launch
+{
+  my ($y, $x) = @_;
+}
