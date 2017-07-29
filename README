@@ -1,6 +1,11 @@
 ####################################################
 # DEMON - unix daemon network                  
 
+# REGISTER ##########################################
+Each hostname needs a corresponding file
+$PATH.'api/'.$hostname
+Each line is approved api for the host to work
+
 # LIFECYCLES #######################################
 # awareness of self_state, host_state & network_state
 Work que
