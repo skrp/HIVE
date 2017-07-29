@@ -51,13 +51,18 @@ my $YAY = 0;
 
 # PREP ###############################################
 chdir('/tmp/');
+$SIG{INT} = \&sig_handler;
 
 mkdir $DUMP or die "$DUMP FAIL\n";
 open(my $Lfh, '>>', $TOMB);
 $Lfh->autoflush(1);
 dio('IN');
 printf $Lfh ("HELLOWORLD %s\n", TIME());
+
+# WAIT FOR INITIAL QUE ##################################
 ping();
+sleep 60; 
+
 while (1)
 { # WORK ################################################
 	unless (-e $QUE)
@@ -183,3 +188,4 @@ sub ping
 	$Pfh->autoflush(1);
 	printf $Pfh "%ld %s ping!\n", time(), $$;
 }
+
