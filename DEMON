@@ -64,7 +64,9 @@ ping();
 
 while (1)
 { # WORK ################################################
-	$my $QUE = que_up($init_api);
+	my $QUE = que_up($init_api);
+#	unless (-e $QUE)
+#		{ $QUE = que_up(\&ch_que); }
 	unless (-e $QUE)
 		{ sleep 3600; next; }
 	open(my $qfh, '<', $QUE);
