@@ -3,9 +3,9 @@
 network logistic managment
 for multinode archive systems
 
-NSTDIN  - net stdin
-NSTDOUT - net stdout
-CPCHAT  - msg delivery
+NSTDIN  - explicit net stdin
+NSTDOUT - explicit net stdout
+CPCHAT  - explicit msg delivery
 
 # LOG ##########################
 Lord -> spawn(log($log))
