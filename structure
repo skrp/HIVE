@@ -1,6 +1,6 @@
-Lord -> spawn(log($log))
 # LOG ##########################
-spawn(scp($log) && scp($response))
+Lord -> spawn(log($log))
+  spawn(scp($log) && scp($response))
     blocks
   spawn SIG_RDY lord
   lord stores signals_recieved in array
@@ -14,4 +14,7 @@ Lord-> spawn($api($response))
 Lord-> spawn($XS($dump))
   spawn works $dump
   spawn SIG_DONE Lord
-  
+# CPCHAT ######################
+Lord-> spawn($cpchat)
+    process chat
+    SIG_CMD if $comm
