@@ -1,11 +1,10 @@
 ###############################
 # SCPFS - scp layer file system
-network logistic managment
-for multinode archive systems
+network logistic managment of multinode processing
 
 NIN  - explicit net stdin
 NOUT - explicit net stdout
-NERR  - explicit msg delivery
+NERR  - explicit state delivery
 
 # DEMON ########################
 Each host has a Lord with an api-set
