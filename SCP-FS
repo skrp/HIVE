@@ -3,11 +3,14 @@
 network logistic managment
 for multinode archive systems
 
-NSTDIN  - explicit net stdin
-NSTDOUT - explicit net stdout
-CPCHAT  - explicit msg delivery
+NIN  - explicit net stdin
+NOUT - explicit net stdout
+NERR  - explicit msg delivery
 
 # LOG ##########################
+waits for file ($next_shift_name)
+
+
 Lord -> spawn(log($log))
   spawn(scp($log) && scp($response))
     blocks
