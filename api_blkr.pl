@@ -1,3 +1,5 @@
+const my $SIZE => 128000;
+
 sub blkr
 {
 	my ($i) = @_;
