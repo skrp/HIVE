@@ -3,9 +3,10 @@
 
 # STATE ############################################
 Iteration by API by hostname by batch
-$PATH.'api/'.$hostname.$batch_QUE
-$PATH.'api/'.$hostname.$batch_DONE
-$PATH.'api/'.$hostname.$batch_FAILS
+$PATH.'cemetery/api/'
+  $hostname.$batch_QUE
+  $hostname.$batch_DONE
+  $hostname.$batch_FAILS
 
 # LIFECYCLES #######################################
 # awareness of self_state, host_state & network_state
