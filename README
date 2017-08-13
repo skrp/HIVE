@@ -2,8 +2,7 @@
 # DEMON - unix daemon network                  
 
 # STATE ############################################
-Iteration by API by hostname by batch
-$PATH.'cemetery/api/'
+$PATH."MASTER/$api/"
   $hostname.$batch_QUE
   $hostname.$batch_DONE
   $hostname.$batch_FAILS
