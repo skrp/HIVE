@@ -11,9 +11,9 @@ SIZE 128000
 int key(char *$i, char *bsha);
 int main(int argv, char *argc)
 {
- char *filepath = argv1;
+ char *filepath = malloc(strlen(argv1)+1);
  FILE *ifh;
- char *buf[SIZE]
+ char *buf[SIZE];
    
  if ((open(ifh, const char *filepath, O_RDONLY)) < 0)
   printf("FAIL open %p\n", *filepath);
