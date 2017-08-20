@@ -25,9 +25,9 @@ int main(int argv, char *argc)
    if ((open(bfh, const char *filepath, O_WRONLY)) < 0) 
       printf("FAIL block open %p\n", *filepath);
    if ((fprintf(FILE *bfh, const char *buf)) < 0) 
-      printf("FAIL block write %p\n", *filepath);
+	   printf("FAIL block write %p\n", *filepath);
    if (key(*bsha) < 0)
-	
+  	
  }
 
 
