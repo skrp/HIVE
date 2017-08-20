@@ -3,6 +3,8 @@
 // BLKR - shred file into blocks
 
 SIZE 128000
+
+int key(char *$i, char *bsha);
 int main(int argv, char *argc)
 {
  char *filepath = argv1;
@@ -24,10 +26,16 @@ int main(int argv, char *argc)
  }
 
 
-sub key
+int key(char *$i, char *bsha)
 {
-	my ($i, $bsha) = @_;
+	FILE *kfh;
+	
+	char $kpath =;
 	my $kpath = $PATH.'key/'.$i;
-	open(my $kfh, '>>', "$kpath");
-	print $kfh "$bsha\n";
+	
+	if ((open(kfh, const char *kpath, O_APPEND)) < 0) 
+      		printf("FAIL key open %p\n", *kpath);
+   	if ((fprintf(FILE *kfh, const char *bsha)) < 0) 
+	  	printf("FAIL key write %p\n", *kpath);
+	return 0;
 }
