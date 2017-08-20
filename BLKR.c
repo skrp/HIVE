@@ -1,3 +1,4 @@
+// check '/' on path in core code
 #include <stdio.h>
 #include <strings.h>
 #include <fcntlh>
@@ -25,7 +26,8 @@ int main(int argv, char *argc)
       printf("FAIL block open %p\n", *filepath);
    if ((fprintf(FILE *bfh, const char *buf)) < 0) 
       printf("FAIL block write %p\n", *filepath);
-   key(*bsha);
+   if (key(*bsha) < 0)
+	
  }
 
 
@@ -33,8 +35,9 @@ int key(char *$i, char *bsha)
 {
 	FILE *kfh;
 	
-	char $kpath =;
-	my $kpath = $PATH.'key/'.$i;
+	char *kpath = malloc(strlen(i)+strlen(bsha)+1);
+	strcpy(kpath, i);
+	strcat(kpath, bsha);
 	
 	if ((open(kfh, const char *kpath, O_APPEND)) < 0) 
       		printf("FAIL key open %p\n", *kpath);
