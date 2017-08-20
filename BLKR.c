@@ -1,4 +1,7 @@
 #include <stdio.h>
+#include <strings.h>
+#include <fcntlh>
+#include <unistd.h>
 ////////////////////////////////
 // BLKR - shred file into blocks
 
