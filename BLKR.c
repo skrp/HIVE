@@ -1,47 +1,57 @@
 // check '/' on path in core code
+#include <stdlib.h>
 #include <stdio.h>
-#include <strings.h>
-#include <fcntlh>
+#include <string.h>
+#include <fcntl.h>
 #include <unistd.h>
+#include <sha256.h>
 ////////////////////////////////
 // BLKR - shred file into blocks
-
-SIZE 128000
-
-int key(char *$i, char *bsha);
-int main(int argv, char *argc)
+int key(char, char);
+int main(int argc, char *argv[])
 {
- char *filepath = malloc(strlen(argv1)+1);
  FILE *ifh;
+ int position = 0;
+ int SIZE = 128000;
  char *buf[SIZE];
-   
- if ((open(ifh, const char *filepath, O_RDONLY)) < 0)
-  printf("FAIL open %p\n", *filepath);
- 
- while (read(ifh, void *buf, size_t SIZE) > 0)
+ char *bsha = malloc(65);
+
+ fsha = SHA256_File(argv[1]);
+
+ ifh = fopen(argv[1], "r");
+ while (fread(buf, 1, (size_t) SIZE, ifh) > 0)
  {
-   sha256(*buf);
-   FILE *bfh;
-   if ((open(bfh, const char *filepath, O_WRONLY)) < 0) 
-      printf("FAIL block open %p\n", *filepath);
-   if ((fprintf(FILE *bfh, const char *buf)) < 0) 
-	   printf("FAIL block write %p\n", *filepath);
-   if (key(*bsha) < 0)
-  	
+    bsha = SHA256_FileChunk(argv[1], NULL, position, SIZE);
+
+    char *bpath = malloc(strlen(argv[2])+76);
+    strcpy(bpath, argv[2]);
+    strcat(bpath, 'sea/');
+    strcat(bpath, bsha);
+
+    FILE *bfh;
+    bfh = fopen(bpath, "w");
+    fwrite(buf, 1, (size_t) SIZE, bfh);
+
+    key(char *fsha, char *bsha);
+
+    position += SIZE;
+    close bfh;
  }
-
-
-int key(char *$i, char *bsha)
-{
-	FILE *kfh;
-	
-	char *kpath = malloc(strlen(i)+strlen(bsha)+1);
-	strcpy(kpath, i);
-	strcat(kpath, bsha);
-	
-	if ((open(kfh, const char *kpath, O_APPEND)) < 0) 
-      		printf("FAIL key open %p\n", *kpath);
-   	if ((fprintf(FILE *kfh, const char *bsha)) < 0) 
-	  	printf("FAIL key write %p\n", *kpath);
-	return 0;
 }
+int key(char *fsha, char *bsha)
+{
+    FILE *kfh;
+
+    char *kpath = mallock(strlen(argv[2])+strlen(fsha)+1);
+    strcpy(kpath, argv[2]);
+    strcat(kpath, 'key/');
+    strcat(kpath, fsha);
+
+    fopen(kpath, "a");
+    fwrite(bsha, 1, 65, kfh);
+    fwrite("\n", 1, 1, kfp);
+
+    close kfh;
+    return 0;
+}
+
