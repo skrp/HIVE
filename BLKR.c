@@ -7,7 +7,6 @@
 #include <sha256.h>
 ////////////////////////////////
 // BLKR - shred file into blocks
-int key(char, char, char *);
 int main(int argc, char *argv[])
 {
  FILE *ifh;
@@ -29,28 +28,20 @@ int main(int argc, char *argv[])
     strcat(bpath, "sea/");
     strcat(bpath, bsha);
 
-    FILE *bfh;
-    bfh = fopen(bpath, "w");
-    fwrite(buf, 1, (size_t) SIZE, bfh);
-
-    key(char fsha, char bsha);
-
-    position += SIZE;
- }
-}
-
-int key(char fsha, char bsha, char *argv[2])
-{
-    FILE *kfh;
-
     char *kpath = malloc(strlen(argv[2])+76);
     strcpy(kpath, argv[2]);
     strcat(kpath, "key/");
     strcat(kpath, fsha);
 
-    fopen(kpath, "a");
+    FILE *bfh;
+    bfh = fopen(bpath, "w");
+    fwrite(buf, 1, (size_t) SIZE, bfh);
+
+    FILE *kfh;
+    kfh = fopen(kpath, "a");
     fwrite(bsha, 1, 65, kfh);
     fwrite("\n", 1, 1, kfh);
 
-    return 0;
+    position += SIZE;
+ }
 }
