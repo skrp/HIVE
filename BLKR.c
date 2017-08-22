@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
 
     FILE *kfh;
     kfh = fopen(kpath, "a");
-    fwrite(bsha, 1, 65, kfh);
+    fwrite(bsha, 1, 64, kfh);
     fwrite("\n", 1, 1, kfh);
 
     position += SIZE;
