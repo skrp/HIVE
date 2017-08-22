@@ -11,10 +11,8 @@ int main(int argc, char *argv[])
  int position = 0;
  int SIZE = 10000;
  char *buf[SIZE];
- char *bsha = malloc(65);
- char *fsha = malloc(65);
 
- fsha = SHA256_File(argv[1], NULL);
+ char *fsha = SHA256_File(argv[1], NULL);
 
  char *kpath = malloc(strlen(argv[2])+76);
  strcpy(kpath, argv[2]);
@@ -34,7 +32,7 @@ int main(int argc, char *argv[])
 
  while (fread(buf, 1, (size_t) SIZE, ifh) > 0)
  {
-    bsha = SHA256_FileChunk(argv[1], NULL, position, SIZE);
+    char *bsha = SHA256_FileChunk(argv[1], NULL, position, SIZE);
 
     char *bpath = malloc(strlen(argv[2])+76);
     strcpy(bpath, argv[2]);
