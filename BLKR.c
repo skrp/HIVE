@@ -7,7 +7,7 @@
 int main(int argc, char *argv[])
 {
  char path[strlen(argv[2]+2]);
- path = argv[2];
+ memmove(path, argv[2], sizeof[argv[2]);
  if (path[strlen(path) - 1] != '/') 
 	   strcat(path, "/");
 
