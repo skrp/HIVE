@@ -18,8 +18,8 @@ int main(int argc, char *argv[])
 
  char *fsha = SHA256_File(argv[1], NULL);
 
- char *kpath = malloc(strlen(argv[2])+76);
- strcpy(kpath, argv[2]);
+ char *kpath = malloc(strlen(path+76);
+ strcpy(kpath, path);
  strcat(kpath, "key/");
  strcat(kpath, fsha);
 
@@ -38,8 +38,8 @@ int main(int argc, char *argv[])
  {
     char *bsha = SHA256_FileChunk(argv[1], NULL, position, SIZE);
 
-    char *bpath = malloc(strlen(argv[2])+76);
-    strcpy(bpath, argv[2]);
+    char *bpath = malloc(strlen(path+76);
+    strcpy(bpath, path);
     strcat(bpath, "sea/");
     strcat(bpath, bsha);
 
