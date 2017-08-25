@@ -1,4 +1,3 @@
-// check '/' on path in core code
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -9,9 +8,9 @@ int main(int argc, char *argv[])
 {
  char path[strlen(argv[2]+2]);
  path = argv[2];
-	if (path[strlen(path) - 1] != '/') 
-		 strcat(path, "/");
- 
+ if (path[strlen(path) - 1] != '/') 
+	   strcat(path, "/");
+
  FILE *ifh;
  int position = 0;
  int SIZE = 10000;
