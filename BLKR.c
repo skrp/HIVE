@@ -1,3 +1,4 @@
+// check '/' on path in core code
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -6,11 +7,6 @@
 // BLKR - shred file into blocks
 int main(int argc, char *argv[])
 {
- char path = malloc(strlen(argv[2]+2]), char, M_WAITOK);
- memmove(path, argv[2], sizeof[argv[2]]);
- if (path[strlen(path) - 1] != '/') 
-	   strcat(path, "/");
-
  FILE *ifh;
  int position = 0;
  int SIZE = 10000;
@@ -18,8 +14,8 @@ int main(int argc, char *argv[])
 
  char *fsha = SHA256_File(argv[1], NULL);
 
- char *kpath = malloc(strlen(path+76);
- strcpy(kpath, path);
+ char *kpath = malloc(strlen(argv[2])+76);
+ strcpy(kpath, argv[2]);
  strcat(kpath, "key/");
  strcat(kpath, fsha);
 
@@ -38,8 +34,8 @@ int main(int argc, char *argv[])
  {
     char *bsha = SHA256_FileChunk(argv[1], NULL, position, SIZE);
 
-    char *bpath = malloc(strlen(path+76);
-    strcpy(bpath, path);
+    char *bpath = malloc(strlen(argv[2])+76);
+    strcpy(bpath, argv[2]);
     strcat(bpath, "sea/");
     strcat(bpath, bsha);
 
@@ -56,5 +52,4 @@ int main(int argc, char *argv[])
     fclose(kfh);
     position += SIZE;
  }
- free(path, char);
 }
