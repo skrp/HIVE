@@ -51,5 +51,7 @@ int main(int argc, char *argv[])
     fclose(bfh);
     fclose(kfh);
     position += SIZE;
+    free(bpath);
  }
+ free(kpath);
 }
