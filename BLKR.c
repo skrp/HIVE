@@ -6,8 +6,8 @@
 // BLKR - shred file into blocks
 int main(int argc, char *argv[])
 {
- char path[strlen(argv[2]+2]);
- memmove(path, argv[2], sizeof[argv[2]);
+ char path = malloc(strlen(argv[2]+2]), char, M_WAITOK);
+ memmove(path, argv[2], sizeof[argv[2]]);
  if (path[strlen(path) - 1] != '/') 
 	   strcat(path, "/");
 
@@ -56,4 +56,5 @@ int main(int argc, char *argv[])
     fclose(kfh);
     position += SIZE;
  }
+ free(path, char);
 }
