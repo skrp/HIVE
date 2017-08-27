@@ -1,14 +1,20 @@
-// #include <sys/time.h>
-// troubleshoot uncomment * 3
+////////////////////////////////
+// BLKR - shred file into blocks
+
 #include <stdlib.h>
 #define _WITH_GETLINE
 #include <stdio.h>
 #include <string.h>
 #include <sha256.h>
-////////////////////////////////
-// BLKR - shred file into blocks
+// #include <sys/time.h>
+// troubleshoot uncomment * 3
+
+static void usage() { fprintf(stderr, "usage:	> BLKR path_to_sea path_to_key\n"); exit(1); }
+
 int main(int argc, char *argv[])
 {
+ usage() if (argc != 3);
+	
  FILE *ifh;
  int SIZE = 10000;
  char *buf[SIZE];
