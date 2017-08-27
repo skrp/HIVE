@@ -59,14 +59,13 @@ int main(int argc, char *argv[])
     		fwrite(bsha, 1, 64, kfh);
     		fwrite("\n", 1, 1, kfh);
 
-    		//gettimeofday(&tf, NULL);
-    		//printf("%ld\n", tf.tv_usec-tp.tv_usec);
-
     		fclose(bfh);
     		fclose(kfh);
     		position += SIZE;
     		free(bpath);
       		bzero(buf, (size_t) SIZE);
+		//gettimeofday(&tf, NULL);
+    		//printf("%ld\n", tf.tv_usec-tp.tv_usec);
  	}
 	fclose(ifh);
  	free(line);
