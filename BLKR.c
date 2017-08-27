@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
 	FILE *ifh;
  	ifh = fopen(line, "r");
  	if (ifh)
- 	 {fclose(ifh); continue; }
+ 	 { fclose(ifh); continue; }
 
  	char *fsha = SHA256_File(line, NULL);
 
