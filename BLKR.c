@@ -25,20 +25,20 @@ int main(int argc, char *argv[])
  while ((linelen = getline(&line, &linecap, 0)) > 0)
  {
 	// CONTINUE IF EXIST //////////////////
-	 FILE *ifh;
+	FILE *ifh;
  	ifh = fopen(line, "r");
  	if (ifh)
  	 {fclose(ifh); continue; }
 
  	char *fsha = SHA256_File(line, NULL);
 
-	 bzero(kpath, klen);
+	bzero(kpath, klen);
  	strcpy(kpath, argv[2]);
  	strcat(kpath, fsha);
 
  	int position = 0; // SHA256_FileChunk
 
-	 while (fread(buf, 1, (size_t) SIZE, ifh) > 0)
+	while (fread(buf, 1, (size_t) SIZE, ifh) > 0)
  	{
     		//struct timeval tp;
     		//struct timeval tf;
@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
 
     		char *bsha = SHA256_FileChunk(line, NULL, position, SIZE);
 
-		    bzero(bpath,blen);
+		bzero(bpath,blen);
     		strcpy(bpath, argv[1]);
     		strcat(bpath, bsha);
 
@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
     		bfh = fopen(bpath, "w");
     		fwrite(buf, 1, (size_t) SIZE, bfh);
 
-  	 	 FILE *kfh;
+  	 	FILE *kfh;
     		kfh = fopen(kpath, "a");
     		fwrite(bsha, 1, 64, kfh);
     		fwrite("\n", 1, 1, kfh);
@@ -66,9 +66,9 @@ int main(int argc, char *argv[])
     		fclose(kfh);
     		position += SIZE;
     		free(bpath);
-      bzero(buf, (size_t) SIZE);
+      		bzero(buf, (size_t) SIZE);
  	}
-	 fclose(ifh);
+	fclose(ifh);
  	free(line);
  	free(kpath);
  }
