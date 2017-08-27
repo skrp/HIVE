@@ -2,7 +2,7 @@
 # SCPFS - scp layer file system
 network logistic managment of multinode processing
 
-# BLKCHAIN ####################
+# FACE BLKCHAIN ###############
 each node aware of the other
 chronic every hour 
 
@@ -17,6 +17,18 @@ scp deposit updates
 wait 10 min
 sha response
 post response
+
+# QUE ######################
+admin write only
+/net/que/
+
+
+
+
+
+
+
+
 
 # OLD #########################
 NIN  - explicit net stdin
