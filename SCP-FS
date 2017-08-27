@@ -15,8 +15,8 @@ gets updated by each node
 
 scp deposit updates
 wait 10 min
-sha response
-post response
+
+irc sha of responses
 
 # QUE ######################
 admin write only
