@@ -13,11 +13,12 @@ static void usage() { fprintf(stderr, "usage:	> BLKR path_to_sea path_to_key\n")
 
 int main(int argc, char *argv[])
 {
- usage() if (argc != 3);
+ if (argc != 3)
+  usage() 
 	
  FILE *ifh;
  int SIZE = 10000;
- char *buf[SIZE];
+ char buf[SIZE];
 
  int blen = strlen(argv[1]+65);
  int klen = strlen(argv[2]+65);
