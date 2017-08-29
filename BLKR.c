@@ -20,8 +20,8 @@ int main(int argc, char *argv[])
  int SIZE = 10000;
  char buf[SIZE];
 
- int blen = strlen(argv[1]+65);
- int klen = strlen(argv[2]+65);
+ int blen = strlen(argv[1])+65;
+ int klen = strlen(argv[2])+65;
  char *bpath = malloc(blen);
  char *kpath = malloc(klen);
 
