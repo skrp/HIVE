@@ -14,7 +14,7 @@ static void usage() { fprintf(stderr, "usage:	> BLKR path_to_sea path_to_key\n")
 int main(int argc, char *argv[])
 {
  if (argc != 3)
-  usage() 
+  usage();
 	
  FILE *ifh;
  int SIZE = 10000;
