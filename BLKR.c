@@ -69,14 +69,15 @@ int main(int argc, char *argv[])
     		fclose(bfh);
     		fclose(kfh);
     		position += SIZE;
-    		free(bpath);
       		bzero(buf, (size_t) SIZE);
 		
 		//gettimeofday(&tf, NULL);
     		//printf("%ld\n", tf.tv_usec-tp.tv_usec);
- 	}
+	}
 	fclose(ifh);
- 	free(line);
- 	free(kpath);
  }
+ free(line);
+ free(kpath);
+ free(bpath);
+
 }
