@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
       		bzero(buf, (size_t) SIZE);
 		
 		//gettimeofday(&tf, NULL);
-    		//printf("%ld\n", tf.tv_usec-tp.tv_usec);
+    		//printf("%llu\n", (unsigned long long) tf.tv_usec - (unsigned long long) tp.tv_usec);
 	}
 	fclose(ifh);
  }
