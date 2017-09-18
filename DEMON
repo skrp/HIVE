@@ -13,21 +13,19 @@ use File::LibMagic;
 # INIT ###############################################
 my ($path, $init_api) = @ARGV;
 if (not defined $path) { die ('NO ARGV1 dir'); }
-if (not defined $init_que) { die ('NO ARGV2 init_que'); }
 if (substr($path, -1) ne "/") { $path .= '/'; }
 
 # BIRTH ##############################################
 die "STILLBORN" if ((my $birth = daemon()) != 0);
 
 # DIRS ###############################################
-# api/ : LIST OF QUE BY API
-# sea/ : blkr()
-# key/ : key()
-# work/ : stdout
-# work/DIO : DEMON CHK-IN CHK-OUT
-# cemetery/ : tombstone()
-# g/ : XS()
-# pool/ : XS()
+# /tmp/$NAME_dump : hostside work dir
+# /nfs/MASTER/ : api que
+# /nfs/ROOM/ : daemon dir by host
+# /nfs/ROOM/DIO : DEMON CHK-IN CHK-OUT
+# /nfs/cemetery/ : tombstone()
+# /nfs/g/ : XS()
+# /nfs/pool/ : XS()
 
 # GLOBAL CONST #######################################
 const my $PATH => $path;
