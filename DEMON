@@ -7,6 +7,7 @@ use POSIX;
 use File::Path; 
 use File::Copy;
 use File::LibMagic;
+use Sys::Hostname;
 ######################################################
 # DEMON - daemon summoning scroll
 
@@ -59,7 +60,7 @@ $Lfh->autoflush(1);
 
 dio('IN');
 printf $Lfh ("HELLOWORLD %s\n", TIME());
-ping();
+ping(); # hostside roster
 
 while (1)
 { # WORK ################################################
@@ -163,7 +164,7 @@ sub TIME
 sub name
 {
 	my $id = int(rand(999));
-	my $name = $$.'_'.$id;
+	my $name = hostname_$$.'_'.$id;
 	return $name;
 }
 sub tombstone
