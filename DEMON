@@ -36,7 +36,7 @@ const my $TOMB => $PATH.'cemetery/'.$NAME;
 const my $TODO => $TOMB.'TODO';
 const my $SLEEP => $NAME.'_SLEEP';
 const my $SUICIDE => $NAME.'_SUICIDE';
-const my $DPATH => $PATH.'node/DIO';
+const my $DIO => $PATH.'node/DIO';
 const my $RATE => 100;
 const my @API => (
 	'fs_pop', 'fs_chkmeta', 'fs_index', 'fs_blkr', 
@@ -186,9 +186,8 @@ sub tombstone
 sub dio
 {
 	my $dstatus = (@_);
-	my $dpath = $PATH.'cemetery/DIO';
-	open(my $Dfh, '>>', $dpath);
-	printf $Dfh ("%s %s\n", $dstatus, TIME());
+	open(my $Dfh, '>>', $DIO);
+	printf $Dfh ("%s %s %s\n", TIME(), $NAME, $dstatus);
 	close $Dfh;
 }
 sub ping
