@@ -20,10 +20,10 @@ die "STILLBORN" if ((my $birth = daemon()) != 0);
 
 # DIRS ###############################################
 # /tmp/$NAME_dump : hostside work dir
-# /nfs/MASTER/ : api que
-# /nfs/ROOM/ : daemon dir by host
-# /nfs/ROOM/DIO : DEMON CHK-IN CHK-OUT
-# /nfs/cemetery/ : tombstone()
+# /nfs/que/ : api que
+# /nfs/node/ : daemon dir by host
+# /nfs/node/DIO : DEMON CHK-IN CHK-OUT
+# /nfs/cemetery/ : tombstone() dead DEMON logs
 # /nfs/g/ : XS()
 # /nfs/pool/ : XS()
 
@@ -36,6 +36,7 @@ const my $TOMB => $PATH.'cemetery/'.$NAME;
 const my $TODO => $TOMB.'TODO';
 const my $SLEEP => $NAME.'_SLEEP';
 const my $SUICIDE => $NAME.'_SUICIDE';
+const my $DPATH => $PATH.'node/DIO';
 const my $RATE => 100;
 const my @API => (
 	'fs_pop', 'fs_chkmeta', 'fs_index', 'fs_blkr', 
