@@ -36,7 +36,7 @@ const my $NAME => name();
 const my $BIRTH => time();
 const my $DUMP => $NAME.'_dump/';
 const my $TOMB => $PATH.'cemetery/'.$NAME;
-const my $TODO => $TOMB.'TODO';
+const my $TODO => $PATH.'node/'.$NAME.'_TODO';
 const my $SLEEP => $NAME.'_SLEEP';
 const my $SUICIDE => $NAME.'_SUICIDE';
 const my $DIO => $PATH.'node/DIO';
@@ -90,7 +90,7 @@ while (1)
 		{
 			tombstone($api, $count, $ttl);
 			open(my $LOfh, '>', $TODO);
-			print $LOfh @QUE;
+			print $LOfh @QUE; close $LOfh;
 		}
 	}
 	unlink $TODO;
