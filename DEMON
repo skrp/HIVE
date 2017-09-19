@@ -21,12 +21,14 @@ die "STILLBORN" if ((my $birth = daemon()) != 0);
 
 # DIRS ###############################################
 # /tmp/$NAME_dump : hostside work dir
+
 # /nfs/que/ : api que
 # /nfs/node/ : daemon dir by host
 # /nfs/node/DIO : DEMON CHK-IN CHK-OUT
 # /nfs/cemetery/ : tombstone() dead DEMON logs
-# /nfs/g/ : XS()
-# /nfs/pool/ : XS()
+
+# /nfspool/g/ : XS()
+# /nfspool/pool/ : XS()
 
 # GLOBAL CONST #######################################
 const my $PATH => $path;
