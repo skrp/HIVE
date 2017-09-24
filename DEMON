@@ -8,6 +8,7 @@ use File::Path;
 use File::Copy;
 use File::LibMagic;
 use Sys::Hostname;
+use Archive::Any;
 ######################################################
 # DEMON - daemon summoning scroll
 
@@ -308,4 +309,35 @@ sub key
 	my $kpath = $PATH.'key/'.$i;
 	open(my $kfh, '>>', "$kpath");
 	print $kfh "$bsha\n";
+}
+sub regx
+{
+	my ($i) = @_;
+	open(my $fh, '<', $i); 
+	open(my $mfh, '<', $PATH);
+	my @i = readline $fh; chomp @i;
+	my @master = readline $mfh; chomp @master;
+	foreach (@i)
+		{ print $Lfh "no $_\n" unless any { /$_/ } @master; }
+	$YAY++;
+}
+sub xtrac
+{
+	my ($i) = @_;
+	my $archive = Archive::Any->new($i);
+	if ($archive->is_naughty)
+		{ print $Lfh "ALERT xtrac naughty $i"; next; }
+	my @files = $archive->files; print $Lfh @files;
+	$archive->extract($DUMP);
+	XS($DUMP, $PATH) && rmtree($DUMP);
+	mkdir $DUMP;
+	print $Lfh "YAY $i\n"; $YAY++;
+}
+sub sha
+{
+	my ($i) = @_;
+	my ($sha) = file_digest($i);
+	if ($sha ne $i)
+		{ print $Lfh "ERK $i ne $sha\n"; }
+	$YAY++;
 }
