@@ -21,28 +21,23 @@ use Archive::Any;
 # AWARENESS
 # COMMUNICATION
 
-# INIT ###############################################
-my ($path) = @ARGV;
-if (not defined $path) { die ('NO ARGV1 dir'); }
-if (substr($path, -1) ne "/") { $path .= '/'; }
-
 # BIRTH ##############################################
 die "STILLBORN" if ((my $birth = daemon()) != 0);
 
 # DIRS ###############################################
-# /tmp/$NAME_dump : hostside work dir
+# /tmp/$NAME/dump/ : hostside work dir
 
-# /nfs/que/ : api que
-# /nfs/node/ : daemon dir by host
-# /nfs/node/DIO : DEMON CHK-IN CHK-OUT
-# /nfs/cemetery/ : tombstone() dead DEMON logs
+# /HIVE/que/ : api que
+# /HIVE/node/ : daemon dir by host
+# /HIVE/node/DIO : DEMON CHK-IN CHK-OUT
+# /HIVE/cemetery/ : tombstone() dead DEMON logs
 
-# /nfspool/g/ : XS()
-# /nfspool/pool/ : XS()
+# /pool/ : XS()
+# /g/ : XS()
 
 # GLOBAL CONST #######################################
-const my $PATH => $path;
 const my $NAME => name();
+const my $PATH => '/tmp/'.$NAME;
 const my $DUMP => $NAME.'_dump/';
 const my $TOMB => $PATH.'cemetery/';
 const my $NODE => hostname();
@@ -62,7 +57,7 @@ const my $DIO => $PATH.'node/DIO';
 const my $BIRTH => time();
 const my $RATE => 100;
 
-const my @API => ('get','blkr','sha', 'krip, 'xtrac', 'regx');
+const my @API => ('get','blkr','sha', 'krip', 'xtrac', 'regx');
 const my $SIZE => 128000;
 
 # GLOBAL VARIABLE ####################################
