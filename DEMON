@@ -209,18 +209,6 @@ sub tombstone
 	open(my $Tfh, '>>', $TOMB);
 	printf $Tfh ("%d %s %d %s\n", $YAY, $FACE[0], $FACE[1], $FACE[2]);
 }
-sub dio
-{
-	my $dstatus = (@_);
-	open(my $Dfh, '>>', $DIO);
-	printf $Dfh ("%s %s %s\n", TIME(), $NAME, $dstatus);
-	close $Dfh;
-}
-sub ping
-{
-	open(my $Pfh, '>>', '/tmp/PING');
-	printf $Pfh "%ld %s ping!\n", time(), $$;
-}
 sub que_up
 {
 	opendir(my $dh, $QUE);
@@ -359,6 +347,18 @@ sub proc_scan
 {
 }
 # COMMUNICATION ###############################################
+sub ping
+{
+	open(my $Pfh, '>>', '/tmp/PING');
+	printf $Pfh "%ld %s ping!\n", time(), $$;
+}
+sub dio
+{
+	my $dstatus = (@_);
+	open(my $Dfh, '>>', $DIO);
+	printf $Dfh ("%s %s %s\n", TIME(), $NAME, $dstatus);
+	close $Dfh;
+}
 sub scp_log
 {
 }
