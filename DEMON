@@ -10,6 +10,7 @@ use File::LibMagic;
 use Sys::Hostname 'hostname';
 use LWP::UserAgent;
 use LWP::Protocol::https;
+use Archive::Any
 
 ######################################################
 # DEMON - daemon summoning scroll
@@ -319,4 +320,27 @@ sub sha
 	if ($sha ne $i)
 		{ print $Lfh "ERK $i ne $sha\n"; }
 	$YAY++;
+}
+sub regx
+{
+	my ($i) = @_;
+	open(my $fh, '<', $i); 
+	open(my $mfh, '<', $PATH);
+	my @i = readline $fh; chomp @i;
+	my @master = readline $mfh; chomp @master;
+	foreach (@i)
+		{ print $Lfh "no $_\n" unless any { /$_/ } @master; }
+	$YAY++;
+}
+sub xtrac
+{
+	my ($i) = @_;
+	my $archive = Archive::Any->new($i);
+	if ($archive->is_naughty)
+		{ print $Lfh "ALERT xtrac naughty $i"; next; }
+	my @files = $archive->files; print $Lfh @files;
+	$archive->extract($DUMP);
+	XS($DUMP, $PATH) && rmtree($DUMP);
+	mkdir $DUMP;
+	print $Lfh "YAY $i\n"; $YAY++;
 }
