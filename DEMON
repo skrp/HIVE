@@ -37,23 +37,27 @@ die "STILLBORN" if ((my $birth = daemon()) != 0);
 
 # GLOBAL CONST #######################################
 const my $NAME => name();
-const my $PATH => '/tmp/'.$NAME;
+const my $PATH => '/tmp/'.$NAME.'/';
 const my $DUMP => $NAME.'_dump/';
-const my $TOMB => $PATH.'cemetery/';
+const my $POOL => $PATH.'pool/';
+const my $G => $PATH.'g/';
 const my $NODE => hostname();
 const my $QUE => $PATH.'node/'.$NODE;
 
-const my $TODO => $TOMB.'TODO_'.$NAME;
-const my $DONE => $TOMB.'DONE_'.$NAME;
-const my $FAIL => $TOMB.'FAIL_'.$NAME;
-const my $SHELL => $TOMB.'SHELL_'.$NAME;
-const my $REP => $TOMB.'REP_'.$NAME;
-const my $RAW => $TOMB.'RAW_'.$NAME;
-const my $ZOMBIE => $TOMB.'ZOMBIE_'.$NAME;
+const my $TODO => $PATH.'TODO_'.$NAME;
+const my $DONE => $PATH.'DONE_'.$NAME;
+const my $FAIL => $PATH.'FAIL_'.$NAME;
+const my $SHELL => $PATH.'SHELL_'.$NAME;
+const my $REP => $PATH.'REP_'.$NAME;
+const my $RAW => $PATH.'RAW_'.$NAME;
+const my $ZOMBIE => $PATH.'ZOMBIE_'.$NAME;
 
-const my $SLEEP => $NAME.'_SLEEP';
-const my $SUICIDE => $NAME.'_SUICIDE';
+const my $SLEEP => $PATH.'SLEEP';
+const my $SUICIDE => $PATH.'SUICIDE';
+
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 const my $DIO => $PATH.'node/DIO';
+
 const my $BIRTH => time();
 const my $RATE => 100;
 
@@ -215,8 +219,8 @@ sub XS
 {
 	my ($file) = shift;
 	my ($sha) = file_digest($file) or die "couldn't sha $file";
-	File::Copy::copy($file, $PATH."pool/$sha");
-	my $cur = $PATH."g/g$sha";
+	File::Copy::copy($file, $POOL.$sha);
+	my $cur = $G.$sha;
 	open(my $fh, '>>', $cur) or die "Meta File Creation FAIL $file";
 	printf $fh "%s\n%s\n%s\n%s\n", 
 		xsname($file),
