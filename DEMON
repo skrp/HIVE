@@ -10,7 +10,7 @@ use File::LibMagic;
 use Sys::Hostname 'hostname';
 use LWP::UserAgent;
 use LWP::Protocol::https;
-use Archive::Any
+use Archive::Any;
 
 ######################################################
 # DEMON - daemon summoning scroll
