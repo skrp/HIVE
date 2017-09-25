@@ -1,0 +1,218 @@
+#!/usr/local/bin/perl
+use strict; use warnings;
+use Const::Fast 'const';
+use Time::HiRes;
+use Digest::SHA 'sha256_hex';
+use POSIX;
+use File::Path;
+use File::Copy;
+use File::LibMagic;
+use Sys::Hostname;
+######################################################
+# DEMON - daemon summoning scroll
+
+# INIT ###############################################
+my ($path, $init_api) = @ARGV;
+if (not defined $path) { die ('NO ARGV1 dir'); }
+if (substr($path, -1) ne "/") { $path .= '/'; }
+
+# BIRTH ##############################################
+die "STILLBORN" if ((my $birth = daemon()) != 0);
+
+# DIRS ###############################################
+# /tmp/$NAME_dump : hostside work dir
+
+# /nfs/que/ : api que
+# /nfs/node/ : daemon dir by host
+# /nfs/node/DIO : DEMON CHK-IN CHK-OUT
+# /nfs/cemetery/ : tombstone() dead DEMON logs
+
+# /nfspool/g/ : XS()
+# /nfspool/pool/ : XS()
+
+# GLOBAL CONST #######################################
+const my $PATH => $path;
+const my $NAME => name();
+const my $BIRTH => time();
+const my $DUMP => $NAME.'_dump/';
+const my $TOMB => $PATH.'cemetery/'.$NAME;
+const my $TODO => $PATH.'node/'.$NAME.'_TODO';
+const my $SLEEP => $NAME.'_SLEEP';
+const my $SUICIDE => $NAME.'_SUICIDE';
+const my $DIO => $PATH.'node/DIO';
+const my $RATE => 100;
+const my @API => ('net_get','fs_blkr','k_krip', 'fs_xtrax', 'xs_get' );
+# GLOBAL VARIABLE ####################################
+my $YAY = 0;
+
+# PREP ###############################################
+chdir('/tmp/');
+$SIG{INT} = \&SUICIDE;
+$SIG{HUP} = \&ch_que;
+
+mkdir $DUMP or die "$DUMP FAIL\n";
+open(my $Lfh, '>>', $TOMB);
+$Lfh->autoflush(1);
+
+dio('IN');
+printf $Lfh ("HELLOWORLD %s\n", TIME());
+ping(); # hostside roster
+
+while (1)
+{ # WORK ################################################
+	my $QUE = que_up($init_api);
+	unless (-e $QUE)
+		{ $QUE = que_up(\&ch_que); }
+	unless (-e $QUE)
+		{ sleep 3600; next; }
+	open(my $qfh, '<', $QUE);
+	my @QUE = readline $qfh; chomp @QUE;
+
+	# QUE[0] = api; $QUE[1] = iteration; $QUE[$ttl] = interation;
+	my $api = shift @QUE;
+	next if (api($api, $qfh) < 0);
+
+	my $ttl = @QUE;
+	my $count = 0;
+
+	foreach (@QUE)
+	{
+		if (-e $SUICIDE)
+    			{ SUICIDE(); }
+		if (-e $SLEEP)
+   	 		{ SLEEP(); }
+		my $i = shift @QUE;
+		my $i_start = gettimeofday();
+		if ((&$api($i) != 0)
+			{ print $FAILfh "$i\n"; }
+		printf $Lfh "%.3f %s\n", gettimeofday()-$i_start, $i;
+		$count++;
+		if ($count % $RATE == 0)
+		{
+			tombstone($api, $count, $ttl);
+			open(my $LOfh, '>', $TODO);
+			print $LOfh @QUE; close $LOfh;
+		}
+	}
+	unlink $TODO;
+}
+# SUB ###########################################################
+sub daemon {
+   die "FAIL daemon1 $!\n" if ((my $pid = fork()) < 0);
+   if ($pid != 0)
+   	{ exit(0); }
+   POSIX::setsid() or die "FAIL setsid $!";
+   die "FAIL daemon2 $!\n" if ((my $pid2 = fork()) < 0);
+   if ($pid2 != 0)
+   	{ exit(0); }
+   chdir('/tmp');
+   umask 0;
+   my $fds = 3;
+   while ($fds < 1024)
+      { POSIX::close($fds); $fds++;  }
+   my $des = '/dev/null';
+   open(STDIN, "<$des");
+   open(STDOUT, ">$des");
+   open(STDERR, ">$des");
+   return 0;
+}
+sub api
+{
+	my ($api, $qfh) = @_;
+	print $Lfh "api $api\n";
+	unless (/$api/, @API)
+	{
+		print $Lfh "FAIL_API $api\n";
+		close $qfh;
+		move($QUE, $PATH.'cemetery/zombie_'.$NAME);
+		return -1;
+	}
+	return 0;
+}
+sub SUICIDE
+{
+	my ($api, $count, $ttl) = @_;
+	unlink $SUICIDE;
+	printf $Lfh ("FKTHEWORLD %s\n", TIME());
+	dio('OUT');
+	tombstone($api, $count, $ttl);
+	exit;
+}
+sub SLEEP
+{
+	my ($api, $count, $ttl) = @_;
+	open(my $Sfh, '<', $SLEEP);
+	my $timeout = readline $Sfh; chomp $timeout;
+	print $Lfh ("$SLEEP %s %s\n", $timeout, TIME());
+	close $Sfh; unlink $SLEEP;
+	tombstone($api, $count, $ttl);
+	sleep $timeout;
+}
+sub TIME
+{
+	my $t = localtime;
+	my $mon = (split(/\s+/, $t))[1];
+	my $day = (split(/\s+/, $t))[2];
+	my $hour = (split(/\s+/, $t))[3];
+	my $time = $mon.'_'.$day.'_'.$hour;
+	return $time;
+}
+sub name
+{
+	my $id = int(rand(999));
+	my $name = hostname_$$.'_'.$id;
+	return $name;
+}
+sub tombstone
+{
+	my ($api, $count, $ttl) = @_;
+
+	open(my $LLfh, '<', $TOMB);
+	my @llfh = readline $LLfh;
+	my @yay = grep { /^YAY / } @llfh;
+	my $yay = @yay;
+	my @FACE;
+	$FACE[0] = $NAME;
+	my $Ttime = time();
+	$FACE[1] = ((($Ttime - $BIRTH)/60)/60);
+	$FACE[2] = $api.'_'.$yay.'_'.$count.'_'.$ttl;
+
+	open(my $Tfh, '>>', $TOMB);
+	printf $Tfh ("%d %s %d %s\n", $YAY, $FACE[0], $FACE[1], $FACE[2]);
+}
+sub dio
+{
+	my $dstatus = (@_);
+	open(my $Dfh, '>>', $DIO);
+	printf $Dfh ("%s %s %s\n", TIME(), $NAME, $dstatus);
+	close $Dfh;
+}
+sub ping
+{
+	open(my $Pfh, '>>', '/tmp/PING');
+	printf $Pfh "%ld %s ping!\n", time(), $$;
+}
+sub ch_que
+{
+	my ($next_api) = @_;
+	if (!defined $next_api)
+	{
+		my $hostname = `hostname`;
+		open(my $Nfh, '<', $PATH.'api/'.$hostname);
+		my @approved = readline $Nfh; chomp $Nfh;
+		foreach (@approved)
+		{
+			if (defined que_up($_))
+				{  $next_api = $_; break; }
+			}
+		}
+	}
+	return $next_que;
+}
+sub que_up
+{
+	my $init_api = (@_);
+	opendir(my $dh, $PATH.'api/'.$init_api);
+	my @ls = readdir($dh);
+	return $ls[0];
+}
