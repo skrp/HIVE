@@ -1,5 +1,6 @@
 #!/usr/local/bin/perl
 use strict; use warnings;
+use Net::SCP 'scp';
 use Const::Fast 'const';
 use Time::HiRes;
 use Digest::SHA 'sha256_hex';
