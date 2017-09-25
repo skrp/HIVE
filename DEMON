@@ -351,6 +351,7 @@ sub ping
 {
 	open(my $Pfh, '>>', '/tmp/PING');
 	printf $Pfh "%ld %s ping!\n", time(), $$;
+	close $Pfh;
 }
 sub dio
 {
