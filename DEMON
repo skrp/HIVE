@@ -4,16 +4,18 @@ use Const::Fast 'const';
 use Time::HiRes;
 use Digest::SHA 'sha256_hex';
 use POSIX;
-use File::Path; 
+use File::Path;
 use File::Copy;
 use File::LibMagic;
-use Sys::Hostname;
-use Archive::Any;
+use Sys::Hostname 'hostname';
+use LWP::UserAgent;
+use LWP::Protocol::https;
+
 ######################################################
 # DEMON - daemon summoning scroll
 
 # INIT ###############################################
-my ($path, $init_api) = @ARGV;
+my ($path) = @ARGV;
 if (not defined $path) { die ('NO ARGV1 dir'); }
 if (substr($path, -1) ne "/") { $path .= '/'; }
 
@@ -34,45 +36,63 @@ die "STILLBORN" if ((my $birth = daemon()) != 0);
 # GLOBAL CONST #######################################
 const my $PATH => $path;
 const my $NAME => name();
-const my $BIRTH => time();
 const my $DUMP => $NAME.'_dump/';
-const my $TOMB => $PATH.'cemetery/'.$NAME;
-const my $TODO => $PATH.'node/'.$NAME.'_TODO';
+const my $TOMB => $PATH.'cemetery/';
+const my $NODE => hostname();
+const my $QUE => $PATH.'node/'.$NODE;
+
+const my $TODO => $TOMB.'TODO_'.$NAME;
+const my $DONE => $TOMB.'DONE_'.$NAME;
+const my $FAIL => $TOMB.'FAIL_'.$NAME;
+const my $SHELL => $TOMB.'SHELL_'.$NAME;
+const my $REP => $TOMB.'REP_'.$NAME;
+const my $RAW => $TOMB.'RAW_'.$NAME;
+const my $ZOMBIE => $TOMB.'ZOMBIE_'.$NAME;
+
 const my $SLEEP => $NAME.'_SLEEP';
 const my $SUICIDE => $NAME.'_SUICIDE';
 const my $DIO => $PATH.'node/DIO';
+const my $BIRTH => time();
 const my $RATE => 100;
-const my @API => ('get');
+const my @API => ('net_get','fs_blkr','k_krip', 'fs_xtrax', 'xs_get' );
+
 # GLOBAL VARIABLE ####################################
 my $YAY = 0;
 
 # PREP ###############################################
 chdir('/tmp/');
-$SIG{INT} = \&SUICIDE; $SIG{HUP} = \&ch_que; 
+$SIG{INT} = \&SUICIDE;
+$SIG{HUP} = \&que_up;
 
 mkdir $DUMP or die "$DUMP FAIL\n";
-open(my $Lfh, '>>', $TOMB);
-$Lfh->autoflush(1);
 
-dio('IN');
+open(my $Lfh, '>>', $RAW);
+open(my $FAILfh, '>>', $FAIL);
+open(my $DONEfh, '>>', $DONE);
+open(my $TODOfh, '>>', $TODO);
+$Lfh->autoflush(1);
+$FAILfh->autoflush(1);
+$DONEfh->autoflush(1);
+$TODOfh->autoflush(1);
+
+ping(); # host roster
+dio('IN'); # net roster
+
 printf $Lfh ("HELLOWORLD %s\n", TIME());
-ping(); # hostside roster
 
 while (1)
 { # WORK ################################################
-	my $QUE = que_up($init_api);
-	unless (-e $QUE)
-		{ $QUE = que_up(\&ch_que); }
-	unless (-e $QUE)
+	my $que = que_up();
+	unless (-e $que)
 		{ sleep 3600; next; }
-	open(my $qfh, '<', $QUE);
+	open(my $qfh, '<', $que);
 	my @QUE = readline $qfh; chomp @QUE;
 
-	# QUE[0] = api; $QUE[1] = iteration; $QUE[$ttl] = interation;
-	my $api = shift @QUE; 
-	next if (api($api, $qfh) < 0);
-	
-	my $ttl = @QUE; 
+	my $api = shift @QUE;
+
+	next if (api($api, $qfh, $que) < 0);
+
+	my $ttl = @QUE;
 	my $count = 0;
 
 	foreach (@QUE)
@@ -83,15 +103,16 @@ while (1)
    	 		{ SLEEP(); }
 		my $i = shift @QUE;
 		my $i_start = gettimeofday();
-		if ((&$api($i) != 0)
+		if (&$api($i) != 0)
 			{ print $FAILfh "$i\n"; }
 		printf $Lfh "%.3f %s\n", gettimeofday()-$i_start, $i;
+		print $DONEfh "$i\n";
 		$count++;
 		if ($count % $RATE == 0)
 		{
 			tombstone($api, $count, $ttl);
-			open(my $LOfh, '>', $TODO);
-			print $LOfh @QUE; close $LOfh;
+			open(my $TODOfh, '>', $TODO);
+			print $TODOfh @QUE; close $TODOfh;
 		}
 	}
 	unlink $TODO;
@@ -118,16 +139,16 @@ sub daemon {
 }
 sub api
 {
-	my ($api, $qfh) = @_;
+	my ($api, $qfh, $que) = @_;
 	print $Lfh "api $api\n";
 	unless (/$api/, @API)
 	{
 		print $Lfh "FAIL_API $api\n";
-		close $qfh; 
-		move($QUE, $PATH.'cemetery/zombie_'.$NAME);
+		close $qfh;
+		move($que, $ZOMBIE);
 		return -1;
 	}
-	return 0;	
+	return 0;
 }
 sub SUICIDE
 {
@@ -160,24 +181,24 @@ sub TIME
 sub name
 {
 	my $id = int(rand(999));
-	my $name = hostname_$$.'_'.$id;
+	my $name = $NODE.'_'.$$.'_'.$id;
 	return $name;
 }
 sub tombstone
 {
 	my ($api, $count, $ttl) = @_;
-	
+
 	open(my $LLfh, '<', $TOMB);
 	my @llfh = readline $LLfh;
-	my @yay = grep { /^YAY / } @llfh; 
+	my @yay = grep { /^YAY / } @llfh;
 	my $yay = @yay;
 	my @FACE;
 	$FACE[0] = $NAME;
-	my $Ttime = time();	
+	my $Ttime = time();
 	$FACE[1] = ((($Ttime - $BIRTH)/60)/60);
 	$FACE[2] = $api.'_'.$yay.'_'.$count.'_'.$ttl;
-	
-	open(my $Tfh, '>>', $TOMB); 
+
+	open(my $Tfh, '>>', $TOMB);
 	printf $Tfh ("%d %s %d %s\n", $YAY, $FACE[0], $FACE[1], $FACE[2]);
 }
 sub dio
@@ -192,152 +213,9 @@ sub ping
 	open(my $Pfh, '>>', '/tmp/PING');
 	printf $Pfh "%ld %s ping!\n", time(), $$;
 }
-sub ch_que
-{
-	my ($next_api) = @_;
-	if (!defined $next_api)
-	{ 
-		my $hostname = `hostname`;
-		open(my $Nfh, '<', $PATH.'api/'.$hostname);
-		my @approved = readline $Nfh; chomp $Nfh;
-		foreach (@approved)
-		{
-			if (defined que_up($_))
-				{  $next_api = $_; break; }
-			}
-		}
-	}
-	return $next_que;
-}	
 sub que_up
 {
-	my $init_api = (@_);
-	opendir(my $dh, $PATH.'api/'.$init_api);
-	my @ls = readdir($dh); 
+	opendir(my $dh, $QUE);
+	my @ls = readdir($dh);
 	return $ls[0];
-}
-# API ##############################################
-use LWP::UserAgent;
-use LWP::Protocol::https;
-sub get
-{
-	my ($i) = @_;
-	my $ua = uagent();
-	my $response = $ua->get($i, ':content_file'=>"$DUMP$i");
-	print $Lfh "YAY $i\n"; $YAY++;
-	XS($i) && unlink($i);
-}
-sub uagent
-{
-	my $s_ua = LWP::UserAgent->new(
-		agent => "Mozilla/50.0.2",
-		from => 'punxnotdead',
-		timeout => 45,
-	);
-	return $s_ua;
-}
-sub XS
-{
-	my ($file) = shift;
-	my ($sha) = file_digest($file) or die "couldn't sha $file";
-	File::Copy::copy($file, $PATH."pool/$sha");
-	my $cur = $PATH."g/g$sha";
-	open(my $fh, '>>', $cur) or die "Meta File Creation FAIL $file";
-	printf $fh "%s\n%s\n%s\n%s\n", 
-		xsname($file),
-		xspath($file),
-		xssize($file),
-		file_mime_encoding($file);
-}
-sub file_digest {
-	my ($file) = @_;
-	my $digester = Digest::SHA->new('sha256');
-	$digester->addfile( $file, 'b' );
-	return $digester->hexdigest;
-}
-sub xsname {
-	my ($file) = @_;
-	$file =~ s?^.*/??;
-	return $file;
-}
-sub xspath {
-	my ($file) = @_;
-	$file =~ s?/?_?g;
-	return $file; 
-}
-sub file_mime_encoding {
-	my ($file) = @_;
-	my $magic = File::LibMagic->new();
-	my $info = $magic->info_from_filename($file);
-	my $des = $info->{description};
-	$des =~ s?[/ ]?.?g;
-	$des =~ s/,/_/g;
-	my $md = $info->{mime_type};
-	$md =~ s?[/ ]?.?g;
-	my $enc = sprintf("%s %s %s", $des, $md, $info->{encoding}); 
-	return $enc;
-}
-sub xssize {
-	my ($file) = @_;
-	my $size = -s $file;
-	return $size;
-}
-sub blkr
-{
-	my ($i) = @_;
-	my $block = 0;
-	my $ipath = $PATH.'pool/'.$i;
-	open(my $ifh, '<', "$ipath") || print $Lfh "Cant open $i: $!\n";
-	binmode($ifh);
-	
-	my $SIZE => 128000;
-	
-	while (read($ifh, $block, $SIZE))
-	{
-		my $bsha = sha256_hex($block);
-		my $bname = $PATH.'sea/'.$bsha;
-		open(my $fh, '>', "$bname");
-		binmode($fh);
-		print $fh $block;
-		key($i, $bsha);
-	}
-	$YAY++;
-}
-sub key
-{
-	my ($i, $bsha) = @_;
-	my $kpath = $PATH.'key/'.$i;
-	open(my $kfh, '>>', "$kpath");
-	print $kfh "$bsha\n";
-}
-sub regx
-{
-	my ($i) = @_;
-	open(my $fh, '<', $i); 
-	open(my $mfh, '<', $PATH);
-	my @i = readline $fh; chomp @i;
-	my @master = readline $mfh; chomp @master;
-	foreach (@i)
-		{ print $Lfh "no $_\n" unless any { /$_/ } @master; }
-	$YAY++;
-}
-sub xtrac
-{
-	my ($i) = @_;
-	my $archive = Archive::Any->new($i);
-	if ($archive->is_naughty)
-		{ print $Lfh "ALERT xtrac naughty $i"; next; }
-	my @files = $archive->files; print $Lfh @files;
-	$archive->extract($DUMP);
-	XS($DUMP, $PATH) && rmtree($DUMP);
-	mkdir $DUMP;
-	print $Lfh "YAY $i\n"; $YAY++;
-}
-sub sha
-{
-	my ($i) = @_;
-	my ($sha) = file_digest($i);
-	if ($sha ne $i)
-		{ print $Lfh "ERK $i ne $sha\n"; }
-	$YAY++;
 }
