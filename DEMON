@@ -265,10 +265,12 @@ sub xssize {
 sub get
 {
 	my ($i) = @_;
+	my $tmp = $DUMP.$i;
 	my $ua = uagent();
-	my $response = $ua->get($i, ':content_file'=>"$DUMP$i");
+	my $response = $ua->get($i, ':content_file'=>"$tmp");
 	print $Lfh "YAY $i\n"; $YAY++;
-	XS($i) && unlink($i);
+	next unless (-e $tmp);
+	XS($tmp) && unlink($tmp);
 }
 sub uagent
 {
