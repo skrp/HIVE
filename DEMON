@@ -61,7 +61,7 @@ const my $DIO => $PATH.'node/DIO';
 const my $BIRTH => time();
 const my $RATE => 100;
 
-const my @API => ('net_get','fs_blkr','k_krip', 'fs_xtrax', 'xs_get' );
+const my @API => ('get','blkr','sha', 'krip, 'xtrac', 'regx');
 const my $SIZE => 128000;
 
 # GLOBAL VARIABLE ####################################
