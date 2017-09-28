@@ -3,25 +3,23 @@
 
 Everpresent daemons that work on networked dictated ques for distributive computation.
 
-Code to command daemons
-https://github.com/skrp/MINT
-
 {1} Structure = [[ host-location, nfs-locations ]]
 
 {2} Logic = [[ http-scrape, file-obfuscator, file-sha, file-encrypt, archive-extrace, regex ]]
 
 {3} Network Communication =  [[ pause, kill, stdout, PID_refresh(live_list), host_side-dump, bandwidth ]]
+https://github.com/skrp/MINT
 
-{4} Awareness = [[ host_io, net_io ]]
+{4} Awareness = [[ host_io, net_io, @FACE ]]
 
 
 
 # FACE #############################################
-FACE[0] => AGE_IN_HOURS
-FACE[1] => SUCCESSFUL_ITERATIONS
-FACE[2] => NAME
-FACE[3] => GEAR (mem, nice, threads)
-FACE[4] => STATE (dtrace)
+$FACE[0] => AGE_IN_HOURS
+$FACE[1] => SUCCESSFUL_ITERATIONS
+$FACE[2] => NAME
+$FACE[3] => GEAR (mem, nice, threads)
+$FACE[4] => STATE (dtrace)
 
 # LIFECYCLES #######################################
 Work que
