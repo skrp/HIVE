@@ -1,26 +1,31 @@
 ####################################################
-# DEMON - unix daemon network                  
+# DEMON - unix daemon network goons
 
-# STATE ############################################
-$PATH."MASTER/$api/"
-  $hostname.$batch_QUE
-  $hostname.$batch_DONE
-  $hostname.$batch_FAILS
+Everpresent daemons that work on networked dictated ques for distributive computation.
 
-# LIFECYCLES #######################################
-# awareness of self_state, host_state & network_state
-Work que
-Get FACE by dtrace-probes analysis of self_state
-Get FACE by top anaylysis in host_enviornment
-scp FACE and get input on net_clan
-Work que
+{1} Structure = [[ host-location, nfs-locations ]]
+
+{2} Logic = [[ http-scrape, file-obfuscator, file-sha, file-encrypt, archive-extrace, regex ]]
+
+{3} Network Communication =  [[ pause, kill, stdout, PID_refresh(live_list), host_side-dump, bandwidth ]]
+
+{4} Awareness = [[ host_io, net_io ]]
+
+
 
 # FACE #############################################
-AGE_IN_HOURS
-SUCCESS_ITERATIONS
-NAME
-GEAR (mem, nice, threads)
-STATE (dtrace)
+FACE[0] => AGE_IN_HOURS
+FACE[1] => SUCCESSFUL_ITERATIONS
+FACE[2] => NAME
+FACE[3] => GEAR (mem, nice, threads)
+FACE[4] => STATE (dtrace)
+
+# LIFECYCLES #######################################
+Work que
+Get FACE by dtrace-probes analysis of self_state
+Get FACE by anaylysis in network_enviornment
+Check NFS files for commands
+Work que
 
 # API ##############################################
 sha - sha256 file
