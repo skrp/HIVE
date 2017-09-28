@@ -3,6 +3,9 @@
 
 Everpresent daemons that work on networked dictated ques for distributive computation.
 
+Code to command daemons
+https://github.com/skrp/MINT
+
 {1} Structure = [[ host-location, nfs-locations ]]
 
 {2} Logic = [[ http-scrape, file-obfuscator, file-sha, file-encrypt, archive-extrace, regex ]]
