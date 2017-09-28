@@ -30,6 +30,7 @@ die "STILLBORN" if ((my $birth = daemon()) != 0);
 
 # /nfs/que/ : api que
 # /nfs/node/ : daemon dir by host
+# /nfs/node/pid : $host_$pid
 # /nfs/node/DIO : DEMON CHK-IN CHK-OUT
 # /nfs/cemetery/ : tombstone() dead DEMON logs
 
@@ -45,6 +46,7 @@ const my $G => $NFSPATH.'g/';
 const my $NODE => hostname();
 const my $QUE => $NFSPATH.'node/'.$NODE.'/';
 const my $TOMB => $NFSPATH.'cemetery/';
+const my $NFSPID => $NFSPATH.'node/pid/'.$$;
 
 const my $TODO => $TOMB.'TODO_'.$NAME;
 const my $DONE => $TOMB.'DONE_'.$NAME;
@@ -84,6 +86,8 @@ $Lfh->autoflush(1);
 $FAILfh->autoflush(1);
 $DONEfh->autoflush(1);
 $TODOfh->autoflush(1);
+
+
 
 ping(); # host roster
 dio('IN'); # net roster
@@ -369,4 +373,12 @@ sub dio
 	open(my $Dfh, '>>', $DIO);
 	printf $Dfh ("%s %s %s\n", TIME(), $NAME, $dstatus);
 	close $Dfh;
+}
+sub nfs_pid
+{
+	open(my $PIDfh, '>', $NFSPID);
+	my $time = gettimeofday();
+	print $PIDfh "$time";
+	close $PIDfh;
+	return 0;
 }
