@@ -378,8 +378,7 @@ sub dio
 sub nfs_pid
 {
 	open(my $PIDfh, '>', $NFSPID);
-	my $time = gettimeofday();
-	print $PIDfh "$time";
+	print $PIDfh "$$\n";
 	close $PIDfh;
 	return 0;
 }
