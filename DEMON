@@ -1,6 +1,5 @@
 #!/usr/local/bin/perl
 use strict; use warnings;
-use Net::SCP 'scp';
 use Const::Fast 'const';
 use Time::HiRes;
 use Digest::SHA 'sha256_hex';
@@ -20,43 +19,46 @@ use Archive::Any;
 # LOGIC
 # AWARENESS
 # COMMUNICATION
-
+my ($nfspath) = @ARGV;
+ if (not defined $nfspath) { die ('NO arg1 nfs dir'); }
+ if (substr($nfspath, -1) ne "/") { $nfspath .= '/'; }
 # BIRTH ##############################################
 die "STILLBORN" if ((my $birth = daemon()) != 0);
 
 # DIRS ###############################################
 # /tmp/$NAME/dump/ : hostside work dir
 
-# /HIVE/que/ : api que
-# /HIVE/node/ : daemon dir by host
-# /HIVE/node/DIO : DEMON CHK-IN CHK-OUT
-# /HIVE/cemetery/ : tombstone() dead DEMON logs
+# /nfs/que/ : api que
+# /nfs/node/ : daemon dir by host
+# /nfs/node/DIO : DEMON CHK-IN CHK-OUT
+# /nfs/cemetery/ : tombstone() dead DEMON logs
 
-# /pool/ : XS()
-# /g/ : XS()
+# /nfs/pool/ : XS()
+# /nfs/g/ : XS()
 
 # GLOBAL CONST #######################################
+const my $NFSPATH => $nfspath;
 const my $NAME => name();
-const my $PATH => '/tmp/'.$NAME.'/';
 const my $DUMP => $NAME.'_dump/';
-const my $POOL => $PATH.'pool/';
+const my $POOL => $NFSPATH.'pool/';
 const my $G => $PATH.'g/';
 const my $NODE => hostname();
-const my $QUE => $PATH.'node/'.$NODE;
+const my $QUE => $NFSPATH.'node/'.$NODE;
+const my $TOMB => $PATH.'cemetery/';
 
-const my $TODO => $PATH.'TODO_'.$NAME;
-const my $DONE => $PATH.'DONE_'.$NAME;
-const my $FAIL => $PATH.'FAIL_'.$NAME;
-const my $SHELL => $PATH.'SHELL_'.$NAME;
-const my $REP => $PATH.'REP_'.$NAME;
-const my $RAW => $PATH.'RAW_'.$NAME;
-const my $ZOMBIE => $PATH.'ZOMBIE_'.$NAME;
+const my $TODO => $TOMB.'TODO_'.$NAME;
+const my $DONE => $TOMB.'DONE_'.$NAME;
+const my $FAIL => $TOMB.'FAIL_'.$NAME;
+const my $SHELL => $TOMB.'SHELL_'.$NAME;
+const my $REP => $TOMB.'REP_'.$NAME;
+const my $RAW => $TOMB.'RAW_'.$NAME;
+const my $ZOMBIE => $TOMB.'ZOMBIE_'.$NAME;
 
-const my $SLEEP => $PATH.'SLEEP';
-const my $SUICIDE => $PATH.'SUICIDE';
+const my $SLEEP => $TOMB.'SLEEP';
+const my $SUICIDE => $TOMB.'SUICIDE';
 
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-const my $DIO => $PATH.'node/DIO';
+const my $DIO => $NFSPATH.'node/DIO';
 
 const my $BIRTH => time();
 const my $RATE => 100;
@@ -285,7 +287,7 @@ sub blkr
 {
 	my ($i) = @_;
 	my $block = 0;
-	my $ipath = $PATH.'pool/'.$i;
+	my $ipath = $NFSPATH.'pool/'.$i;
 	open(my $ifh, '<', "$ipath") || print $Lfh "Cant open $i: $!\n";
 	binmode($ifh);
 	
@@ -303,7 +305,7 @@ sub blkr
 sub key
 {
 	my ($i, $bsha) = @_;
-	my $kpath = $PATH.'key/'.$i;
+	my $kpath = $NFSPATH.'key/'.$i;
 	open(my $kfh, '>>', "$kpath");
 	print $kfh "$bsha\n";
 }
@@ -319,7 +321,7 @@ sub regx
 {
 	my ($i) = @_;
 	open(my $fh, '<', $i); 
-	open(my $mfh, '<', $PATH);
+	open(my $mfh, '<', $NFSPATH);
 	my @i = readline $fh; chomp @i;
 	my @master = readline $mfh; chomp @master;
 	foreach (@i)
