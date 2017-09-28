@@ -1,7 +1,6 @@
 #!/usr/local/bin/perl
 use strict; use warnings;
 use Const::Fast 'const';
-use Time::HiRes;
 use Digest::SHA 'sha256_hex';
 use POSIX;
 use File::Path;
@@ -41,10 +40,10 @@ const my $NFSPATH => $nfspath;
 const my $NAME => name();
 const my $DUMP => $NAME.'_dump/';
 const my $POOL => $NFSPATH.'pool/';
-const my $G => $PATH.'g/';
+const my $G => $NFSPATH.'g/';
 const my $NODE => hostname();
-const my $QUE => $NFSPATH.'node/'.$NODE;
-const my $TOMB => $PATH.'cemetery/';
+const my $QUE => $NFSPATH.'node/'.$NODE.'/';
+const my $TOMB => $NFSPATH.'cemetery/';
 
 const my $TODO => $TOMB.'TODO_'.$NAME;
 const my $DONE => $TOMB.'DONE_'.$NAME;
@@ -97,25 +96,27 @@ while (1)
 		{ sleep 3600; next; }
 	open(my $qfh, '<', $que);
 	my @QUE = readline $qfh; chomp @QUE;
+	print $Lfh "$que Que $QUE[0]\n";
 
-	my $api = shift @QUE;
+#	my $api = shift @QUE;
+	my $api = 'xtrac';
+	print $Lfh "api $api\n";
 
-	next if (api($api, $qfh, $que) < 0);
+#	next if (api($api, $qfh, $que) < 0);
 
 	my $ttl = @QUE;
 	my $count = 0;
 
-	foreach (@QUE)
+	foreach my $i (@QUE)
 	{
 		if (-e $SUICIDE)
     			{ SUICIDE(); }
 		if (-e $SLEEP)
    	 		{ SLEEP(); }
-		my $i = shift @QUE;
-		my $i_start = gettimeofday();
+		print $Lfh "$i\n";
+		
 		if (&$api($i) != 0)
 			{ print $FAILfh "$i\n"; }
-		printf $Lfh "%.3f %s\n", gettimeofday()-$i_start, $i;
 		print $DONEfh "$i\n";
 		$count++;
 		if ($count % $RATE == 0)
@@ -215,7 +216,8 @@ sub que_up
 {
 	opendir(my $dh, $QUE);
 	my @ls = readdir($dh);
-	return $ls[0];
+	my $que_path = $QUE.$ls[2];
+	return $que_path; # skip $ls[0] = . ; $ls[1] = ..;
 }
 sub XS
 {
@@ -294,7 +296,7 @@ sub blkr
 	while (read($ifh, $block, $SIZE))
 	{
 		my $bsha = sha256_hex($block);
-		my $bname = $PATH.'sea/'.$bsha;
+		my $bname = $NFSPATH.'sea/'.$bsha;
 		open(my $fh, '>', "$bname");
 		binmode($fh);
 		print $fh $block;
@@ -331,13 +333,15 @@ sub regx
 sub xtrac
 {
 	my ($i) = @_;
+	print $Lfh "ping\n";
 	my $archive = Archive::Any->new($i);
 	if ($archive->is_naughty)
 		{ print $Lfh "ALERT xtrac naughty $i"; next; }
-	my @files = $archive->files; print $Lfh @files;
+	my @files = $archive->files; 
+	print $Lfh @files;
 	$archive->extract($DUMP);
-	XS($DUMP, $PATH) && rmtree($DUMP);
-	mkdir $DUMP;
+#	XS($DUMP, $NFSPATH) && rmtree($DUMP);
+#	mkdir $DUMP;
 	print $Lfh "YAY $i\n"; $YAY++;
 }
 # AWARENESS ####################################################
