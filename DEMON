@@ -87,7 +87,7 @@ $FAILfh->autoflush(1);
 $DONEfh->autoflush(1);
 $TODOfh->autoflush(1);
 
-
+print $Lfh "nfs_pid() error\n" unless nfs_pid();
 
 ping(); # host roster
 dio('IN'); # net roster
@@ -130,6 +130,7 @@ while (1)
 			tombstone($api, $count, $ttl);
 			open(my $TODOfh, '>', $TODO);
 			print $TODOfh @QUE; close $TODOfh;
+			print $Lfh "nfs_pid() error\n" unless nfs_pid();
 		}
 	}
 	unlink $TODO;
