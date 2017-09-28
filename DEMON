@@ -17,7 +17,7 @@ use Archive::Any;
 # STRUCT
 # LOGIC
 # HOST-AWARENESS
-# NET-COMM [[ pause, kill, stdout, stderr, PID, host_side-dump, bandwidth ]]
+# NET-COMM [[ pause, kill, stdout, PID, host_side-dump, bandwidth ]]
 
 my ($nfspath) = @ARGV;
  if (not defined $nfspath) { die ('NO arg1 nfs dir'); }
