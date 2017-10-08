@@ -1,5 +1,5 @@
 #!/usr/local/bin/perl
-# use FREEBSD::unix_or_you_a_bitch_ass_scrub_hackjob_button-smasher-hacker;
+# use FREEBSD::unix_or_you_a_bitch_ass_scrub_hackjob_button-smasher-hack-hacker;
 use strict; use warnings;
 
 use Const::Fast 'const';
