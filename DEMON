@@ -121,9 +121,7 @@ while (1)
 	# chk api_valid
 	# chk que_file valid)
 
-###!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	next if (que_verify($api, $que, $qfh) < 0);
-###!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	close $qfh;
 
 	my $ttl = @QUE;
