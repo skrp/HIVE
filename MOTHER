@@ -1,0 +1,15 @@
+# MOTHER - net logistics intelligence
+
+# awareness of each node's state
+# awareness of archive need
+
+# que work
+# birth demons
+
+# $nfs_server = '';
+# /mount nfs -o nfsv4 $nfs_server /net /net;
+
+# NET DESCRIPTORS ##########################
+nstdn  -   usr_stdin
+nstdo  -   root_stdout
+nstdc  -   net_command 
