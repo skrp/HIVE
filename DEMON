@@ -14,7 +14,8 @@ use LWP::Protocol::https;
 use Archive::Any;
 
 ########################################################
-# DEMON          t_'(o_o)"'      daemon summons scroll #
+# DEMON          t_'(o_0)"'      daemon summons scroll #
+#                       ^[[acii demon flip'n u off]]   #
 ########################################################
 
 # STRUCT
