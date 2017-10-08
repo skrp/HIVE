@@ -106,11 +106,11 @@ while (1)
 
 	# chk api_valid
 	# chk que_file valid)
-	next if (api_verify($api, $qfh, $que) < 0);
+	next if (que_verify($api, $que, $qfh) < 0);
 	close $qfh;
 
 	my $ttl = @QUE;
-	print $Lfh "$ttl Que $QUE $api\n";
+	print $Lfh "ttl $ttl loc $QUE api $api\n";
 
 	my $count = 0;
 	foreach my $i (@QUE)
@@ -140,7 +140,6 @@ while (1)
 	unlink $TODO;
 	log_send();
 }
-
 
 # STRUCT #######################################################
 sub daemon {
