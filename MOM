@@ -24,6 +24,8 @@
 #      - (PID_LOG_packets_raw)
 #      - (PID_LOG_invalid_input)
 #      - (PID_LOG_invalid_output)
+#      - (PID_LOG_packet_io)
+#      - (MOM_net_io)
 
 # dtrace (kernel)
 #      - (PID_LOG_cpu_io)
