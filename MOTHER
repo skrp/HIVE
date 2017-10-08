@@ -26,9 +26,9 @@
 #      - (PID_LOG_invalid_output)
 
 # dtrace (kernel)
-#      - (PID_LOG_cpu)
-#      - (PID_LOG_fs)
-#      - (PID_LOG_syscall)
+#      - (PID_LOG_cpu_io)
+#      - (PID_LOG_fs_io)
+#      - (PID_LOG_syscall_io)
 
 # bsd (host_system)
 #      - (PID_LOG_top)
