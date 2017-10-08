@@ -11,7 +11,6 @@ use Sys::Hostname 'hostname';
 use LWP::UserAgent;
 use LWP::Protocol::https;
 use Archive::Any;
-
 ######################################################
 # DEMON - daemon summons scroll
 
@@ -69,7 +68,8 @@ const my $DIO => $NFSPATH.'node/DIO';
 const my $BIRTH => time();
 const my $RATE => 100;
 
-const my @API => ('get','blkr','sha', 'krip', 'xtrac', 'regx');
+const my %api_hash = ( get => \&get, xtrac => \&xtrac,blkr => \&blkr, blkr => \&blkr );
+# ('get','blkr','sha', 'krip', 'xtrac', 'regx');
 const my $SIZE => 128000;
 
 # GLOBAL VARIABLE ####################################
@@ -139,6 +139,7 @@ while (1)
 		print $Lfh "$i\n";
 ###!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		if (\&$api($i) != 0)
+		 if ($api_hash{$api}->($i) != 0)
 ###!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			{ print $FAILfh "$i\n"; }
 		print $DONEfh "$i\n";
