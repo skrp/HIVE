@@ -72,14 +72,14 @@ const my $BIRTH => time();
 const my $RATE => 100;
 
 # dispatch table
-const my %api_hash = ( get => \&get, xtrac => \&xtrac, blkr => \&blkr, krip => \&krip, regx => \&regex, sha => /&sha );
-const my @API = ('get','blkr','sha', 'krip', 'xtrac', 'regx'); 
-const my $UA = uagent();
+const my %api_hash => ( get => \&get, xtrac => \&xtrac, blkr => \&blkr, krip => \&krip, regx => \&regex, sha => /&sha );
+const my @API => ('get','blkr','sha', 'krip', 'xtrac', 'regx'); 
+const my $UA => uagent();
 const my $SIZE => 128000;
 
-const my @pf = ('PID_LOG_packets_raw', 'PID_LOG_invalid_input', 'PID_LOG_invalid_output', 'PID_LOG_packet_io', 'PID_LOG_net_io');
-const my @dtrace = ('PID_LOG_cpu_io', 'PID_LOG_fs_io', 'PID_LOG_syscall_io');
-const my @unix = ('PID_LOG_top', 'PID_LOG_ps', 'PID_LOG_netstat', 'PID_LOG_zfs', 'PID_LOG_gpart', 'PID_LOG_camcontrol', 'PID_LOG_iostat', 'PID_LOG_io');
+const my @pf => ('PID_LOG_packets_raw', 'PID_LOG_invalid_input', 'PID_LOG_invalid_output', 'PID_LOG_packet_io', 'PID_LOG_net_io');
+const my @dtrace => ('PID_LOG_cpu_io', 'PID_LOG_fs_io', 'PID_LOG_syscall_io');
+const my @unix => ('PID_LOG_top', 'PID_LOG_ps', 'PID_LOG_netstat', 'PID_LOG_zfs', 'PID_LOG_gpart', 'PID_LOG_camcontrol', 'PID_LOG_iostat', 'PID_LOG_io');
 
 
 # GLOBAL VARIABLE ####################################
