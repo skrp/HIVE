@@ -100,7 +100,6 @@ const my @unix => ('PID_LOG_top', 'PID_LOG_ps', 'PID_LOG_netstat', 'PID_LOG_zfs'
 # GLOBAL VARIABLE 
 my $YAY = 0;
 
-# PREP @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 chdir('/tmp/');
 
 # [[ nfso ]] 
