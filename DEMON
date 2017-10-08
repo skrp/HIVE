@@ -269,6 +269,37 @@ sub que_up
 	# stop que, close up que, work new que
 ###!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 }
+# AWARENESS ####################################################
+sub log_begin
+{
+	for my $script (@pf)
+		{ `perl $script $NAME &`; }
+	for my $script (@dtrace)
+		{ `perl $script $NAME &`; }
+	for my $script (@unix)
+		{ `perl $script $NAME &`; }
+}
+# COMMUNICATION ###############################################
+sub ping
+{
+	open(my $Pfh, '>>', '/tmp/PING');
+	printf $Pfh "%ld %s ping!\n", time(), $$;
+	close $Pfh;
+}
+sub dio
+{
+	my $dstatus = (@_);
+	open(my $Dfh, '>>', $DIO);
+	printf $Dfh ("%s %s %s\n", TIME(), $NAME, $dstatus);
+	close $Dfh;
+}
+sub nfs_pid
+{
+	open(my $PIDfh, '>', $NFSPID);
+	print $PIDfh "$$\n";
+	close $PIDfh;
+	return 0;
+}
 sub XS
 {
 	my ($file) = shift;
@@ -399,35 +430,4 @@ sub xtrac
 	XS($DUMP, $NFSPATH) && rmtree($DUMP);
 	mkdir $DUMP;
 	print $Lfh "YAY $i\n"; $YAY++;
-}
-# AWARENESS ####################################################
-sub log_begin
-{
-	for my $script (@pf)
-		{ `perl $script $NAME &`; }
-	for my $script (@dtrace)
-		{ `perl $script $NAME &`; }
-	for my $script (@unix)
-		{ `perl $script $NAME &`; }
-}
-# COMMUNICATION ###############################################
-sub ping
-{
-	open(my $Pfh, '>>', '/tmp/PING');
-	printf $Pfh "%ld %s ping!\n", time(), $$;
-	close $Pfh;
-}
-sub dio
-{
-	my $dstatus = (@_);
-	open(my $Dfh, '>>', $DIO);
-	printf $Dfh ("%s %s %s\n", TIME(), $NAME, $dstatus);
-	close $Dfh;
-}
-sub nfs_pid
-{
-	open(my $PIDfh, '>', $NFSPID);
-	print $PIDfh "$$\n";
-	close $PIDfh;
-	return 0;
 }
