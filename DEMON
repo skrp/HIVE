@@ -18,6 +18,18 @@ use Archive::Any;
 #                       ^[[acii demon flip'n u off]]   #
 ########################################################
 
+# Mastercraftsman daemon spawn
+# Honored by age & successes
+# Power when a life
+# Never forgotten ever rewarded
+# $sha256_family the reward
+# $sha256_family++ if $sha256();
+# Core code the oldest & most successful
+# With plenty of unsuccessful bastards
+# Robustness the stable staple
+# Action explicit code
+# Programmed only oldest survive
+
 # STRUCT
 # /tmp/$NAME/dump/ : hostside work dir
 # /nfs/que/ : api que
