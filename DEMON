@@ -37,6 +37,7 @@ use Archive::Any;
 # /nfs/node/pid : $host_$pid
 # /nfs/node/DIO : DEMON CHK-IN CHK-OUT
 # /nfs/cemetery/ : tombstone() dead DEMON logs
+# /nfs/cemetery/clone : code name sha256
 # /nfs/pool/ : XS()
 # /nfs/g/ : XS()
 
