@@ -8,7 +8,7 @@
 # birth demons
 
 # $nfs_server = '';
-# /mount nfs -o nfsv4 $nfs_server /net /net;
+# /mount nfs -o nfsv4 $nfs_server /mom /net;
 
 # NFSV4 DESCRIPTORS ##########################
 # nstdn  -   usr_stdin
@@ -17,4 +17,25 @@
 
 # node -> send_log_nfsw -> mother
 # node <- read_cmd_nfsro <- mother
+
+# LOGS ######################################
+
+# pf (packet)
+#      - (PID_LOG_packets_raw)
+#      - (PID_LOG_invalid_input)
+#      - (PID_LOG_invalid_output)
+
+# dtrace (kernel)
+#      - (PID_LOG_cpu)
+#      - (PID_LOG_fs)
+#      - (PID_LOG_syscall)
+
+# bsd (host_system)
+#      - (PID_LOG_top)
+#      - (PID_LOG_ps)
+#      - (PID_LOG_netstat)
+#      - (PID_LOG_zfs)
+#      - (PID_LOG_gpart)
+#      - (PID_LOG_camcontrol)
+
 
