@@ -52,6 +52,8 @@ use Archive::Any;
 #	-nfso   network_output
 #	-nfsc   network_command
 
+# PREP @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
 my ($nfspath) = @ARGV;
  if (not defined $nfspath) { die ('NO arg1 nfs dir'); }
  if (substr($nfspath, -1) ne "/") { $nfspath .= '/'; }
@@ -125,8 +127,12 @@ print $Lfh "nfs_pid() error\n" unless nfs_pid();
 ping(); # host roster
 dio('IN'); # net roster
 
-# LIVE ################################################
 printf $Lfh ("HELLOWORLD %s\n", TIME());
+
+# @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+# LIVE &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
 while (1)
 {
 	my $que = que_up();
@@ -169,7 +175,7 @@ while (1)
 			print $TODOfh @QUE; close $TODOfh;
 			print $Lfh "nfs_pid() error\n" unless nfs_pid();
 		}
-
+# &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 	}
 	unlink $TODO;
 }
