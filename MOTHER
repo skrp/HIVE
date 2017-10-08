@@ -10,8 +10,7 @@
 # $nfs_server = '';
 # /mount nfs -o nfsv4 $nfs_server /net /net;
 
-# NET DESCRIPTORS ##########################
-nstdn  -   usr_stdin
-nstdo  -   root_stdout
-nstdc  -   net_command 
-
+# NFSV4 DESCRIPTORS ##########################
+# nstdn  -   usr_stdin
+# nstdo  -   root_stdout
+# nstdc  -   net_command 
