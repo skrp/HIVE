@@ -28,7 +28,6 @@ use Archive::Any;
 # /nfs/g/ : XS()
 
 # LOGIC
-#	-log_send()
 #	-que
 
 # HOST-AWARENESS
@@ -74,7 +73,6 @@ const my $RATE => 100;
 # dispatch table
 const my %api_hash = ( get => \&get, xtrac => \&xtrac, blkr => \&blkr, krip => \&krip, regx => \&regex, sha => /&sha );
 cont my @API = ('get','blkr','sha', 'krip', 'xtrac', 'regx'); 
-
 const my $UA = uagent();
 const my $SIZE => 128000;
 
@@ -90,9 +88,7 @@ my $YAY = 0;
 chdir('/tmp/');
 
 # [[ nfso ]] #########################################
-###!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 log_begin();
-###!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
 $SIG{INT} = \&SUICIDE;
@@ -161,9 +157,6 @@ while (1)
 
 	}
 	unlink $TODO;
-###!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	log_send();
-###!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 }
 
 # STRUCT #######################################################
