@@ -377,15 +377,61 @@ sub xtrac
 	print $Lfh "YAY $i\n"; $YAY++;
 }
 # AWARENESS ####################################################
-sub net_scan
+# pf
+{
+sub PID_LOG_packets_raw
 {
 }
-sub fs_scan
+sub PID_LOG_invalid_input
 {
 }
-sub proc_scan
+sub PID_LOG_invalid_output
 {
 }
+sub PID_LOG_packet_io
+{
+}
+sub PID_LOG_net_io
+{
+}
+
+# dtrace
+sub PID_LOG_cpu_io
+{
+}
+sub PID_LOG_fs_io
+{
+}
+sub PID_LOG_syscall_io
+{
+}
+
+# unix
+sub PID_LOG_top
+{
+}
+sub PID_LOG_ps
+{
+}
+sub PID_LOG_netstat
+{
+}
+sub PID_LOG_zfs
+{
+}
+sub PID_LOG_gpart
+{
+}
+sub PID_LOG_camcontrol
+{
+}
+sub PID_LOG_iostat
+{
+}
+sub PID_LOG_io
+{
+}
+
 # COMMUNICATION ###############################################
 sub ping
 {
