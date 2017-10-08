@@ -264,6 +264,10 @@ sub que_up
 	my @ls = readdir($dh);
 	my $que_path = $QUE.$ls[2];
 	return $que_path; # skip $ls[0] = . ; $ls[1] = ..;
+	
+###!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	# stop que, close up que, work new que
+###!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 }
 sub XS
 {
