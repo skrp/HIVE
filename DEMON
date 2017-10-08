@@ -16,27 +16,32 @@ use Archive::Any;
 # DEMON - daemon summons scroll
 
 # STRUCT
+# /tmp/$NAME/dump/ : hostside work dir
+# /nfs/que/ : api que
+# /nfs/node/ : daemon dir by host
+# /nfs/node/pid : $host_$pid
+# /nfs/node/DIO : DEMON CHK-IN CHK-OUT
+# /nfs/cemetery/ : tombstone() dead DEMON logs
+# /nfs/pool/ : XS()
+# /nfs/g/ : XS()
+
 # LOGIC
+#	-log_send()
+#	-que
+
 # HOST-AWARENESS
+#	-log_begin()
+
 # NET-COMM [[ pause, kill, stdout, PID, host_side-dump, bandwidth ]]
+#	-nfsn   network_input
+#	-nfso   network_output
+#	-nfsc   network_command
 
 my ($nfspath) = @ARGV;
  if (not defined $nfspath) { die ('NO arg1 nfs dir'); }
  if (substr($nfspath, -1) ne "/") { $nfspath .= '/'; }
 # BIRTH ##############################################
 die "STILLBORN" if ((my $birth = daemon()) != 0);
-
-# DIRS ###############################################
-# /tmp/$NAME/dump/ : hostside work dir
-
-# /nfs/que/ : api que
-# /nfs/node/ : daemon dir by host
-# /nfs/node/pid : $host_$pid
-# /nfs/node/DIO : DEMON CHK-IN CHK-OUT
-# /nfs/cemetery/ : tombstone() dead DEMON logs
-
-# /nfs/pool/ : XS()
-# /nfs/g/ : XS()
 
 # GLOBAL CONST #######################################
 const my $NFSPATH => $nfspath;
