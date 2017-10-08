@@ -73,7 +73,10 @@ my $YAY = 0;
 
 # PREP ###############################################
 chdir('/tmp/');
+
+# [[ nfso ]] #########################################
 log_begin();
+
 $SIG{INT} = \&SUICIDE;
 $SIG{HUP} = \&que_up;
 
@@ -100,10 +103,12 @@ while (1)
 	unless (-e $que)
 		{ sleep 3600; next; }
 
+# [[ nfsn ]] #########################################
 	open(my $qfh, '<', $que);
 	my @QUE = readline $qfh; chomp @QUE;
 	my $api = shift @QUE;
 
+# [[ nfsc ]] #########################################
 	# chk api_valid
 	# chk que_file valid)
 	next if (que_verify($api, $que, $qfh) < 0);
