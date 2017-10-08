@@ -19,19 +19,16 @@
 # node <- read_cmd_nfsro <- mother
 
 # LOGS ######################################
-
 # pf (packet)
 #      - (PID_LOG_packets_raw)
 #      - (PID_LOG_invalid_input)
 #      - (PID_LOG_invalid_output)
 #      - (PID_LOG_packet_io)
 #      - (MOM_net_io)
-
 # dtrace (kernel)
 #      - (PID_LOG_cpu_io)
 #      - (PID_LOG_fs_io)
 #      - (PID_LOG_syscall_io)
-
 # bsd (host_system)
 #      - (PID_LOG_top)
 #      - (PID_LOG_ps)
@@ -42,3 +39,13 @@
 #      - (PID_LOG_iostat)
 #      - (MOM_net_io)
  
+# INTELLIGENCE ###############################
+# net_node_avg
+# net_node_over
+# net_node_under
+# fs_node_avg
+# fs_node_over
+# fs_node_under
+# ps_node_avg
+# ps_node_over
+# ps_node_under
