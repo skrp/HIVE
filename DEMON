@@ -1,6 +1,7 @@
 #!/usr/local/bin/perl
 # use FREEBSD::unix_or_you_a_bitch_ass_scrub;
 use strict; use warnings;
+
 use Const::Fast 'const';
 use Digest::SHA 'sha256_hex';
 use POSIX;
@@ -12,8 +13,9 @@ use LWP::UserAgent;
 use LWP::Protocol::https;
 use Archive::Any;
 
-######################################################
-# DEMON - daemon summons scroll
+########################################################
+# DEMON          '(tt)'	         daemon summons scroll #
+########################################################
 
 # STRUCT
 # /tmp/$NAME/dump/ : hostside work dir
