@@ -73,6 +73,7 @@ my $YAY = 0;
 
 # PREP ###############################################
 chdir('/tmp/');
+log_begin();
 $SIG{INT} = \&SUICIDE;
 $SIG{HUP} = \&que_up;
 
@@ -93,7 +94,6 @@ ping(); # host roster
 dio('IN'); # net roster
 
 printf $Lfh ("HELLOWORLD %s\n", TIME());
-
 while (1)
 { # LIVE ################################################
 	my $que = que_up();
@@ -138,6 +138,7 @@ while (1)
 
 	}
 	unlink $TODO;
+	log_send();
 }
 
 
