@@ -70,6 +70,7 @@ const my $RATE => 100;
 
 const my %api_hash = ( get => \&get, xtrac => \&xtrac,blkr => \&blkr, blkr => \&blkr );
 # ('get','blkr','sha', 'krip', 'xtrac', 'regx'); # dispatch table
+const my $UA = uagent();
 const my $SIZE => 128000;
 
 # GLOBAL VARIABLE ####################################
@@ -294,6 +295,15 @@ sub xssize {
 	my $size = -s $file;
 	return $size;
 }
+sub uagent
+{
+	my $s_ua = LWP::UserAgent->new(
+		agent => "Mozilla/50.0.2",
+		from => 'punxnotdead',
+		timeout => 45,
+	);
+	return $s_ua;
+}
 # LOGIC ####################################################
 sub get
 {
@@ -304,15 +314,6 @@ sub get
 	print $Lfh "YAY $i\n"; $YAY++;
 	next unless (-e $tmp);
 	XS($tmp) && unlink($tmp);
-}
-sub uagent
-{
-	my $s_ua = LWP::UserAgent->new(
-		agent => "Mozilla/50.0.2",
-		from => 'punxnotdead',
-		timeout => 45,
-	);
-	return $s_ua;
 }
 sub blkr
 {
