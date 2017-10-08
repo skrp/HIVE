@@ -69,7 +69,7 @@ const my $BIRTH => time();
 const my $RATE => 100;
 
 const my %api_hash = ( get => \&get, xtrac => \&xtrac,blkr => \&blkr, blkr => \&blkr );
-# ('get','blkr','sha', 'krip', 'xtrac', 'regx');
+# ('get','blkr','sha', 'krip', 'xtrac', 'regx'); # dispatch table
 const my $SIZE => 128000;
 
 # GLOBAL VARIABLE ####################################
