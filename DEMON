@@ -68,8 +68,10 @@ const my $DIO => $NFSPATH.'node/DIO';
 const my $BIRTH => time();
 const my $RATE => 100;
 
+# dispatch table
 const my %api_hash = ( get => \&get, xtrac => \&xtrac,blkr => \&blkr, blkr => \&blkr );
-# ('get','blkr','sha', 'krip', 'xtrac', 'regx'); # dispatch table
+
+cont my @API = ('get','blkr','sha', 'krip', 'xtrac', 'regx'); 
 const my $UA = uagent();
 const my $SIZE => 128000;
 
