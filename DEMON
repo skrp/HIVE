@@ -58,10 +58,10 @@ my ($nfspath) = @ARGV;
  if (not defined $nfspath) { die ('NO arg1 nfs dir'); }
  if (substr($nfspath, -1) ne "/") { $nfspath .= '/'; }
  
-# BIRTH ##############################################
+# BIRTH 
 die "STILLBORN" if ((my $birth = daemon()) != 0);
 
-# GLOBAL CONST #######################################
+# GLOBAL CONST 
 const my $NFSPATH => $nfspath;
 const my $NAME => name();
 const my $DUMP => $NAME.'_dump/';
@@ -97,13 +97,13 @@ const my @pf => ('PID_LOG_packets_raw', 'PID_LOG_invalid_input', 'PID_LOG_invali
 const my @dtrace => ('PID_LOG_cpu_io', 'PID_LOG_fs_io', 'PID_LOG_syscall_io');
 const my @unix => ('PID_LOG_top', 'PID_LOG_ps', 'PID_LOG_netstat', 'PID_LOG_zfs', 'PID_LOG_gpart', 'PID_LOG_camcontrol', 'PID_LOG_iostat', 'PID_LOG_io');
 
-# GLOBAL VARIABLE ####################################
+# GLOBAL VARIABLE 
 my $YAY = 0;
 
-# PREP ###############################################
+# PREP @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 chdir('/tmp/');
 
-# [[ nfso ]] #########################################
+# [[ nfso ]] 
 ###!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # log_begin();
 ###!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -139,12 +139,12 @@ while (1)
 	unless (-e $que)
 		{ sleep 3600; next; }
 
-# [[ nfsn ]] #########################################
+# [[ nfsn ]] 
 	open(my $qfh, '<', $que);
 	my @QUE = readline $qfh; chomp @QUE;
 	my $api = shift @QUE;
 
-# [[ nfsc ]] #########################################
+# [[ nfsc ]] 
 	# chk api_valid
 	# chk que_file valid)
 
@@ -275,7 +275,7 @@ sub que_up
 	# stop que, close up que, work new que
 ###!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 }
-# AWARENESS ####################################################
+# AWARENESS 
 sub log_begin
 {
 	for my $script (@pf)
@@ -285,7 +285,7 @@ sub log_begin
 	for my $script (@unix)
 		{ `perl $script $NAME &`; }
 }
-# COMMUNICATION ###############################################
+# COMMUNICATION 
 sub ping
 {
 	open(my $Pfh, '>>', '/tmp/PING');
@@ -306,7 +306,7 @@ sub nfs_pid
 	close $PIDfh;
 	return 0;
 }
-# XS ##########################################################
+# XS
 sub XS
 {
 	my ($file) = shift;
@@ -363,6 +363,7 @@ sub uagent
 	return $s_ua;
 }
 # ///////////////////////////////////////////////////////////
+
 # LOGIC %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 sub get
 {
