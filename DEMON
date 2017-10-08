@@ -182,15 +182,14 @@ sub que_verify
 {
 	my ($api, $que, $qfh) = @_;
 
-###!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	unless (/$api/, @API)
-###!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	for my $api_value (@API)
 	{
-		print $Lfh "FAIL_API $api\n";
-		close $qfh;
-		return -1;
+		if ($api =~ m/$b/)
+			{ return 0; }
 	}
-	return 0;
+	print $Lfh "FAIL_API $api\n";
+	close $qfh;
+	return -1;
 }
 sub SUICIDE
 {
