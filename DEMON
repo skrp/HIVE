@@ -363,7 +363,9 @@ sub regx
 		{ print $Lfh "no $_\n" unless any { /$_/ } @master; }
 	$YAY++;
 }
+###!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 sub xtrac
+###!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 {
 	my ($i) = @_;
 	print $Lfh "ping\n";
@@ -373,8 +375,8 @@ sub xtrac
 	my @files = $archive->files; 
 	print $Lfh @files;
 	$archive->extract($DUMP);
-#	XS($DUMP, $NFSPATH) && rmtree($DUMP);
-#	mkdir $DUMP;
+	XS($DUMP, $NFSPATH) && rmtree($DUMP);
+	mkdir $DUMP;
 	print $Lfh "YAY $i\n"; $YAY++;
 }
 # AWARENESS ####################################################
