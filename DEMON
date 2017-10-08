@@ -349,7 +349,9 @@ sub sha
 		{ print $Lfh "ERK $i ne $sha\n"; }
 	$YAY++;
 }
+###!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 sub regx
+###!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 {
 	my ($i) = @_;
 	open(my $fh, '<', $i); 
@@ -357,7 +359,10 @@ sub regx
 	my @i = readline $fh; chomp @i;
 	my @master = readline $mfh; chomp @master;
 	foreach (@i)
-		{ print $Lfh "no $_\n" unless any { /$_/ } @master; }
+		{ print $Lfh "no $_\n" unless any { /'$_'/ } @master; }
+	# test greedy any
+	# test greedy before
+	# test greedy after
 	$YAY++;
 }
 ###!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
