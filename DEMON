@@ -14,7 +14,7 @@ use LWP::Protocol::https;
 use Archive::Any;
 
 ########################################################
-# DEMON          '(tt)'	         daemon summons scroll #
+# DEMON          t_'(o_o)"'      daemon summons scroll #
 ########################################################
 
 # STRUCT
