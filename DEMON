@@ -55,6 +55,7 @@ use Archive::Any;
 my ($nfspath) = @ARGV;
  if (not defined $nfspath) { die ('NO arg1 nfs dir'); }
  if (substr($nfspath, -1) ne "/") { $nfspath .= '/'; }
+ 
 # BIRTH ##############################################
 die "STILLBORN" if ((my $birth = daemon()) != 0);
 
@@ -93,7 +94,6 @@ const my $SIZE => 128000;
 const my @pf => ('PID_LOG_packets_raw', 'PID_LOG_invalid_input', 'PID_LOG_invalid_output', 'PID_LOG_packet_io', 'PID_LOG_net_io');
 const my @dtrace => ('PID_LOG_cpu_io', 'PID_LOG_fs_io', 'PID_LOG_syscall_io');
 const my @unix => ('PID_LOG_top', 'PID_LOG_ps', 'PID_LOG_netstat', 'PID_LOG_zfs', 'PID_LOG_gpart', 'PID_LOG_camcontrol', 'PID_LOG_iostat', 'PID_LOG_io');
-
 
 # GLOBAL VARIABLE ####################################
 my $YAY = 0;
