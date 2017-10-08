@@ -30,9 +30,10 @@ use Archive::Any;
 # LOGIC
 #	-log_send()
 #	-que
-
+###!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # HOST-AWARENESS
 #	-log_begin()
+###!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 # NET-COMM [[ pause, kill, stdout, PID, host_side-dump, bandwidth ]]
 #	-nfsn   network_input
