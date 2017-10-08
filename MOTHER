@@ -1,3 +1,4 @@
+#####################################
 # MOTHER - net logistics intelligence
 
 # awareness of each node's state
@@ -13,3 +14,4 @@
 nstdn  -   usr_stdin
 nstdo  -   root_stdout
 nstdc  -   net_command 
+
