@@ -14,3 +14,7 @@
 # nstdn  -   usr_stdin
 # nstdo  -   root_stdout
 # nstdc  -   net_command 
+
+# node -> send_log_nfsw -> mother
+# node <- read_cmd_nfsro <- mother
+
