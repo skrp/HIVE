@@ -1,5 +1,5 @@
 #####################################
-# MOTHER - net logistics intelligence
+# MOM    - net logistics intelligence
 
 # awareness of each node's state
 # awareness of archive need
@@ -49,3 +49,6 @@
 # ps_node_avg
 # ps_node_over
 # ps_node_under
+# archive_avg
+# archive_under
+# archive_over
