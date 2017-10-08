@@ -58,8 +58,6 @@ const my $ZOMBIE => $TOMB.'ZOMBIE_'.$NAME;
 
 const my $SLEEP => $TOMB.'SLEEP';
 const my $SUICIDE => $TOMB.'SUICIDE';
-
-#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 const my $DIO => $NFSPATH.'node/DIO';
 
 const my $BIRTH => time();
