@@ -94,6 +94,7 @@ dio('IN'); # net roster
 
 printf $Lfh ("HELLOWORLD %s\n", TIME());
 
+#/usr/bin/perl
 while (1)
 { # WORK ################################################
 	my $que = que_up();
@@ -101,15 +102,16 @@ while (1)
 		{ sleep 3600; next; }
 	open(my $qfh, '<', $que);
 	my @QUE = readline $qfh; chomp @QUE;
-	print $Lfh "$que Que $QUE[0]\n";
+	my $api = shift @QUE;
 
-#	my $api = shift @QUE;
-	my $api = 'xtrac';
-	print $Lfh "api $api\n";
+	next if (api_verify($api, $qfh, $que) < 0);
 
-#	next if (api($api, $qfh, $que) < 0);
+		# chk api_valid
+		# chk que_file valid)
+	close $qfh;
 
 	my $ttl = @QUE;
+	print $Lfh "$ttl Que $QUE $api\n";
 	my $count = 0;
 
 	foreach my $i (@QUE)
@@ -135,6 +137,7 @@ while (1)
 	}
 	unlink $TODO;
 }
+
 # STRUCT #######################################################
 sub daemon {
    die "FAIL daemon1 $!\n" if ((my $pid = fork()) < 0);
