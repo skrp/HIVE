@@ -37,5 +37,5 @@
 #      - (PID_LOG_zfs)
 #      - (PID_LOG_gpart)
 #      - (PID_LOG_camcontrol)
-
+#      - (PID_LOG_iostat)
 
