@@ -367,7 +367,8 @@ sub uagent
 sub get
 {
 	my ($i) = @_;
-	my $tmp = $DUMP.$i;
+	my $iname = $i; $iname =~ s|.*/||;
+	my $tmp = $DUMP.$iname;
 	my $response = $UA->get($i, ':content_file'=>"$tmp");
 	print $Lfh "YAY $i\n"; $YAY++;
 	next unless (-e $tmp);
