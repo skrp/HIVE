@@ -86,16 +86,14 @@ const my @unix => ('PID_LOG_top', 'PID_LOG_ps', 'PID_LOG_netstat', 'PID_LOG_zfs'
 # GLOBAL VARIABLE
 my $YAY = 0;
 
-chdir('/tmp/');
-
 # [[ nfso ]]
 ###!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # log_begin();
 ###!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+chdir('/tmp/');
 $SIG{INT} = \&SUICIDE;
 #$SIG{HUP} = \&ch_que;
-
 mkdir $DUMP or die "$DUMP FAIL\n";
 
 open(my $Lfh, '>>', $RAW);
@@ -107,8 +105,7 @@ $FAILfh->autoflush(1);
 $DONEfh->autoflush(1);
 $TODOfh->autoflush(1);
 
-print $Lfh "nfs_pid() error\n" unless nfs_pid();
-
+nfs_pid(); #life beat
 ping(); # host roster
 dio('IN'); # net roster
 
