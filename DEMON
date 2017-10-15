@@ -25,7 +25,6 @@ use Archive::Any;
 # /HIVE/node/pid : $host_$pid
 # /HIVE/node/DIO : DEMON CHK-IN CHK-OUT
 # /HIVE/cemetery/ : tombstone() dead DEMON logs
-# /HIVE/cemetery/clone : code name sha256
 # /nfsdump/pool/ : XS()
 # /nfsdump/g/ : XS()
 
