@@ -191,7 +191,7 @@ sub SUICIDE
 	printf $Lfh ("FKTHEWORLD %s\n", TIME());
 	dio('OUT');
 	tombstone($api, $count, $ttl);
-	que_flush($que_ref, $count)
+	que_flush($que_ref, $count);
 	exit;
 }
 sub SLEEP
