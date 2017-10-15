@@ -92,7 +92,7 @@ chdir('/tmp/');
 ###!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 $SIG{INT} = \&SUICIDE;
-# $SIG{HUP} = \&que_up;
+#$SIG{HUP} = \&ch_que;
 
 mkdir $DUMP or die "$DUMP FAIL\n";
 
@@ -149,7 +149,7 @@ while (1)
 			tombstone($api, $count, $ttl);
 			open(my $TODOfh, '>', $TODO);
 			print $TODOfh @QUE; close $TODOfh;
-			print $Lfh "nfs_pid() error\n" unless nfs_pid();
+			nfs_pid();
 		}
 		$count++;
 # &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
