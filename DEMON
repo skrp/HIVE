@@ -255,6 +255,7 @@ sub zombie
 	my @QUE = \$que_ref;
 	for (@QUE)
 		{ print $zfh "$_\n"; }
+	close $zfh;
 }
 sub que_p
 {
