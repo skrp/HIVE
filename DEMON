@@ -248,6 +248,7 @@ sub api_verify
 }
 sub zombie
 {
+	my ($que_ref) = @_;
   	my $id = int(rand(999));
 	my $zpath = $ZOMBE.$id;
 	open(my $zfh, '>', $zpath);
