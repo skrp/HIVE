@@ -18,18 +18,6 @@ use LWP::UserAgent;
 use LWP::Protocol::https;
 use Archive::Any;
 
-# Mastercraftsman daemon spawn
-# Honored by age & successes
-# Power when a life
-# Never forgotten ever rewarded
-# $sha256_family the reward
-# $sha256_family++ if $sha256();
-# Core code the oldest & most successful
-# With plenty of unsuccessful bastards
-# Robustness the stable staple
-# Action explicit code
-# Programmed only oldest survive
-
 # STRUCT
 # /tmp/$NAME/dump/ : hostside work dir
 # /nfs/que/ : api que
@@ -53,16 +41,11 @@ use Archive::Any;
 #	-nfsc   network_command
 
 # PREP @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-
-my ($nfspath) = @ARGV;
- if (not defined $nfspath) { die ('NO arg1 nfs dir'); }
- if (substr($nfspath, -1) ne "/") { $nfspath .= '/'; }
- 
 # BIRTH 
 die "STILLBORN" if ((my $birth = daemon()) != 0);
 
 # GLOBAL CONST 
-const my $NFSPATH => $nfspath;
+const my $NFSPATH => '/HIVE/';
 const my $NAME => name();
 const my $DUMP => $NAME.'_dump/';
 const my $POOL => $NFSPATH.'pool/';
