@@ -121,30 +121,28 @@ while (1)
 	my ($api, $que_ref) = que_up();
 	unless (-e $api)
 		{ sleep 3600; next; }
-
+		
 # [[ nfsc ]]
-	# chk api_valid
-	# chk que_file valid)
+	# verify api
+	next if (que_verify($api, $que_ref) < 0);
 
-	next if (que_verify($api) < 0);
-
+	my @QUE = \$que_ref;
 	my $ttl = @QUE;
-	print $Lfh "ttl $ttl loc $QUE api $api\n";
+	print $Lfh "ttl $ttl loc $que_path api $api\n";
 
 	my $count = 0;
 	foreach my $i (@QUE)
 	{
 		if (-e $SUICIDE)
-      { SUICIDE(); }
+      			{ SUICIDE(); }
 		if (-e $SLEEP)
-   	 	{ SLEEP(); }
+   	 		{ SLEEP(); }
 
 		print $Lfh "$i\n";
 		if ($api_hash{$api}->($i) != 0)
-		  { print $FAILfh "$i\n"; next; }
+		 	{ print $FAILfh "$i\n"; next; }
 		print $DONEfh "$i success\n";
 
-		$count++;
 		if ($count % $RATE == 0)
 		{
 			tombstone($api, $count, $ttl);
@@ -152,6 +150,7 @@ while (1)
 			print $TODOfh @QUE; close $TODOfh;
 			print $Lfh "nfs_pid() error\n" unless nfs_pid();
 		}
+		$count++;
 # &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 	}
 	unlink $TODO;
@@ -159,27 +158,27 @@ while (1)
 
 # CORE SUBS ///////////////////////////////////////////////////////////
 sub daemon {
-   die "FAIL daemon1 $!\n" if ((my $pid = fork()) < 0);
-   if ($pid != 0)
-   	{ exit(0); }
-   POSIX::setsid() or die "FAIL setsid $!";
-   die "FAIL daemon2 $!\n" if ((my $pid2 = fork()) < 0);
-   if ($pid2 != 0)
-   	{ exit(0); }
-   chdir('/tmp');
-   umask 0;
-   my $fds = 3;
-   while ($fds < 1024)
-      { POSIX::close($fds); $fds++;  }
-   my $des = '/dev/null';
-   open(STDIN, "<$des");
-   open(STDOUT, ">$des");
-   open(STDERR, ">$des");
-   return 0;
+  	die "FAIL daemon1 $!\n" if ((my $pid = fork()) < 0);
+   	if ($pid != 0)
+   		{ exit(0); }
+   	POSIX::setsid() or die "FAIL setsid $!";
+   	die "FAIL daemon2 $!\n" if ((my $pid2 = fork()) < 0);
+  	if ($pid2 != 0)
+   		{ exit(0); }
+	chdir('/tmp');
+   	umask 0;
+   	my $fds = 3;
+  	while ($fds < 1024)
+   	 	{ POSIX::close($fds); $fds++;  }
+   	my $des = '/dev/null';
+   	open(STDIN, "<$des");
+   	open(STDOUT, ">$des");
+   	open(STDERR, ">$des");
+   	return 0;
 }
 sub que_verify
 {
-	my ($api) = @_;
+	my ($api, $que_ref) = @_;
 
 	for my $api_value (@API)
 	{
@@ -187,16 +186,14 @@ sub que_verify
 			{ return 0; }
 	}
 	print $Lfh "FAIL_API $api\n";
-  my $que_path = que_p();
-  my $id = int(rand(999));
-  zombie($que_path);
+  	
+  	my $id = int(rand(999));
+	my $zpath = $ZOMBE.$id;
+	open(my $zfh, '>', $zpath);
+	my @QUE = \$que_ref;
+	for (@QUE)
+		{ print $zfh "$_\n"; }
 	return -1;
-}
-sub zombie
-{
-  my ($que_path) = @_;
-  my $zpath = $ZOMBE.$id;
-  move($que_path, $zpath);
 }
 sub SUICIDE
 {
@@ -251,19 +248,20 @@ sub tombstone
 }
 sub que_p
 {
-  opendir(my $dh, $QUE);
-  my @ls = readdir($dh);
+  	opendir(my $dh, $QUE);
+ 	my @ls = readdir($dh);
   # skip $ls[0] = . ; $ls[1] = ..;
-  my $que_path = $QUE.$ls[2];
-  return $que_path;
+  	my $que_path = $QUE.$ls[2];
+  	return $que_path;
 }
 sub que_up
 {
-  my $que_path = que_p();
+  	my $que_path = que_p();
 	open(my $qfh, '<', $que_path);
 	my @QUE = readline $qfh;
-  chomp @QUE; close $qfh;
-
+  	chomp @QUE; close $qfh;
+	unlink $que_path;
+	
 	my $api = shift @QUE;
 	my $que_ref = \@QUE;
 
