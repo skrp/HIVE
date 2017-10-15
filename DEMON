@@ -306,7 +306,6 @@ sub nfs_pid
 	open(my $PIDfh, '>', $NFSPID);
 	print $PIDfh "$$\n";
 	close $PIDfh;
-	return 0;
 }
 # XTRACTION & STANDARDIZE
 sub XS
