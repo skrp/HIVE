@@ -54,6 +54,7 @@ const my $G => $DUMPPATH.'g/'; # remote nfs dump
 const my $NODE => hostname(); # node name
 const my $QUE => $NFSPATH.'node/'.$NODE.'/'; # node path
 const my $TOMB => $NFSPATH.'cemetery/'; # DEMON logs
+const my $TOMBSTONE => $TOMB.$NAME;
 const my $NFSPID => $NFSPATH.'node/pid/'.$$; # life beat (creates PID that is removed by chron every hour)
 
 const my $TODO => $TOMB.'TODO_'.$NAME; # unclean death leftovers
@@ -223,18 +224,13 @@ sub name
 sub tombstone
 {
 	my ($api, $count, $ttl) = @_;
-
-	open(my $LLfh, '<', $TOMB);
-	my @llfh = readline $LLfh;
-	my @yay = grep { /^YAY / } @llfh;
-	my $yay = @yay;
 	my @FACE;
 	$FACE[0] = $NAME;
 	my $Ttime = time();
 	$FACE[1] = ((($Ttime - $BIRTH)/60)/60);
-	$FACE[2] = $api.'_'.$yay.'_'.$count.'_'.$ttl;
+	$FACE[2] = $api.'_'.$YAY.'_'.$count.'_'.$ttl;
 
-	open(my $Tfh, '>>', $TOMB);
+	open(my $Tfh, '>>', $TOMBSTONE);
 	printf $Tfh ("%d %s %d %s\n", $YAY, $FACE[0], $FACE[1], $FACE[2]);
 }
 sub api_verify
