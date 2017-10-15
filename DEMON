@@ -71,9 +71,10 @@ const my $DIO => $NFSPATH.'node/DIO'; # net roster
 const my $BIRTH => time();
 const my $RATE => 100;
 
-# dispatch table
+# DISPATCH TABLE
 const my %api_hash => ( get => \&get, xtrac => \&xtrac, blkr => \&blkr, krip => \&krip, regx => \&regex, sha => \&sha );
 const my @API => ('get','blkr','sha', 'krip', 'xtrac', 'regx');
+
 const my $UA => uagent();
 const my $SIZE => 128000;
 
@@ -134,11 +135,8 @@ while (1)
 	my $count = 0;
 	foreach my $i (@QUE)
 	{
-		if (-e $SUICIDE)
-      			{ SUICIDE(); }
 		if (-e $SLEEP)
    	 		{ SLEEP(); }
-
 		print $Lfh "$i\n";
 		if ($api_hash{$api}->($i) != 0)
 		 	{ print $FAILfh "$i\n"; next; }
@@ -177,6 +175,11 @@ sub daemon {
    	open(STDERR, ">$des");
    	return 0;
 }
+sub que_flush
+{
+
+	
+}
 sub SUICIDE
 {
 	my ($api, $count, $ttl) = @_;
@@ -193,6 +196,7 @@ sub SLEEP
 	my $timeout = readline $Sfh; chomp $timeout;
 	print $Lfh ("$SLEEP %s %s\n", $timeout, TIME());
 	close $Sfh; unlink $SLEEP;
+	SUICIDE() if ($timeout eq "SUICIDE");
 	tombstone($api, $count, $ttl);
 	sleep $timeout;
 }
