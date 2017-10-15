@@ -136,7 +136,7 @@ while (1)
 	foreach my $i (@QUE)
 	{
 		if (-e $SLEEP)
-   	 		{ SLEEP(); }
+   	 		{ SLEEP($api, $count, $ttl); }
 		print $Lfh "$i\n";
 		if ($api_hash{$api}->($i) != 0)
 		 	{ print $FAILfh "$i\n"; next; }
@@ -196,7 +196,7 @@ sub SLEEP
 	my $timeout = readline $Sfh; chomp $timeout;
 	print $Lfh ("$SLEEP %s %s\n", $timeout, TIME());
 	close $Sfh; unlink $SLEEP;
-	SUICIDE() if ($timeout eq "SUICIDE");
+	SUICIDE($api, $count, $ttl) if ($timeout eq "SUICIDE");
 	tombstone($api, $count, $ttl);
 	sleep $timeout;
 }
