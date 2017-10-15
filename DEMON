@@ -291,7 +291,7 @@ sub log_begin
 sub ping
 { # host roster
 	open(my $Pfh, '>>', '/tmp/PING');
-	printf $Pfh "%ld %s ping!\n", time(), $$;
+	printf $Pfh ("%s %s ping!\n", TIME(), $$);
 	close $Pfh;
 }
 sub dio 
