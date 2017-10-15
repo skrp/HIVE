@@ -281,28 +281,28 @@ sub log_begin
 }
 # COMMUNICATION
 sub ping
-{
+{ # host roster
 	open(my $Pfh, '>>', '/tmp/PING');
 	printf $Pfh "%ld %s ping!\n", time(), $$;
 	close $Pfh;
 }
-sub dio
-{
+sub dio 
+{ # net roster
 	my $dstatus = (@_);
 	open(my $Dfh, '>>', $DIO);
 	printf $Dfh ("%s %s %s\n", TIME(), $NAME, $dstatus);
 	close $Dfh;
 }
 sub nfs_pid
-{
+{ # net alive pid
 	open(my $PIDfh, '>', $NFSPID);
 	print $PIDfh "$$\n";
 	close $PIDfh;
 	return 0;
 }
-# XS
+# XTRACTION & STANDARDIZE
 sub XS
-{
+{ 
 	my ($file) = shift;
 	my ($sha) = file_digest($file) or die "couldn't sha $file";
 	File::Copy::copy($file, $POOL.$sha);
@@ -414,9 +414,7 @@ sub regx
 	my @master = readline $mfh; chomp @master;
 	foreach (@i)
 		{ print $Lfh "no $_\n" unless any { /'$_'/ } @master; }
-	# test greedy any
-	# test greedy before
-	# test greedy after
+	# test greedy any, before, after
 	$YAY++;
 }
 ###!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
