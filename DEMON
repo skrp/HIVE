@@ -177,28 +177,6 @@ sub daemon {
    	open(STDERR, ">$des");
    	return 0;
 }
-sub api_verify
-{
-	my ($api, $que_ref) = @_;
-
-	for my $api_value (@API)
-	{
-		if ($api =~ m/$api_value/)
-			{ return 0; }
-	}
-	print $Lfh "FAIL_API $api\n";
-	zombie($que_ref);
-	return -1;
-}
-sub zombie
-{
-  	my $id = int(rand(999));
-	my $zpath = $ZOMBE.$id;
-	open(my $zfh, '>', $zpath);
-	my @QUE = \$que_ref;
-	for (@QUE)
-		{ print $zfh "$_\n"; }
-}
 sub SUICIDE
 {
 	my ($api, $count, $ttl) = @_;
@@ -249,6 +227,28 @@ sub tombstone
 
 	open(my $Tfh, '>>', $TOMB);
 	printf $Tfh ("%d %s %d %s\n", $YAY, $FACE[0], $FACE[1], $FACE[2]);
+}
+sub api_verify
+{
+	my ($api, $que_ref) = @_;
+
+	for my $api_value (@API)
+	{
+		if ($api =~ m/$api_value/)
+			{ return 0; }
+	}
+	print $Lfh "FAIL_API $api\n";
+	zombie($que_ref);
+	return -1;
+}
+sub zombie
+{
+  	my $id = int(rand(999));
+	my $zpath = $ZOMBE.$id;
+	open(my $zfh, '>', $zpath);
+	my @QUE = \$que_ref;
+	for (@QUE)
+		{ print $zfh "$_\n"; }
 }
 sub que_p
 {
