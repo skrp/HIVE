@@ -20,14 +20,14 @@ use Archive::Any;
 
 # STRUCT
 # /tmp/$NAME/dump/ : hostside work dir
-# /nfs/que/ : api que
-# /nfs/node/ : daemon dir by host
-# /nfs/node/pid : $host_$pid
-# /nfs/node/DIO : DEMON CHK-IN CHK-OUT
-# /nfs/cemetery/ : tombstone() dead DEMON logs
-# /nfs/cemetery/clone : code name sha256
-# /nfs/pool/ : XS()
-# /nfs/g/ : XS()
+# /HIVE/que/ : api que
+# /HIVE/node/ : daemon dir by host
+# /HIVE/node/pid : $host_$pid
+# /HIVE/node/DIO : DEMON CHK-IN CHK-OUT
+# /HIVE/cemetery/ : tombstone() dead DEMON logs
+# /HIVE/cemetery/clone : code name sha256
+# /nfsdump/pool/ : XS()
+# /nfsdump/g/ : XS()
 
 # LOGIC
 #	-que
@@ -45,7 +45,7 @@ use Archive::Any;
 die "STILLBORN" if ((my $birth = daemon()) != 0);
 
 # GLOBAL CONST
-const my $DUMPPATH => ''; # nfs dump
+const my $DUMPPATH => '/nfsdump/'; 
 const my $NFSPATH => '/HIVE/';
 const my $NAME => name();
 const my $DUMP => $NAME.'_dump/';
