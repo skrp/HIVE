@@ -61,7 +61,7 @@ const my $FAIL => $TOMB.'FAIL_'.$NAME;
 const my $SHELL => $TOMB.'SHELL_'.$NAME;
 const my $REP => $TOMB.'REP_'.$NAME;
 const my $RAW => $TOMB.'RAW_'.$NAME;
-const my $ZOMBIE => $TOMB.'ZOMBIE_'.$NAME;
+const my $ZOMBIE => $TOMB.'ZOMBIE_'.$NAME; # fails path of api_verify()
 
 const my $SLEEP => $TOMB.'SLEEP';
 const my $SUICIDE => $TOMB.'SUICIDE';
@@ -124,11 +124,11 @@ while (1)
 		
 # [[ nfsc ]]
 	# verify api
-	next if (que_verify($api, $que_ref) < 0);
+	next if (api_verify($api, $que_ref) < 0);
 
 	my @QUE = \$que_ref;
 	my $ttl = @QUE;
-	print $Lfh "ttl $ttl loc $que_path api $api\n";
+	print $Lfh "ttl $ttl api $api\n";
 
 	my $count = 0;
 	foreach my $i (@QUE)
@@ -176,7 +176,7 @@ sub daemon {
    	open(STDERR, ">$des");
    	return 0;
 }
-sub que_verify
+sub api_verify
 {
 	my ($api, $que_ref) = @_;
 
@@ -186,14 +186,17 @@ sub que_verify
 			{ return 0; }
 	}
 	print $Lfh "FAIL_API $api\n";
-  	
+	zombie($que_ref);
+	return -1;
+}
+sub zombie
+{
   	my $id = int(rand(999));
 	my $zpath = $ZOMBE.$id;
 	open(my $zfh, '>', $zpath);
 	my @QUE = \$que_ref;
 	for (@QUE)
 		{ print $zfh "$_\n"; }
-	return -1;
 }
 sub SUICIDE
 {
@@ -264,7 +267,6 @@ sub que_up
 	
 	my $api = shift @QUE;
 	my $que_ref = \@QUE;
-
 	return ($api, $que_ref );
 }
 # AWARENESS
