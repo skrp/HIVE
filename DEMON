@@ -228,7 +228,7 @@ sub tombstone
 	$FACE[0] = $NAME;
 	my $Ttime = time();
 	$FACE[1] = ((($Ttime - $BIRTH)/60)/60);
-	$FACE[2] = $api.'_'.$YAY.'_'.$count.'_'.$ttl;
+	$FACE[2] = $api.'_'.$count.'_'.$ttl;
 
 	open(my $Tfh, '>>', $TOMBSTONE);
 	printf $Tfh ("%d %s %d %s\n", $YAY, $FACE[0], $FACE[1], $FACE[2]);
