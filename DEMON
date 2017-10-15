@@ -136,7 +136,7 @@ while (1)
 	foreach my $i (@QUE)
 	{
 		if (-e $SLEEP)
-   	 		{ SLEEP($api, $count, $ttl); }
+   	 		{ SLEEP($api, $count, $ttl, $que_ref); }
 		print $Lfh "$i\n";
 		if ($api_hash{$api}->($i) != 0)
 		 	{ print $FAILfh "$i\n"; next; }
@@ -145,8 +145,7 @@ while (1)
 		if ($count % $RATE == 0)
 		{
 			tombstone($api, $count, $ttl);
-			open(my $TODOfh, '>', $TODO);
-			print $TODOfh @QUE; close $TODOfh;
+			que_flush($que_ref, $count);
 			nfs_pid();
 		}
 		$count++;
@@ -177,26 +176,32 @@ sub daemon {
 }
 sub que_flush
 {
-
-	
+	my ($que_ref, $count) = @_;
+	open(my $TODOfh, '>', $TODO);
+	print $TODOfh "$count\n"; 
+	my @iteration = \$que_ref;
+	foreach (@iteration)
+		{ print $TODOfh "$_\n"; }
+	close $TODOfh;
 }
 sub SUICIDE
 {
-	my ($api, $count, $ttl) = @_;
+	my ($api, $count, $ttl, $que_ref) = @_;
 	unlink $SUICIDE;
 	printf $Lfh ("FKTHEWORLD %s\n", TIME());
 	dio('OUT');
 	tombstone($api, $count, $ttl);
+	que_flush($que_ref, $count)
 	exit;
 }
 sub SLEEP
 {
-	my ($api, $count, $ttl) = @_;
+	my ($api, $count, $ttl, $que_ref) = @_;
 	open(my $Sfh, '<', $SLEEP);
 	my $timeout = readline $Sfh; chomp $timeout;
 	print $Lfh ("$SLEEP %s %s\n", $timeout, TIME());
 	close $Sfh; unlink $SLEEP;
-	SUICIDE($api, $count, $ttl) if ($timeout eq "SUICIDE");
+	SUICIDE($api, $count, $ttl, $que_ref) if ($timeout eq "SUICIDE");
 	tombstone($api, $count, $ttl);
 	sleep $timeout;
 }
