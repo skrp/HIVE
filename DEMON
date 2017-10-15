@@ -47,14 +47,14 @@ die "STILLBORN" if ((my $birth = daemon()) != 0);
 # GLOBAL CONST
 const my $DUMPPATH => '/nfsdump/'; 
 const my $NFSPATH => '/HIVE/';
-const my $NAME => name();
-const my $DUMP => $NAME.'_dump/';
-const my $POOL => $DUMPPATH.'pool/';
-const my $G => $DUMPPATH.'g/';
-const my $NODE => hostname();
-const my $QUE => $NFSPATH.'node/'.$NODE.'/';
-const my $TOMB => $NFSPATH.'cemetery/';
-const my $NFSPID => $NFSPATH.'node/pid/'.$$;
+const my $NAME => name(); # uniq process name
+const my $DUMP => $NAME.'_dump/'; # unique process hostside dump
+const my $POOL => $DUMPPATH.'pool/'; # remote nfs dump
+const my $G => $DUMPPATH.'g/'; # remote nfs dump
+const my $NODE => hostname(); # node name
+const my $QUE => $NFSPATH.'node/'.$NODE.'/'; # node path
+const my $TOMB => $NFSPATH.'cemetery/'; # DEMON logs
+const my $NFSPID => $NFSPATH.'node/pid/'.$$; # life beat (creates PID that is removed by chron every hour)
 
 const my $TODO => $TOMB.'TODO_'.$NAME; # unclean death leftovers
 const my $DONE => $TOMB.'DONE_'.$NAME; # successful iterations
