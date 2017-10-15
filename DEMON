@@ -118,8 +118,8 @@ printf $Lfh ("HELLOWORLD %s\n", TIME());
 while (1)
 {
 # [[ nfsn ]]
-	my ($qfh, $que, $que_ref) = que_up();
-	unless (-e $que)
+	my ($api, $que_ref) = que_up();
+	unless (-e $api)
 		{ sleep 3600; next; }
 
 # [[ nfsc ]]
@@ -135,13 +135,13 @@ while (1)
 	foreach my $i (@QUE)
 	{
 		if (-e $SUICIDE)
-    		{ SUICIDE(); }
+      { SUICIDE(); }
 		if (-e $SLEEP)
-   	 		{ SLEEP(); }
+   	 	{ SLEEP(); }
 
 		print $Lfh "$i\n";
 		if ($api_hash{$api}->($i) != 0)
-			{ print $FAILfh "$i\n"; next; }
+		  { print $FAILfh "$i\n"; next; }
 		print $DONEfh "$i success\n";
 
 		$count++;
@@ -187,7 +187,16 @@ sub que_verify
 			{ return 0; }
 	}
 	print $Lfh "FAIL_API $api\n";
+  my $que_path = que_p();
+  my $id = int(rand(999));
+  zombie($que_path);
 	return -1;
+}
+sub zombie
+{
+  my ($que_path) = @_;
+  my $zpath = $ZOMBE.$id;
+  move($que_path, $zpath);
 }
 sub SUICIDE
 {
@@ -240,15 +249,17 @@ sub tombstone
 	open(my $Tfh, '>>', $TOMB);
 	printf $Tfh ("%d %s %d %s\n", $YAY, $FACE[0], $FACE[1], $FACE[2]);
 }
+sub que_p
+{
+  opendir(my $dh, $QUE);
+  my @ls = readdir($dh);
+  # skip $ls[0] = . ; $ls[1] = ..;
+  my $que_path = $QUE.$ls[2];
+  return $que_path;
+}
 sub que_up
 {
-
-
-	opendir(my $dh, $QUE);
-	my @ls = readdir($dh);
-	# skip $ls[0] = . ; $ls[1] = ..;
-	my $que_path = $QUE.$ls[2];
-
+  my $que_path = que_p();
 	open(my $qfh, '<', $que_path);
 	my @QUE = readline $qfh;
   chomp @QUE; close $qfh;
