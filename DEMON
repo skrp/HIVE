@@ -45,27 +45,28 @@ use Archive::Any;
 die "STILLBORN" if ((my $birth = daemon()) != 0);
 
 # GLOBAL CONST
+const my $DUMPPATH => ''; # nfs dump
 const my $NFSPATH => '/HIVE/';
 const my $NAME => name();
 const my $DUMP => $NAME.'_dump/';
-const my $POOL => $NFSPATH.'pool/';
-const my $G => $NFSPATH.'g/';
+const my $POOL => $DUMPPATH.'pool/';
+const my $G => $DUMPPATH.'g/';
 const my $NODE => hostname();
 const my $QUE => $NFSPATH.'node/'.$NODE.'/';
 const my $TOMB => $NFSPATH.'cemetery/';
 const my $NFSPID => $NFSPATH.'node/pid/'.$$;
 
-const my $TODO => $TOMB.'TODO_'.$NAME;
-const my $DONE => $TOMB.'DONE_'.$NAME;
-const my $FAIL => $TOMB.'FAIL_'.$NAME;
-const my $SHELL => $TOMB.'SHELL_'.$NAME;
-const my $REP => $TOMB.'REP_'.$NAME;
-const my $RAW => $TOMB.'RAW_'.$NAME;
+const my $TODO => $TOMB.'TODO_'.$NAME; # unclean death leftovers
+const my $DONE => $TOMB.'DONE_'.$NAME; # successful iterations
+const my $FAIL => $TOMB.'FAIL_'.$NAME; # failed iterations
+const my $SHELL => $TOMB.'SHELL_'.$NAME; # code
+const my $REP => $TOMB.'REP_'.$NAME; # metrics
+const my $RAW => $TOMB.'RAW_'.$NAME; # output
 const my $ZOMBIE => $TOMB.'ZOMBIE_'.$NAME; # fails path of api_verify()
 
-const my $SLEEP => $TOMB.'SLEEP';
-const my $SUICIDE => $TOMB.'SUICIDE';
-const my $DIO => $NFSPATH.'node/DIO';
+const my $SLEEP => $TOMB.'SLEEP'; # triggers sleep
+const my $SUICIDE => $TOMB.'SUICIDE'; # triggers suicide
+const my $DIO => $NFSPATH.'node/DIO'; # net roster
 
 const my $BIRTH => time();
 const my $RATE => 100;
