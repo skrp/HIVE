@@ -41,10 +41,10 @@ use Archive::Any;
 #	-nfsc   network_command
 
 # PREP @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-# BIRTH 
+# BIRTH
 die "STILLBORN" if ((my $birth = daemon()) != 0);
 
-# GLOBAL CONST 
+# GLOBAL CONST
 const my $NFSPATH => '/HIVE/';
 const my $NAME => name();
 const my $DUMP => $NAME.'_dump/';
@@ -72,7 +72,7 @@ const my $RATE => 100;
 
 # dispatch table
 const my %api_hash => ( get => \&get, xtrac => \&xtrac, blkr => \&blkr, krip => \&krip, regx => \&regex, sha => \&sha );
-const my @API => ('get','blkr','sha', 'krip', 'xtrac', 'regx'); 
+const my @API => ('get','blkr','sha', 'krip', 'xtrac', 'regx');
 const my $UA => uagent();
 const my $SIZE => 128000;
 
@@ -80,18 +80,18 @@ const my @pf => ('PID_LOG_packets_raw', 'PID_LOG_invalid_input', 'PID_LOG_invali
 const my @dtrace => ('PID_LOG_cpu_io', 'PID_LOG_fs_io', 'PID_LOG_syscall_io');
 const my @unix => ('PID_LOG_top', 'PID_LOG_ps', 'PID_LOG_netstat', 'PID_LOG_zfs', 'PID_LOG_gpart', 'PID_LOG_camcontrol', 'PID_LOG_iostat', 'PID_LOG_io');
 
-# GLOBAL VARIABLE 
+# GLOBAL VARIABLE
 my $YAY = 0;
 
 chdir('/tmp/');
 
-# [[ nfso ]] 
+# [[ nfso ]]
 ###!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # log_begin();
 ###!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 $SIG{INT} = \&SUICIDE;
-$SIG{HUP} = \&que_up;
+# $SIG{HUP} = \&que_up;
 
 mkdir $DUMP or die "$DUMP FAIL\n";
 
@@ -117,21 +117,16 @@ printf $Lfh ("HELLOWORLD %s\n", TIME());
 
 while (1)
 {
-	my $que = que_up();
+# [[ nfsn ]]
+	my ($qfh, $que, $que_ref) = que_up();
 	unless (-e $que)
 		{ sleep 3600; next; }
 
-# [[ nfsn ]] 
-	open(my $qfh, '<', $que);
-	my @QUE = readline $qfh; chomp @QUE;
-	my $api = shift @QUE;
-
-# [[ nfsc ]] 
+# [[ nfsc ]]
 	# chk api_valid
 	# chk que_file valid)
 
-	next if (que_verify($api, $que, $qfh) < 0);
-	close $qfh;
+	next if (que_verify($api) < 0);
 
 	my $ttl = @QUE;
 	print $Lfh "ttl $ttl loc $QUE api $api\n";
@@ -184,15 +179,14 @@ sub daemon {
 }
 sub que_verify
 {
-	my ($api, $que, $qfh) = @_;
+	my ($api) = @_;
 
 	for my $api_value (@API)
 	{
-		if ($api =~ m/$b/)
+		if ($api =~ m/$api_value/)
 			{ return 0; }
 	}
 	print $Lfh "FAIL_API $api\n";
-	close $qfh;
 	return -1;
 }
 sub SUICIDE
@@ -248,16 +242,25 @@ sub tombstone
 }
 sub que_up
 {
-	opendir(my $dh, $QUE);
-	my @ls = readdir($dh);
-	my $que_path = $QUE.$ls[2];
-	return $que_path; # skip $ls[0] = . ; $ls[1] = ..;
-	
 ###!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	# stop que, close up que, work new que
 ###!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+	opendir(my $dh, $QUE);
+	my @ls = readdir($dh);
+	# skip $ls[0] = . ; $ls[1] = ..;
+	my $que_path = $QUE.$ls[2];
+
+	open(my $qfh, '<', $que_path);
+	my @QUE = readline $qfh;
+  chomp @QUE; close $qfh;
+
+	my $api = shift @QUE;
+	my $que_ref = \@QUE;
+  
+	return ($api, $que_ref );
 }
-# AWARENESS 
+# AWARENESS
 sub log_begin
 {
 	for my $script (@pf)
@@ -267,7 +270,7 @@ sub log_begin
 	for my $script (@unix)
 		{ `perl $script $NAME &`; }
 }
-# COMMUNICATION 
+# COMMUNICATION
 sub ping
 {
 	open(my $Pfh, '>>', '/tmp/PING');
@@ -296,7 +299,7 @@ sub XS
 	File::Copy::copy($file, $POOL.$sha);
 	my $cur = $G.$sha;
 	open(my $fh, '>>', $cur) or die "Meta File Creation FAIL $file";
-	printf $fh "%s\n%s\n%s\n%s\n", 
+	printf $fh "%s\n%s\n%s\n%s\n",
 		xsname($file),
 		xspath($file),
 		xssize($file),
@@ -316,7 +319,7 @@ sub xsname {
 sub xspath {
 	my ($file) = @_;
 	$file =~ s?/?_?g;
-	return $file; 
+	return $file;
 }
 sub file_mime_encoding {
 	my ($file) = @_;
@@ -327,7 +330,7 @@ sub file_mime_encoding {
 	$des =~ s/,/_/g;
 	my $md = $info->{mime_type};
 	$md =~ s?[/ ]?.?g;
-	my $enc = sprintf("%s %s %s", $des, $md, $info->{encoding}); 
+	my $enc = sprintf("%s %s %s", $des, $md, $info->{encoding});
 	return $enc;
 }
 sub xssize {
@@ -364,7 +367,7 @@ sub blkr
 	my $ipath = $NFSPATH.'pool/'.$i;
 	open(my $ifh, '<', "$ipath") || print $Lfh "Cant open $i: $!\n";
 	binmode($ifh);
-	
+
 	while (read($ifh, $block, $SIZE))
 	{
 		my $bsha = sha256_hex($block);
@@ -396,7 +399,7 @@ sub regx
 ###!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 {
 	my ($i) = @_;
-	open(my $fh, '<', $i); 
+	open(my $fh, '<', $i);
 	open(my $mfh, '<', $NFSPATH);
 	my @i = readline $fh; chomp @i;
 	my @master = readline $mfh; chomp @master;
@@ -416,7 +419,7 @@ sub xtrac
 	my $archive = Archive::Any->new($i);
 	if ($archive->is_naughty)
 		{ print $Lfh "ALERT xtrac naughty $i"; next; }
-	my @files = $archive->files; 
+	my @files = $archive->files;
 	print $Lfh @files;
 	$archive->extract($DUMP);
 	XS($DUMP, $NFSPATH) && rmtree($DUMP);
