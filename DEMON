@@ -135,12 +135,12 @@ while (1)
 	foreach my $i (@QUE)
 	{
 		if (-e $SUICIDE)
-    			{ SUICIDE(); }
+    		{ SUICIDE(); }
 		if (-e $SLEEP)
    	 		{ SLEEP(); }
 
 		print $Lfh "$i\n";
-		 if ($api_hash{$api}->($i) != 0)
+		if ($api_hash{$api}->($i) != 0)
 			{ print $FAILfh "$i\n"; next; }
 		print $DONEfh "$i success\n";
 
@@ -242,9 +242,7 @@ sub tombstone
 }
 sub que_up
 {
-###!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	# stop que, close up que, work new que
-###!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 
 	opendir(my $dh, $QUE);
 	my @ls = readdir($dh);
@@ -257,7 +255,7 @@ sub que_up
 
 	my $api = shift @QUE;
 	my $que_ref = \@QUE;
-  
+
 	return ($api, $que_ref );
 }
 # AWARENESS
