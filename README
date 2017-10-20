@@ -106,3 +106,59 @@ HORIZON ( 1B BLKR )
 MONSOON ( 100M SLICR )
 ACCOUNTANT ( 100B SHA )
 SCROOGE ( 1M GET )
+
+
+#####################################
+# QUEEN    - net logistics intelligence
+
+# awareness of each node's state
+# awareness of archive need
+
+# que work
+# birth demons
+
+# $nfs_server = '';
+# /mount nfs -o nfsv4 $nfs_server /mom /net;
+
+# NFSV4 DESCRIPTORS ##########################
+# nstdn  -   usr_stdin
+# nstdo  -   root_stdout
+# nstdc  -   net_command 
+
+# node -> send_log_nfsw -> mother
+# node <- read_cmd_nfsro <- mother
+
+# LOGS ######################################
+# pf (packet)
+#      - (PID_LOG_packets_raw)
+#      - (PID_LOG_invalid_input)
+#      - (PID_LOG_invalid_output)
+#      - (PID_LOG_packet_io)
+#      - (MOM_net_io)
+# dtrace (kernel)
+#      - (PID_LOG_cpu_io)
+#      - (PID_LOG_fs_io)
+#      - (PID_LOG_syscall_io)
+# bsd (host_system)
+#      - (PID_LOG_top)
+#      - (PID_LOG_ps)
+#      - (PID_LOG_netstat)
+#      - (PID_LOG_zfs)
+#      - (PID_LOG_gpart)
+#      - (PID_LOG_camcontrol)
+#      - (PID_LOG_iostat)
+#      - (MOM_net_io)
+ 
+# INTELLIGENCE ###############################
+# net_node_avg
+# net_node_over
+# net_node_under
+# fs_node_avg
+# fs_node_over
+# fs_node_under
+# ps_node_avg
+# ps_node_over
+# ps_node_under
+# archive_avg
+# archive_under
+# archive_over
