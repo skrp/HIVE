@@ -45,6 +45,7 @@ use Archive::Any;
 die "STILLBORN" if ((my $birth = daemon()) != 0);
 
 # GLOBAL CONST
+const my $apellido = file_digest($0);
 const my $DUMPPATH => '/nfsdump/'; 
 const my $NFSPATH => '/HIVE/';
 const my $NAME => name(); # uniq process name
