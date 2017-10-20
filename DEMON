@@ -223,13 +223,12 @@ sub tombstone
 {
 	my ($api, $count, $ttl) = @_;
 	my @FACE;
-	$FACE[0] = $NAME;
+	$FACE[0] = "$apellido     $NAME";
 	my $Ttime = time();
 	$FACE[1] = ((($Ttime - $BIRTH)/60)/60);
 	$FACE[2] = $api.'_'.$count.'_'.$ttl;
-
 	open(my $Tfh, '>>', $TOMBSTONE);
-	printf $Tfh ("%d %s %d %s\n", $YAY, $FACE[0], $FACE[1], $FACE[2]);
+	printf $Tfh ("%d %s %d %s\n", $FACE[1], $YAY, $FACE[0], $FACE[2]);
 }
 sub api_verify
 {
