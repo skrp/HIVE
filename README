@@ -12,9 +12,6 @@ https://github.com/skrp/MINT
 
 {4} Awareness = [[ host_io, net_io, @FACE ]]
 
-# DEMON INTERFACE ########################################
-https://github.com/skrp/MINT
-
 # FACE #############################################
 $FACE[0] => AGE_IN_HOURS
 $FACE[1] => SUCCESSFUL_ITERATIONS
