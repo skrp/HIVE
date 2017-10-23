@@ -24,7 +24,7 @@ use Archive::Any;
 # /HIVE/que/ : api que
 # /HIVE/node/ : daemon dir by host
 # /HIVE/node/pid : $host_$pid
-# /HIVE/node/DIO : DEMON CHK-IN CHK-OUT
+# /HIVE/DIO : DEMON CHK-IN CHK-OUT
 # /HIVE/cemetery/ : tombstone() dead DEMON logs
 # /nfsdump/pool/ : XS()
 # /nfsdump/g/ : XS()
@@ -56,7 +56,7 @@ const my $NODE => hostname(); # node name
 const my $QUE => $NFSPATH.$NODE.'/'; # node path
 const my $TOMB => $NFSPATH.'cemetery/'; # DEMON logs
 const my $TOMBSTONE => $TOMB.$NAME;
-const my $NFSPID => $NFSPATH.'node/pid/'.$$; # life beat (creates PID that is removed by chron every hour)
+const my $NFSPID => $NFSPATH.'node/pid'.$$; # life beat (creates PID that is removed by chron every hour)
 
 const my $TODO => $TOMB.'TODO_'.$NAME; # unclean death leftovers
 const my $DONE => $TOMB.'DONE_'.$NAME; # successful iterations
