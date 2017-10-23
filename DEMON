@@ -120,6 +120,7 @@ while (1)
 {
 # [[ nfsn ]]
 	my ($api, $que_ref) = que_up();
+	print $Lfh "$api\n";
 	unless (-e $api)
 		{ sleep 3600; next; }
 		
@@ -260,6 +261,7 @@ sub que_p
  	my @ls = readdir($dh);
   # skip $ls[0] = . ; $ls[1] = ..;
   	my $que_path = $QUE.$ls[2];
+	print $Lfh "$que_path\n";
   	return $que_path;
 }
 sub que_up
