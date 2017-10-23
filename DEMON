@@ -45,7 +45,7 @@ use Archive::Any;
 die "STILLBORN" if ((my $birth = daemon()) != 0);
 
 # GLOBAL CONST
-const my $apellido = file_digest($0);
+#const my $apellido = file_digest($0);
 const my $DUMPPATH => '/nfsdump/'; 
 const my $NFSPATH => '/HIVE/';
 const my $NAME => name(); # uniq process name
@@ -223,7 +223,7 @@ sub tombstone
 {
 	my ($api, $count, $ttl) = @_;
 	my @FACE;
-	$FACE[0] = "$apellido     $NAME";
+	$FACE[0] = $NAME;
 	my $Ttime = time();
 	$FACE[1] = ((($Ttime - $BIRTH)/60)/60);
 	$FACE[2] = $api.'_'.$count.'_'.$ttl;
