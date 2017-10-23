@@ -107,7 +107,7 @@ $DONEfh->autoflush(1);
 $TODOfh->autoflush(1);
 
 ping(); # host roster
-dio('IN'); # net roster
+dio(); # net roster
 nfs_pid(); #life beat
 
 printf $Lfh ("HELLOWORLD %s\n", TIME());
@@ -293,9 +293,8 @@ sub ping
 }
 sub dio 
 { # net roster
-	my $dstatus = (@_);
 	open(my $Dfh, '>>', $DIO);
-	printf $Dfh ("%s %s %s\n", TIME(), $NAME, $dstatus);
+	printf $Dfh ("%s %s %s\n", TIME(), $NAME);
 	close $Dfh;
 }
 sub nfs_pid
