@@ -21,9 +21,9 @@ use Archive::Any;
 
 # STRUCT
 # /tmp/$NAME/dump/ : hostside work dir
-# /HIVE/que/ : api que
 # /HIVE/node/ : daemon dir by host
 # /HIVE/node/pid : $host_$pid
+# /HIVE/node/que/ : api que
 # /HIVE/DIO : DEMON CHK-IN CHK-OUT
 # /HIVE/cemetery/ : tombstone() dead DEMON logs
 # /nfsdump/pool/ : XS()
@@ -53,7 +53,7 @@ const my $DUMP => $NAME.'_dump/'; # unique process hostside dump
 const my $POOL => $DUMPPATH.'pool/'; # remote nfs dump
 const my $G => $DUMPPATH.'g/'; # remote nfs dump
 const my $NODE => hostname(); # node name
-const my $QUE => $NFSPATH.$NODE.'/'; # node path
+const my $QUE => $NFSPATH.$NODE.'/que/'; # node path
 const my $TOMB => $NFSPATH.'cemetery/'; # DEMON logs
 const my $TOMBSTONE => $TOMB.$NAME;
 const my $NFSPID => $NFSPATH.'node/pid'.$$; # life beat (creates PID that is removed by chron every hour)
