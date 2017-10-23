@@ -106,9 +106,9 @@ $FAILfh->autoflush(1);
 $DONEfh->autoflush(1);
 $TODOfh->autoflush(1);
 
-nfs_pid(); #life beat
 ping(); # host roster
 dio('IN'); # net roster
+nfs_pid(); #life beat
 
 printf $Lfh ("HELLOWORLD %s\n", TIME());
 
