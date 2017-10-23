@@ -68,7 +68,7 @@ const my $ZOMBIE => $TOMB.'ZOMBIE_'.$NAME; # fails path of api_verify()
 
 const my $SLEEP => $TOMB.'SLEEP'; # triggers sleep
 const my $SUICIDE => $TOMB.'SUICIDE'; # triggers suicide
-const my $DIO => $NFSPATH.'node/DIO'; # net roster
+const my $DIO => $NFSPATH.'DIO'; # net roster
 
 const my $BIRTH => time();
 const my $RATE => 100;
