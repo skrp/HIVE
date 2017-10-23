@@ -216,7 +216,7 @@ sub TIME
 sub name
 {
 	my $id = int(rand(999));
-	my $name = $NODE.'_'.$$.'_'.$id;
+	my $name = $$.'_'.$id;
 	return $name;
 }
 sub tombstone
