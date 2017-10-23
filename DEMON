@@ -247,7 +247,7 @@ sub zombie
 {
 	my ($que_ref) = @_;
   	my $id = int(rand(999));
-	my $zpath = $ZOMBE.$id;
+	my $zpath = $ZOMBIE.$id;
 	open(my $zfh, '>', $zpath);
 	my @QUE = \$que_ref;
 	for (@QUE)
