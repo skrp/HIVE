@@ -136,9 +136,7 @@ while (1)
 		if (-e $SLEEP)
    	 		{ SLEEP($api, $count, $ttl, @QUE); }
 		print $Lfh "$i\n";
-		if ($api_hash{$api}->($i) != 0)
-		 	{ print $FAILfh "$i\n"; next; }
-		print $DONEfh "$i success\n";
+		$api_hash{$api}->($i);
 
 		if ($count % $RATE == 0)
 		{
@@ -367,8 +365,13 @@ sub get
 	my $tmp = $DUMP.$iname;
 	my $response = $UA->get($i, ':content_file'=>"$tmp");
 	print $Lfh "YAY $i\n"; $YAY++;
-	next unless (-e $tmp);
-	XS($tmp) && unlink($tmp);
+	if (-e $tmp)
+	{ 
+		print $Lfh "YAY $i\n"; $YAY++;
+		XS($tmp) && unlink($tmp); 
+	}
+	else
+		{ print $FAILfh "$i\n"; }
 }
 sub blkr
 {
