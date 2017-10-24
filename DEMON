@@ -119,16 +119,14 @@ printf $Lfh ("HELLOWORLD %s\n", TIME());
 while (1)
 {
 # [[ nfsn ]]
-	my ($api, $que_ref) = que_up();
-	print $Lfh "LOOP $api\n";
+	my ($api, @QUE) = que_up();
 	unless (-e $api)
 		{ sleep 3600; next; }
 		
 # [[ nfsc ]]
 	# verify api
-	next if (api_verify($api, $que_ref) < 0);
+	next if (api_verify($api, @QUE) < 0);
 
-	my @QUE = \$que_ref;
 	my $ttl = @QUE;
 	print $Lfh "ttl $ttl api $api\n";
 
@@ -136,7 +134,7 @@ while (1)
 	foreach my $i (@QUE)
 	{
 		if (-e $SLEEP)
-   	 		{ SLEEP($api, $count, $ttl, $que_ref); }
+   	 		{ SLEEP($api, $count, $ttl, @QUE); }
 		print $Lfh "$i\n";
 		if ($api_hash{$api}->($i) != 0)
 		 	{ print $FAILfh "$i\n"; next; }
@@ -145,7 +143,7 @@ while (1)
 		if ($count % $RATE == 0)
 		{
 			tombstone($api, $count, $ttl);
-			que_flush($que_ref, $count);
+			que_flush(@QUE, $count);
 			nfs_pid();
 		}
 		$count++;
@@ -176,32 +174,31 @@ sub daemon {
 }
 sub que_flush
 {
-	my ($que_ref, $count) = @_;
+	my (@QUE, $count) = @_;
 	open(my $TODOfh, '>', $TODO);
 	print $TODOfh "$count\n"; 
-	my @iteration = \$que_ref;
-	foreach (@iteration)
+	foreach (@QUE)
 		{ print $TODOfh "$_\n"; }
 	close $TODOfh;
 }
 sub SUICIDE
 {
-	my ($api, $count, $ttl, $que_ref) = @_;
+	my ($api, $count, $ttl, @QUE) = @_;
 	unlink $SUICIDE;
 	printf $Lfh ("FKTHEWORLD %s\n", TIME());
 	dio('OUT');
 	tombstone($api, $count, $ttl);
-	que_flush($que_ref, $count);
+	que_flush(@QUE, $count);
 	exit;
 }
 sub SLEEP
 {
-	my ($api, $count, $ttl, $que_ref) = @_;
+	my ($api, $count, $ttl, @QUE) = @_;
 	open(my $Sfh, '<', $SLEEP);
 	my $timeout = readline $Sfh; chomp $timeout;
 	print $Lfh ("$SLEEP %s %s\n", $timeout, TIME());
 	close $Sfh; unlink $SLEEP;
-	SUICIDE($api, $count, $ttl, $que_ref) if ($timeout eq "SUICIDE");
+	SUICIDE($api, $count, $ttl, @QUE) if ($timeout eq "SUICIDE");
 	tombstone($api, $count, $ttl);
 	sleep $timeout;
 }
@@ -233,7 +230,7 @@ sub tombstone
 }
 sub api_verify
 {
-	my ($api, $que_ref) = @_;
+	my ($api, @QUE) = @_;
 
 	for my $api_value (@API)
 	{
@@ -241,16 +238,15 @@ sub api_verify
 			{ return 0; }
 	}
 	print $Lfh "FAIL_API $api\n";
-	zombie($que_ref);
+	zombie(@QUE);
 	return -1;
 }
 sub zombie
 {
-	my ($que_ref) = @_;
+	my (@QUE) = @_;
   	my $id = int(rand(999));
 	my $zpath = $ZOMBIE.$id;
 	open(my $zfh, '>', $zpath);
-	my @QUE = \$que_ref;
 	for (@QUE)
 		{ print $zfh "$_\n"; }
 	close $zfh;
@@ -273,9 +269,8 @@ sub que_up
 	unlink $que_path;
 	
 	my $api = shift @QUE;
-	my $que_ref = \@QUE;
 	print $Lfh "$api\n";
-	return ($api, $que_ref );
+	return ($api, @QUE );
 }
 # AWARENESS
 sub log_begin
