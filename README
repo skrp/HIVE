@@ -5,7 +5,7 @@ Everpresent daemons that work on networked dictated ques for distributive comput
 
 {1} Structure = [[ host-location, nfs-locations ]]
 
-{2} Logic = [[ http-scrape, file-obfuscator, file-sha, file-encrypt, archive-extrace, regex ]]
+{2} Logic = [[ http-scrape, file-obfuscator, file-sha, file-encrypt, archive-extract, regex ]]
 
 {3} Network Communication =  [[ pause, kill, stdout, PID_refresh(live_list), host_side-dump, bandwidth ]]
 https://github.com/skrp/MINT
@@ -99,24 +99,6 @@ fix grep arki()
 2 970 blkr 1000
 2 971 blkr 1000
 
-# ACHIEVEMENTS ###################################
-HORIZON ( 1B BLKR )
-MONSOON ( 100M SLICR )
-ACCOUNTANT ( 100B SHA )
-SCROOGE ( 1M GET )
-
-
-#####################################
-# QUEEN    - net logistics intelligence
-
-# awareness of each node's state
-# awareness of archive need
-
-# que work
-# birth demons
-
-# $nfs_server = '';
-# /mount nfs -o nfsv4 $nfs_server /mom /net;
 
 # NFSV4 DESCRIPTORS ##########################
 # nstdn  -   usr_stdin
