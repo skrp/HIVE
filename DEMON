@@ -120,7 +120,7 @@ while (1)
 {
 # [[ nfsn ]]
 	my ($api, $que_ref) = que_up();
-	print $Lfh "$api\n";
+	print $Lfh "LOOP $api\n";
 	unless (-e $api)
 		{ sleep 3600; next; }
 		
@@ -274,6 +274,7 @@ sub que_up
 	
 	my $api = shift @QUE;
 	my $que_ref = \@QUE;
+	print $Lfh "$api\n";
 	return ($api, $que_ref );
 }
 # AWARENESS
