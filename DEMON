@@ -50,46 +50,54 @@ use Archive::Any;
 die "STILLBORN" if ((my $birth = daemon()) != 0);
 
 # GLOBAL CONST
-#const my $apellido = file_digest($0);
-const my $DUMPPATH => '/ZNFS/HIVE/'; 
-const my $NFSPATH => '/ZNFS/HIVE/';
-const my $NAME => name(); # uniq process name
-const my $DUMP => $NAME.'_dump/'; # unique process hostside dump
-const my $POOL => $DUMPPATH.'pool/'; # remote nfs dump
-const my $G => $DUMPPATH.'g/'; # remote nfs dump
-const my $NODE => hostname(); # node name
-const my $QUE => $NFSPATH.$NODE.'/que/'; # node path
-const my $TOMB => $NFSPATH.'cemetery/'; # DEMON logs
-const my $TOMBSTONE => $TOMB.$NAME;
-const my $NFSPID => $NFSPATH.$NODE.'/'.$$; # life beat (creates PID that is removed by chron every hour)
-
-const my $TODO => $TOMB.'TODO_'.$NAME; # unclean death leftovers
-const my $DONE => $TOMB.'DONE_'.$NAME; # successful iterations
-const my $FAIL => $TOMB.'FAIL_'.$NAME; # failed iterations
-const my $SHELL => $TOMB.'SHELL_'.$NAME; # code
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+const my $NFSPID => $NFSPATH.PING; # life beat (creates PID that is removed by chron every hour)
 const my $REP => $TOMB.'REP_'.$NAME; # metrics
-const my $RAW => $TOMB.'RAW_'.$NAME; # output
-const my $ZOMBIE => $TOMB.'ZOMBIE_'.$NAME; # fails path of api_verify()
-
-const my $SLEEP => $TOMB.'SLEEP'; # triggers sleep
-const my $SUICIDE => $TOMB.'SUICIDE'; # triggers suicide
-const my $DIO => $NFSPATH.'DIO'; # net roster
-
-const my $BIRTH => time();
-const my $RATE => 100;
-
-# DISPATCH TABLE
-const my %api_hash => ( get => \&get, xtrac => \&xtrac, blkr => \&blkr, krip => \&krip, regx => \&regex, sha => \&sha );
-const my @API => ('get','blkr','sha', 'krip', 'xtrac', 'regx');
-
-const my $UA => uagent();
-const my $SIZE => 128000;
-
+# HOST LOG VARIABLES
 const my @pf => ('PID_LOG_packets_raw', 'PID_LOG_invalid_input', 'PID_LOG_invalid_output', 'PID_LOG_packet_io', 'PID_LOG_net_io');
 const my @dtrace => ('PID_LOG_cpu_io', 'PID_LOG_fs_io', 'PID_LOG_syscall_io');
 const my @unix => ('PID_LOG_top', 'PID_LOG_ps', 'PID_LOG_netstat', 'PID_LOG_zfs', 'PID_LOG_gpart', 'PID_LOG_camcontrol', 'PID_LOG_iostat', 'PID_LOG_io');
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-# GLOBAL VARIABLE
+const my $NAME => name(); # uniq process name
+
+# HOST VARIABLES
+const my $NODE => hostname(); # node name
+const my $DUMP => $NAME.'_dump/'; # unique process hostside dump
+const my $PING => '/tmp/PING';
+
+# NET VARIABLES
+const my $NFSPATH => '/HIVE/';
+const my $QUE => $NFSPATH.$NODE.'/que/'; # node path
+const my $TOMB => $NFSPATH.'cemetery/'; # DEMON logs
+const my $TOMBSTONE => $TOMB.$NAME;
+# NET LOG VARIABLES
+const my $RAW => $TOMB.'RAW_'.$NAME; # output
+const my $TODO => $TOMB.'TODO_'.$NAME; # leftovers that need to be put back in $QUE
+const my $DONE => $TOMB.'DONE_'.$NAME; # successful iterations
+const my $FAIL => $TOMB.'FAIL_'.$NAME; # failed iterations that need to be cleaned up
+const my $ZOMBIE => $TOMB.'ZOMBIE_'.$NAME; # fails path of api_verify()
+# NET CONTROL VARIABLES
+const my $SLEEP => $TOMB.'SLEEP'; # triggers sleep
+const my $SUICIDE => $TOMB.'SUICIDE'; # triggers suicide
+
+# DEMON VARIABLES
+const my $BIRTH => time();
+const my $RATE => 100;
+const my $SIZE => 128000; # BLKR
+
+# DATA DUMP VARIABLES
+const my $DUMPPATH => ''; 
+die "code needs nfs dump location" if (!defined $DUMPPATH);
+const my $POOL => $DUMPPATH.'pool/'; # remote nfs dump
+const my $G => $DUMPPATH.'g/'; # remote nfs dump
+const my $UA => uagent();
+
+# DISPATCH TABLE ##########################################
+const my %api_hash => ( get => \&get, xtrac => \&xtrac, blkr => \&blkr, krip => \&krip, regx => \&regex, sha => \&sha );
+const my @API => ('get','blkr','sha', 'krip', 'xtrac', 'regx');
+
+# DEMON GLOBAL SUCCESS-COUNT
 my $YAY = 0;
 
 # [[ nfso ]]
@@ -288,7 +296,7 @@ sub log_begin
 # COMMUNICATION
 sub ping
 { # host roster
-	open(my $Pfh, '>>', '/tmp/PING');
+	open(my $Pfh, '>>', $PING);
 	printf $Pfh ("%s %s ping!\n", TIME(), $$);
 	close $Pfh;
 }
