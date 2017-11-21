@@ -1,11 +1,12 @@
 #!/usr/local/bin/perl
 use strict; use warnings;
-# use FREEBSD::unix_or_you_a_bitch_ass_scrub_hackjob_button-smasher-hack-hacker;
+# FreeBSD Only
+# use unix or you a punk-bich-button-smash-hack hacker
 
 ########################################################
 #                HIVE OVER NFS                         #
 # DEMON          t_'(o_0)"'      daemon summons scroll #
-#                       ^[[acii demon flip'n u off]]   #
+#                                                      #
 ########################################################
 
 use Const::Fast 'const';
@@ -19,15 +20,19 @@ use LWP::UserAgent;
 use LWP::Protocol::https;
 use Archive::Any;
 
-# STRUCT
+# STRUCT #######################################
 # /tmp/$NAME/dump/ : hostside work dir
-# /HIVE/node/ : daemon dir by host
-# /HIVE/node/pid : $host_$pid
-# /HIVE/node/que/ : api que
-# /HIVE/DIO : DEMON CHK-IN CHK-OUT
-# /HIVE/cemetery/ : tombstone() dead DEMON logs
-# /nfsdump/pool/ : XS()
-# /nfsdump/g/ : XS()
+# /tmp/PING : hostside PID roster
+
+# /HIVE/ : net nfs mount
+# /HIVE/PING : net roster
+# /HIVE/cemetery/ : DEMON memorial (logs)
+
+# /HIVE/node/ : host specific dir
+# /HIVE/node/$hostname/que/ : api que
+
+# /nfsdump/pool/ : net data dump
+# /nfsdump/g/ : net metadata dump
 
 # LOGIC
 #	-que
