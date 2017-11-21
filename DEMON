@@ -26,10 +26,10 @@ use Archive::Any;
 
 # /HIVE/ : net nfs mount
 # /HIVE/PING : net roster
-# /HIVE/cemetery/ : DEMON memorial (logs)
+# /HIVE/cemetery/ : net DEMON memorial (logs)
 
-# /HIVE/node/ : host specific dir
-# /HIVE/node/$hostname/que/ : api que
+# /HIVE/node/ : net host specific dir
+# /HIVE/node/$hostname/que/ : net api-que
 
 # /nfsdump/pool/ : net data dump
 # /nfsdump/g/ : net metadata dump
@@ -64,7 +64,7 @@ const my $NAME => name(); # uniq process name
 # HOST VARIABLES
 const my $NODE => hostname(); # node name
 const my $DUMP => $NAME.'_dump/'; # unique process hostside dump
-const my $PING => '/tmp/PING';
+const my $HPING => '/tmp/PING';
 
 # NET VARIABLES
 const my $NFSPATH => '/HIVE/';
@@ -85,13 +85,13 @@ const my $SUICIDE => $TOMB.'SUICIDE'; # triggers suicide
 const my $BIRTH => time();
 const my $RATE => 100;
 const my $SIZE => 128000; # BLKR
+onst my $UA => uagent(); # GET
 
 # DATA DUMP VARIABLES
 const my $DUMPPATH => ''; 
 die "code needs nfs dump location" if (!defined $DUMPPATH);
 const my $POOL => $DUMPPATH.'pool/'; # remote nfs dump
 const my $G => $DUMPPATH.'g/'; # remote nfs dump
-const my $UA => uagent();
 
 # DISPATCH TABLE ##########################################
 const my %api_hash => ( get => \&get, xtrac => \&xtrac, blkr => \&blkr, krip => \&krip, regx => \&regex, sha => \&sha );
@@ -107,7 +107,11 @@ my $YAY = 0;
 
 chdir('/tmp/');
 $SIG{INT} = \&SUICIDE;
+
+###!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #$SIG{HUP} = \&ch_que;
+###!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 mkdir $DUMP or die "$DUMP FAIL\n";
 
 open(my $Lfh, '>>', $RAW);
@@ -119,8 +123,8 @@ $FAILfh->autoflush(1);
 $DONEfh->autoflush(1);
 $TODOfh->autoflush(1);
 
-ping(); # host roster
-dio(); # net roster
+h_ping(); # host roster
+n_ping; # net roster
 nfs_pid(); #life beat
 
 printf $Lfh ("HELLOWORLD %s\n", TIME());
@@ -294,23 +298,17 @@ sub log_begin
 		{ `perl $script $NAME &`; }
 }
 # COMMUNICATION
-sub ping
+sub h_ping
 { # host roster
 	open(my $Pfh, '>>', $PING);
 	printf $Pfh ("%s %s ping!\n", TIME(), $$);
 	close $Pfh;
 }
-sub dio 
+sub n_ping 
 { # net roster
-	open(my $Dfh, '>>', $DIO);
-	printf $Dfh ("%s %s %s\n", TIME(), $NAME);
+	open(my $Dfh, '>>', $NFSPID);
+	printf $Dfh ("%s %s %s\n", TIME(), $NAME, $NODE);
 	close $Dfh;
-}
-sub nfs_pid
-{ # net alive pid
-	open(my $PIDfh, '>', $NFSPID);
-	print $PIDfh "$$\n";
-	close $PIDfh;
 }
 # XTRACTION & STANDARDIZE
 sub XS
