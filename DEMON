@@ -1,12 +1,11 @@
 #!/usr/local/bin/perl
 use strict; use warnings;
 # FreeBSD Only
-# use unix or you a punk-bich-button-smash-hack hacker
+# unix or you a bitch-button-smash-hack hacker
 
 ########################################################
 #                HIVE OVER NFS                         #
 # DEMON          t_'(o_0)"'      daemon summons scroll #
-#                                                      #
 ########################################################
 
 use Const::Fast 'const';
@@ -78,8 +77,8 @@ const my $DONE => $TOMB.'DONE_'.$NAME; # successful iterations
 const my $FAIL => $TOMB.'FAIL_'.$NAME; # failed iterations that need to be cleaned up
 const my $ZOMBIE => $TOMB.'ZOMBIE_'.$NAME; # fails path of api_verify()
 # NET CONTROL VARIABLES
-const my $SLEEP => $TOMB.'SLEEP'; # triggers sleep
-const my $SUICIDE => $TOMB.'SUICIDE'; # triggers suicide
+const my $SLEEP => $TOMB.'SLEEP_'.$NAME; # triggers sleep
+const my $SUICIDE => $TOMB.'SUICIDE_'.$NAME; # triggers suicide
 
 # DEMON VARIABLES
 const my $BIRTH => time();
@@ -124,8 +123,7 @@ $DONEfh->autoflush(1);
 $TODOfh->autoflush(1);
 
 h_ping(); # host roster
-n_ping; # net roster
-nfs_pid(); #life beat
+n_ping; # net roster (life beat)
 
 printf $Lfh ("HELLOWORLD %s\n", TIME());
 
@@ -137,7 +135,7 @@ while (1)
 {
 # [[ nfsn ]]
 	my ($api, @QUE) = que_up();
-	unless (defined $api)
+	if (!defined $api)
 		{ sleep 3600; next; }
 		
 # [[ nfsc ]]
@@ -145,7 +143,7 @@ while (1)
 	next if (api_verify($api, @QUE) < 0);
 
 	my $ttl = @QUE;
-	print $Lfh "ttl $ttl api $api\n";
+	print $Lfh "api $api ttl $ttl\n";
 
 	my $count = 0;
 	foreach my $i (@QUE)
@@ -159,7 +157,7 @@ while (1)
 		{
 			tombstone($api, $count, $ttl);
 			que_flush(@QUE, $count);
-			nfs_pid();
+			n_ping();
 		}
 		$count++;
 # &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
