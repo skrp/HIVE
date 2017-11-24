@@ -1,653 +1,449 @@
-####################################################
-# MKRX UNIX NETWORK
-
-                                             ~ skrp
-                                       Kehkay Genkai
-                                      of the village
-                                  Hidden in the 1337
-{{  t_(o0)_j  }}
-\\ Meri Kann //
-_\\cibR punX//______________________________________
-|
-|
-|
-|
-|
-|
-|
-This manuscript details the machine of MKRX UNIX NETWORKS
-This system connects nodes thru encrypted tunnels
-
-SICC network file system
-MKRX archive tools
-HIVE work processors
-
-KERN hardened FreeBSD_10.3 custom unix kernels
-PSK-OPIE privilege partition & escalation
-
-PROTO unix network protocol implementations
-STAT node & network dtrace sensor analysis
-
-ZFS diagrams PCI, SATA, SAS, USB
-Schematics & Utilities
-
-MAN manuals of instructions & examples
-|
-|
-|
-|
-|
-|
-|
-Let us preserve all insight
-Till the last man walk
-
-That he might not walk
-In the darkness of past
-
-Independent of time
-Independent of wealth
-Independent of government
-
-In the order of Anarchy
-In that way deliver basic rights
-
-Files get lost
-Storage gets easier
-|
-|
-|
-|
-|
-|
-|
-####################################################
-# Table of Contents
-####################################################
-
-# 0 ################################################
-SICC
-  Standard
-  Metadata
-  Key
-  SLICR
-  BLKR
-
-# 1 ################################################
-MKRX
-  Tools explained
-  Tool use & examples
-    create GET from BKUP
-    create GET from UNIQ
-    populate a new drive
-    extract a source
-
-# 2 ################################################
-HIVE
-  Structure
-  Mechanics
-    ORDER
-    SLEEP
-    SUICIDE
-    CLEAN
-    RESUME
-  API
-    SHA
-    GET
-    UNTAR
-    REGX
-    BLKR
-  Logs
-
-# 3 ################################################
-KERN
-  Hardened
-  PSK-OPIE
-  RINGS (rings of power)
-  USR
-    root
-    sroot
-    lord
-    heir
-    seer
-    norm
-
-# 4 ################################################
-PSK-OPIE
-  Review
-  ASIGN
-  Mine
-    KEY
-    RAW
-
-# 5 ################################################
-PROTO
-  Overview
-  SSH
-  SCP
-  FTP
-  PF
-  NFS
-  IRC
-  8080
-  HTTPS
-  MORSE
-
-# 6 ################################################
-STAT
-  List
-  dtrace
-    cpu
-    PID
-    fs
-    net
-  Performance
-    LOG
-    ECHO
-  ANAL
-    SELF
-    NET
-
-# 7 ################################################
-ZFS & Hardware
-  ZFS
-    0
-    Mirror
-    raidz2
-    raidz3
-  Hardware
-    BOX
-    BIOS
-    cpu
-    RAM
-    PCI
-    DEV
-    Supply
-    PCI
-    SATA
-    SAS
-    USB
-    JBOD
-
-# 8 ################################################
-SCHMATIC
-  SIMP
-  TOWR
-  Utilities
-
-# 9 ################################################
-MAN
-  unix manuals
-    log
-    mount
-    boot
-    ntfs
-  perl manuals
-    log
-    language
-    modules
-  zfs manuals
-    log
-    hotswap
-    import
-    set
-  dtrace manuals
-    language
-
-# END ##############################################
-|
-|
-|
-|
-|
-|
-|
-####################################################
-# 0 - SICC
-####################################################
-
-######## System In Complete Chaos    ###############
-
-# NAME SYSTEM ######################################
-The core of this system is based on sha file computation
-
-Sha is a unique file identifier that is the output of a mathematical algorithm
-This mathematical algorithm will produce the same sha for the same file
-
-Each file is named after its sha
-
-This name system has two benefits:
-  {1} de-duplicates files
-  {2} assigns data into Chaos order
-
-Sha uniqueness keeps all data:
-  [-] simple
-  [-] homogeneous
-  [-] ultra-transient
-
-The duplication of data is accounted in single-entry lists
-Each data-pool is maximized in its ability to minimize the data-pool's disk-footprint
-
-The duplication count allows for network backup prioritization to remote devices
-This foundation is stable for automated backup management of massive-data networks
-
-# METADATA #######################################
-Metadata is kept isolated from the data
-This isolation allows for the obfuscation of open data
-
-Data-pool lists have lessened-value without Metadata
-Exposure of lists can be nullified by salt
-
-Only someone that has the metadata & access-key can request data
-
-This file-system is built for ultra-transient network management
-All files are located in the directory "/usr/nfs/pub/"
-
-Two factors assist in obfuscation
-  (1) No subdirectories to betray association
-  (2) Alpha-numeric ordering of the hexadecimal names
-
-
-Each file is periodically verified to have a corresponding metadata-file
-
-Each metadata-file consists of 4 single-line entries:
-  (1) name - XS (MKRX) standardized name
-  (2) path - XS standardized path of extraction
-  (3) size - number of bytes
-  (4) encode - type of encoding
-
-# KEY ##############################################
-A KEY is a recipe to rebuild an obfuscated file
-
-This allows for a powerful layer of unprecedented obfuscation
-What is public gibberish is made private information thru access to a KEY file
-
-Each KEY file is named after the original file sha
-The KEY file contains sequential sha-per-line entries
-
-Obfuscation Methods:
-
-  [X] SLICR (secure against file-known)
-        Shreds a file into random-sized parts & creates KEY
-        Random-size prevents sha rainbow-tables of attacker with file-known
-
-  [X] BLKR (insecure if file-known)
-       Shreds file into standard-sized blocks & creates KEY
-       Homogeneous data types will have duplicate-collisions which nullify the duplicate data
-       Only one copy of data can exist in the data-pool
-       Many KEY files can correspond to the same block reducing the data-pool disk-footprint
-       The smaller block-size the greater power of compression & obfuscation of data-pool
-       Each node configures own block-size
-
-# SUMMARY #########################################
-
-This file-system spread over a network has the following benefits:
-  [o] All data easily accounted for in single-entry lists
-  [o] Sane & Clean orders of massive-data on an network
-  [o] Network level explicit control of the duplication of data
-  [o] Each node serves what is possible
-  [o] Each node has access to total data
-  [o] Each node can assist in external backups
-
-On a homogeneous unix kernel the network file-system is transparent
-Only active tunnels will be displayed as available data-pools
-
-Transparent file-system
-  [l] store data remotely
-  [l] get a remote file
-  [l] serve a local file
-  [l] backup network to local drive
-|
-|
-|
-|
-|
-|
-|
-####################################################
-# 1 - MKRX
-####################################################
-Tools to administer the network file-system
-
-MKRX Tools:
-  [XS]
-    Extract & Standardize Recursively
-  [SCRUB]
-    Verify if sha of file is true
-  [CHKMETA]
-    Confirm each file has metadata
-  [UNIQ]
-    Output unless (ARG1-files exist in ARG2-files)
-  [XFR]
-    Serve data to local drive
-    Serve data to remote locations
-  [INDEX]
-    Build Metadata hash-dumps
-  [CLI]
-    Load INDEX hash-dumps into memory
-    Terminal Input & Output produce single-entry lists
-
-
-# XS ###############################################
-Extract & Standardize All Files Recursively
-  Send data to pool-dir
-  Build metadata in g-dir
-
-This process is the gateway for files to enter the archive
-High io usage & multiple process utilization
-
-Features the expert developer kent\n
-This code been worked over 100s millions of files
-
-Automatic logic
-Just point & pull trigger
-
-Name & path values are standardized to keep environment safe
-The path allows for past-association awareness
-Size & encoding keep calculations one-time-only
-
-# UNIQ ############################################
-Output if ARG1 does-not-exist in ARG2
-
-Filter data that is unique on the network
-Compare NODE-list against NET-list
-Backup the network with priority files needing duplication
-
-This is a very useful command
-It can handle millions of iterations in both ARGs
-
-Learn the simple code mechanic & this command will prove a general system tool
-In minutes this processes data that would require many days for grep
-
-# CLI ############################################
-Interface to network archive requests custom file requests
-  [1] Build INDEX hash-dumps into memory
-    This may take several minutes due to massive-data
-
-  [2] Build array-list
-    Set to network array-list
-    Load a custom array-list from file
-
-  [3] Filter down array list
-    Use perl regular-expressions to parse patterns
-
-  [4] Report on array-list
-    Print a filtered array to file
-    Count the quantity in array-list
-    Output the corresponding array-list value
-      name, path, size, encode
-
-  [5] Create lists of files bound to a byte-parameter
-    The calculation of sums add up when it is to the millions
-    Array-list is sectioned into specific-sized chunks
-
-  [6] Use XFR to request the files into home directory
-    This process will only require a feed of the output which is the array-list
-    Array-list will always only be the sha of filtered file-metadata
-
-  [7] Use conditional regular-expressions to edit the array-list names into a new-file
-    After XFR complete use new-file to rename array-list files
-
-Command Menu:
-  {regx}  regx data filters
-  {reset} reset array to full network-array
-  {load}  load array from custom file
-  {print} output current array to file
-  {count} count array
-  {value} output values of array 'name, path, size, encoding'
-  {pop}   output size-specific lists that sum to a specific-amount of bytes
-  {name}  edit name using conditional regx into new-file
-
-# EXAMPLES #######################################
-
-[1]
-Create GET for backup
-  {TOTAL_NET}   location of network-wide file list
-  {TOTAL_LOCAL} location of local file list
-  {GET}         single-entry line lists of what TOTAL_LOCAL lacks from TOTAL_NET
-+++++++++++++++++++++++++++++++++++++++++++++++++++
-$usr@host> UNIQ TOTAL_NET TOTAL_LOCAL GET
-+++++++++++++++++++++++++++++++++++++++++++++++++++
-
-[2]
-Create EXTRACT from UNIQ
-  {TOTAL_SOURCE} sha lists of a source
-  {TOTAL_NET} network-wide file list
-  {EXTRACT} new unique files to network list
-+++++++++++++++++++++++++++++++++++++++++++++++++++
-$usr@host> UNIQ TOTAL_SOURCE TOTAL_NET EXTRACT
-+++++++++++++++++++++++++++++++++++++++++++++++++++
-
-[3]
-Populate a new drive
-  {~/INDEX/}         location of INDEX metadata database hash dumps
-  {~/POP/1000000000} file to transfer
-  {/mnt/USB/pool/}   location to dump files
-+++++++++++++++++++++++++++++++++++++++++++++++++++
-$usr@host> CLI ~/INDEX/
-pop 1000000000
-exit
-+++++++++++++++++++++++++++++++++++++++++++++++++++
-$usr@host> cd ~/POP/
-+++++++++++++++++++++++++++++++++++++++++++++++++++
-$usr@host> wc -l 1000000000
-8493719 1000000000
-+++++++++++++++++++++++++++++++++++++++++++++++++++
-$usr@host> wc -l leftover_1000000000
-39533365846 leftover_1000000000
-+++++++++++++++++++++++++++++++++++++++++++++++++++
-$usr@host> XFR ~/POP/1000000000 /mnt/USB/pool/
-+++++++++++++++++++++++++++++++++++++++++++++++++++
-$usr@host> CLI ~/INDEX/
-load leftover_1000000000
-pop 1000000000
-exit
-+++++++++++++++++++++++++++++++++++++++++++++++++++
-Loop over & over by gigabyte-sized fragments
-
-[4]
-Extract a source
-  {/mnt/bkup10/} location to grab new data
-  {~/} location to dump data into ~/pool/ & ~/g/
-+++++++++++++++++++++++++++++++++++++++++++++++++++
-$usr@host> XS /mnt/bkup10/ ~/
-+++++++++++++++++++++++++++++++++++++++++++++++++++
-|
-|
-|
-|
-|
-|
-|
-####################################################
-# 2 - HIVE
-####################################################
-
-Network Value is contained in 4 sectors
-  {#} Resource share - HIVE
-  {#} Storage share - nfs
-  {#} Cryptographic Security - PSKOPIE elliptic-curves
-  {#} Services available - ssh
-
-Massive projects will be broken down into iterative tasks
-Network API will process the requested work
-
-Task / Network Nodes = New Time
-  Plus network latency = Total Time
-
-There following reasons are a few that justify network-sync-computation
-  Randomize Entropy Sources
-  Scrape data off from many sources to not cause attention
-  Shred data into random-sized blocks
-  Clean up host into network dump
-  Allow many users to contribute metadata to Archive Collections Interface
-  Distribute loads from disk to network to cpu to disk... to empower robustness
-  Health-Beat of host via dtrace anchors
-
-A network of DEMON (unix daemon) work on a schedule
-  Busy (low all)
-    Scrape http data
-  Mid (low net)
-    Entropy collection
-  Bored (high all)
-    slicr
-    SHA
-
-# NET ##############################################
-
-HIVE
-    {T}    get www.pedrk.com/tome.txt
-  {     }  blkr $i
-{ FACE    }
-    ||
-    ||
-    ||
-    ||
-    ||                    key_4ff38 < [usr]
-    ||                    key_ff9aae   v   > key_d3413
-    ||
-    ||
-    ||
-   {T}       sleep 3600                                {T}      sleep 3600
- {     }     get www.nasa.com/sun/index.html         {     }    kripkey
-{ FACE  } ========================================{ FACE     }  slicr $i
-
-FACE
-This is an ASCII graphical representation of the NODE
-STATE represents the HOST each report independent to other DEMON
-  [y] NAME
-  [Y] STATE
-  [y] AGE_IN_HOURS
-  [y] SUCCESSFUL_ITERATIONS (YAY, 5-line-success-buffer)
-
-
-Commands (all or node)
-  PING - alive last 15-min
-  SLEEP - pause all (may take forever to infinity)
-  RAW - all output log
-  HICC - fail / error
-  BURP - cat log of successful iterations
-  FACE - echo DEMON portrait
-  REIN - iograph of net & individual data
-  BARK - { [PING * ALLOWANCE] < 10%_expected }
-  SUICIDE - clean-up then kill-itself
-
-A HIVE cumulative workload should never breach 20% of maximum
-The goal behind this work is to allow sanity thru dissociative-scheduled-massive-computation of a network of these HIVE
-
-# NODE #############################################
-
-A unix daemon is an process that severs all-but-explicit interface file descriptors
-This provides an independence which stabilizes the foundation of the code
-This code is a summon-scroll crafted to deal with specific actions
-  The process can be suspended-shutdown-update_que by an admin able to write in a locked-down dir
-  The DEMON-INTERFACE will all specific tasks in an explicit command execution
-
-The Achilles heel of distributive computing are fork-bombs & defunct-muthrfkrs
-Fork bombs are nasty & bloom out of any inconsistency [like invasive network probes]
-Defunct processors are unkillable in certain situations
-You can never automate continuously running programs without a sensitivity to host health
-There is a reason animals have a nervous system & we must forward those lessons onto the machine race
-The sensitivity of the host system will be the stable foundation with catches fork bombs
-  Every host will have an avatar maintained by HIVE
-  This will be a depiction of the health which will have numerical value
-  If any net-process over 50% utilized-cpu then cleanup & exit or sleep
-
-Full-access given to any network node with proper Pre-Shared-Keys Once-In-Everything-Passwords
-This allows a network to be delegated remotely to partitioned unix groups
-  pig_fkn_redneck wants a torrent downloaded at maximum-strength crypto
-  The code will inspect the PSK, shift the key off the array, and have x proxy nodes download the file in pieces
-  When the torrent is complete, verified & archived it is placed in /usr/home/pig_fkn_redneck/torrent/Udders_for.udder.lovers.mp4
-
-
-name
-Each DEMON has a unique name that will be kept with its lifeswork
-Cemetery is an essential part of a society
-For a member to enrich the whole, first the society must cheish the member
-
-time
-
-que
-
-zombie
-verify_que
-
-PING
-log
-
-|
-|
-|
-|
-|
-|
-####################################################
-# 3 - KERN
-####################################################
-|
-|
-|
-|
-|
-|
-|
-####################################################
-# 4 - PSKOPIE
-####################################################
-|
-|
-|
-|
-|
-|
-|
-####################################################
-# 5 - PF
-####################################################
-|
-|
-|
-|
-|
-|
-|
-####################################################
-# 6 - SERVICE
-####################################################
-|
-|
-|
-|
-|
-|
-|
-####################################################
-# 7 - ZFS & Hardware
-####################################################
-|
-|
-|
-|
-|
-|
-|
-####################################################
-# 8 - Schematics
-####################################################
-|
-|
-|
-|
-|
-|
-|
-####################################################
-# 9 - STAT
-####################################################
-|
-|
-|
-|
-|
-|
-|
+#!/usr/local/bin/perl
+use strict; use warnings;
+# FreeBSD Only
+# unix or you a bitch-button-smash-hack hacker
+
+########################################################
+#                HIVE OVER NFS                         #
+# DEMON          t_'(o_0)"'      daemon summons scroll #
+########################################################
+
+use Const::Fast 'const';
+use Digest::SHA 'sha256_hex';
+use POSIX;
+use File::Path;
+use File::Copy;
+use File::LibMagic;
+use Sys::Hostname 'hostname';
+use LWP::UserAgent;
+use LWP::Protocol::https;
+use Archive::Any;
+
+# STRUCT #######################################
+# /tmp/$NAME/dump/ : hostside work dir
+# /tmp/PING : hostside PID roster
+
+# /HIVE/ : net nfs mount
+# /HIVE/PING : net roster
+# /HIVE/cemetery/ : net DEMON memorial (logs)
+
+# /HIVE/node/ : net host specific dir
+# /HIVE/node/$hostname/que/ : net api-que
+
+# /nfsdump/pool/ : net data dump
+# /nfsdump/g/ : net metadata dump
+
+# LOGIC
+#	-que
+
+# HOST-AWARENESS
+#	-log_begin()
+
+# NET-COMM [[ pause, kill, stdout, PID, host_side-dump, bandwidth ]]
+#	-nfsn   network_input
+#	-nfso   network_output
+#	-nfsc   network_command
+
+# PREP @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+# BIRTH
+die "STILLBORN" if ((my $birth = daemon()) != 0);
+
+# GLOBAL CONST
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+const my $NFSPID => $NFSPATH.PING; # life beat (creates PID that is removed by chron every hour)
+const my $REP => $TOMB.'REP_'.$NAME; # metrics
+# HOST LOG VARIABLES
+const my @pf => ('PID_LOG_packets_raw', 'PID_LOG_invalid_input', 'PID_LOG_invalid_output', 'PID_LOG_packet_io', 'PID_LOG_net_io');
+const my @dtrace => ('PID_LOG_cpu_io', 'PID_LOG_fs_io', 'PID_LOG_syscall_io');
+const my @unix => ('PID_LOG_top', 'PID_LOG_ps', 'PID_LOG_netstat', 'PID_LOG_zfs', 'PID_LOG_gpart', 'PID_LOG_camcontrol', 'PID_LOG_iostat', 'PID_LOG_io');
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+const my $NAME => name(); # uniq process name
+
+# HOST VARIABLES
+const my $NODE => hostname(); # node name
+const my $DUMP => $NAME.'_dump/'; # unique process hostside dump
+const my $HPING => '/tmp/PING';
+
+# NET VARIABLES
+const my $NFSPATH => '/HIVE/';
+const my $QUE => $NFSPATH.$NODE.'/que/'; # node path
+const my $TOMB => $NFSPATH.'cemetery/'; # DEMON logs
+const my $TOMBSTONE => $TOMB.$NAME;
+# NET LOG VARIABLES
+const my $RAW => $TOMB.'RAW_'.$NAME; # output
+const my $TODO => $TOMB.'TODO_'.$NAME; # leftovers that need to be put back in $QUE
+const my $DONE => $TOMB.'DONE_'.$NAME; # successful iterations
+const my $FAIL => $TOMB.'FAIL_'.$NAME; # failed iterations that need to be cleaned up
+const my $ZOMBIE => $TOMB.'ZOMBIE_'.$NAME; # fails path of api_verify()
+# NET CONTROL VARIABLES
+const my $SLEEP => $TOMB.'SLEEP_'.$NAME; # triggers sleep
+const my $SUICIDE => $TOMB.'SUICIDE_'.$NAME; # triggers suicide
+
+# DEMON VARIABLES
+const my $BIRTH => time();
+const my $RATE => 100;
+const my $SIZE => 128000; # BLKR
+onst my $UA => uagent(); # GET
+
+# DATA DUMP VARIABLES
+const my $DUMPPATH => ''; 
+die "code needs nfs dump location" if (!defined $DUMPPATH);
+const my $POOL => $DUMPPATH.'pool/'; # remote nfs dump
+const my $G => $DUMPPATH.'g/'; # remote nfs dump
+
+# DISPATCH TABLE ##########################################
+const my %api_hash => ( get => \&get, xtrac => \&xtrac, blkr => \&blkr, krip => \&krip, regx => \&regex, sha => \&sha );
+const my @API => ('get','blkr','sha', 'krip', 'xtrac', 'regx');
+
+# DEMON GLOBAL SUCCESS-COUNT
+my $YAY = 0;
+
+# [[ nfso ]]
+###!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# log_begin();
+###!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+chdir('/tmp/');
+$SIG{INT} = \&SUICIDE;
+
+###!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#$SIG{HUP} = \&ch_que;
+###!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+mkdir $DUMP or die "$DUMP FAIL\n";
+
+open(my $Lfh, '>>', $RAW);
+open(my $FAILfh, '>>', $FAIL);
+open(my $DONEfh, '>>', $DONE);
+open(my $TODOfh, '>>', $TODO);
+$Lfh->autoflush(1);
+$FAILfh->autoflush(1);
+$DONEfh->autoflush(1);
+$TODOfh->autoflush(1);
+
+h_ping(); # host roster
+n_ping; # net roster (life beat)
+
+printf $Lfh ("HELLOWORLD %s\n", TIME());
+
+# @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+# LIVE &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+while (1)
+{
+# [[ nfsn ]]
+	my ($api, @QUE) = que_up();
+	if (!defined $api)
+		{ sleep 3600; next; }
+		
+# [[ nfsc ]]
+	# verify api
+	next if (api_verify($api, @QUE) < 0);
+
+	my $ttl = @QUE;
+	print $Lfh "api $api ttl $ttl\n";
+
+	my $count = 0;
+	foreach my $i (@QUE)
+	{
+		if (-e $SLEEP)
+   	 		{ SLEEP($api, $count, $ttl, @QUE); }
+		print $Lfh "$i\n";
+		$api_hash{$api}->($i);
+
+		if ($count % $RATE == 0)
+		{
+			tombstone($api, $count, $ttl);
+			que_flush(@QUE, $count);
+			n_ping();
+		}
+		$count++;
+# &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+	}
+	unlink $TODO;
+}
+
+# CORE SUBS ///////////////////////////////////////////////////////////
+sub daemon {
+  	die "FAIL daemon1 $!\n" if ((my $pid = fork()) < 0);
+   	if ($pid != 0)
+   		{ exit(0); }
+   	POSIX::setsid() or die "FAIL setsid $!";
+   	die "FAIL daemon2 $!\n" if ((my $pid2 = fork()) < 0);
+  	if ($pid2 != 0)
+   		{ exit(0); }
+	chdir('/tmp');
+   	umask 0;
+   	my $fds = 3;
+  	while ($fds < 1024)
+   	 	{ POSIX::close($fds); $fds++;  }
+   	my $des = '/dev/null';
+   	open(STDIN, "<$des");
+   	open(STDOUT, ">$des");
+   	open(STDERR, ">$des");
+   	return 0;
+}
+sub que_flush
+{
+	my (@QUE, $count) = @_;
+	open(my $TODOfh, '>', $TODO);
+	print $TODOfh "$count\n"; 
+	foreach (@QUE)
+		{ print $TODOfh "$_\n"; }
+	close $TODOfh;
+}
+sub SUICIDE
+{
+	my ($api, $count, $ttl, @QUE) = @_;
+	unlink $SUICIDE;
+	printf $Lfh ("FKTHEWORLD %s\n", TIME());
+	dio('OUT');
+	tombstone($api, $count, $ttl);
+	que_flush(@QUE, $count);
+	exit;
+}
+sub SLEEP
+{
+	my ($api, $count, $ttl, @QUE) = @_;
+	open(my $Sfh, '<', $SLEEP);
+	my $timeout = readline $Sfh; chomp $timeout;
+	print $Lfh ("$SLEEP %s %s\n", $timeout, TIME());
+	close $Sfh; unlink $SLEEP;
+	SUICIDE($api, $count, $ttl, @QUE) if ($timeout eq "SUICIDE");
+	tombstone($api, $count, $ttl);
+	sleep $timeout;
+}
+sub TIME
+{
+	my $t = localtime;
+	my $mon = (split(/\s+/, $t))[1];
+	my $day = (split(/\s+/, $t))[2];
+	my $hour = (split(/\s+/, $t))[3];
+	my $time = $mon.'_'.$day.'_'.$hour;
+	return $time;
+}
+sub name
+{
+	my $id = int(rand(999));
+	my $name = $$.'_'.$id;
+	return $name;
+}
+sub tombstone
+{
+	my ($api, $count, $ttl) = @_;
+	my @FACE;
+	$FACE[0] = $NAME;
+	my $Ttime = time();
+	$FACE[1] = ((($Ttime - $BIRTH)/60)/60);
+	$FACE[2] = $api.'_'.$count.'_'.$ttl;
+	open(my $Tfh, '>>', $TOMBSTONE);
+	printf $Tfh ("%d %s %d %s\n", $FACE[1], $YAY, $FACE[0], $FACE[2]);
+}
+sub api_verify
+{
+	my ($api, @QUE) = @_;
+
+	for my $api_value (@API)
+	{
+		if ($api =~ m/$api_value/)
+			{ return 0; }
+	}
+	print $Lfh "FAIL_API $api\n";
+	zombie(@QUE);
+	return -1;
+}
+sub zombie
+{
+	my (@QUE) = @_;
+  	my $id = int(rand(999));
+	my $zpath = $ZOMBIE.$id;
+	open(my $zfh, '>', $zpath);
+	for (@QUE)
+		{ print $zfh "$_\n"; }
+	close $zfh;
+}
+sub que_p
+{
+  	opendir(my $dh, $QUE);
+ 	my @ls = readdir($dh);
+  # skip $ls[0] = . ; $ls[1] = ..;
+  	my $que_path = $QUE.$ls[2];
+	print $Lfh "$que_path\n";
+  	return $que_path;
+}
+sub que_up
+{
+  	my $que_path = que_p();
+	open(my $qfh, '<', $que_path);
+	my @QUE = readline $qfh;
+  	chomp @QUE; close $qfh;
+	unlink $que_path;
+	
+	my $api = shift @QUE;
+	print $Lfh "$api\n";
+	return ($api, @QUE );
+}
+# AWARENESS
+sub log_begin
+{
+	for my $script (@pf)
+		{ `perl $script $NAME &`; }
+	for my $script (@dtrace)
+		{ `perl $script $NAME &`; }
+	for my $script (@unix)
+		{ `perl $script $NAME &`; }
+}
+# COMMUNICATION
+sub h_ping
+{ # host roster
+	open(my $Pfh, '>>', $PING);
+	printf $Pfh ("%s %s ping!\n", TIME(), $$);
+	close $Pfh;
+}
+sub n_ping 
+{ # net roster
+	open(my $Dfh, '>>', $NFSPID);
+	printf $Dfh ("%s %s %s\n", TIME(), $NAME, $NODE);
+	close $Dfh;
+}
+# XTRACTION & STANDARDIZE
+sub XS
+{ 
+	my ($file) = shift;
+	my ($sha) = file_digest($file) or die "couldn't sha $file";
+	File::Copy::copy($file, $POOL.$sha);
+	my $cur = $G.$sha;
+	open(my $fh, '>>', $cur) or die "Meta File Creation FAIL $file";
+	printf $fh "%s\n%s\n%s\n%s\n",
+		xsname($file),
+		xspath($file),
+		xssize($file),
+		file_mime_encoding($file);
+}
+sub file_digest {
+	my ($file) = @_;
+	my $digester = Digest::SHA->new('sha256');
+	$digester->addfile( $file, 'b' );
+	return $digester->hexdigest;
+}
+sub xsname {
+	my ($file) = @_;
+	$file =~ s?^.*/??;
+	return $file;
+}
+sub xspath {
+	my ($file) = @_;
+	$file =~ s?/?_?g;
+	return $file;
+}
+sub file_mime_encoding {
+	my ($file) = @_;
+	my $magic = File::LibMagic->new();
+	my $info = $magic->info_from_filename($file);
+	my $des = $info->{description};
+	$des =~ s?[/ ]?.?g;
+	$des =~ s/,/_/g;
+	my $md = $info->{mime_type};
+	$md =~ s?[/ ]?.?g;
+	my $enc = sprintf("%s %s %s", $des, $md, $info->{encoding});
+	return $enc;
+}
+sub xssize {
+	my ($file) = @_;
+	my $size = -s $file;
+	return $size;
+}
+sub uagent
+{
+	my $s_ua = LWP::UserAgent->new(
+		agent => "Mozilla/50.0.2",
+		from => 'punxnotdead',
+		timeout => 45,
+	);
+	return $s_ua;
+}
+# ///////////////////////////////////////////////////////////
+
+# LOGIC %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+sub get
+{
+	my ($i) = @_;
+	my $iname = $i; $iname =~ s|.*/||;
+	my $tmp = $DUMP.$iname;
+	my $response = $UA->get($i, ':content_file'=>"$tmp");
+	print $Lfh "YAY $i\n"; $YAY++;
+	if (-e $tmp)
+	{ 
+		print $Lfh "YAY $i\n"; $YAY++;
+		XS($tmp) && unlink($tmp); 
+	}
+	else
+		{ print $FAILfh "$i\n"; }
+}
+sub blkr
+{
+	my ($i) = @_;
+	my $block = 0;
+	my $ipath = $NFSPATH.'pool/'.$i;
+	open(my $ifh, '<', "$ipath") || print $Lfh "Cant open $i: $!\n";
+	binmode($ifh);
+
+	while (read($ifh, $block, $SIZE))
+	{
+		my $bsha = sha256_hex($block);
+		my $bname = $NFSPATH.'sea/'.$bsha;
+		open(my $fh, '>', "$bname");
+		binmode($fh);
+		print $fh $block;
+		key($i, $bsha);
+	}
+	$YAY++;
+}
+sub key
+{
+	my ($i, $bsha) = @_;
+	my $kpath = $NFSPATH.'key/'.$i;
+	open(my $kfh, '>>', "$kpath");
+	print $kfh "$bsha\n";
+}
+sub sha
+{
+	my ($i) = @_;
+	my ($sha) = file_digest($i);
+	if ($sha ne $i)
+		{ print $Lfh "ERK $i ne $sha\n"; }
+	$YAY++;
+}
+###!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+sub regx
+###!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+{
+	my ($i) = @_;
+	open(my $fh, '<', $i);
+	open(my $mfh, '<', $NFSPATH);
+	my @i = readline $fh; chomp @i;
+	my @master = readline $mfh; chomp @master;
+	foreach (@i)
+		{ print $Lfh "no $_\n" unless any { /'$_'/ } @master; }
+	# test greedy any, before, after
+	$YAY++;
+}
+###!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+sub xtrac
+###!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+{
+	my ($i) = @_;
+	print $Lfh "ping\n";
+	my $archive = Archive::Any->new($i);
+	if ($archive->is_naughty)
+		{ print $Lfh "ALERT xtrac naughty $i"; next; }
+	my @files = $archive->files;
+	print $Lfh @files;
+	$archive->extract($DUMP);
+	XS($DUMP, $NFSPATH) && rmtree($DUMP);
+	mkdir $DUMP;
+	print $Lfh "YAY $i\n"; $YAY++;
+}
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
