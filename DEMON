@@ -375,7 +375,6 @@ sub get
 	my $iname = $i; $iname =~ s|.*/||;
 	my $tmp = $DUMP.$iname;
 	my $response = $UA->get($i, ':content_file'=>"$tmp");
-	print $Lfh "YAY $i\n"; $YAY++;
 	if (-e $tmp)
 	{
 		print $Lfh "YAY $i\n"; $YAY++;
