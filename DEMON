@@ -20,14 +20,13 @@ use LWP::Protocol::https;
 use Archive::Any;
 
 # STRUCT #######################################
-# /tmp/$NAME/dump/ : hostside work dir
-# /tmp/PING : hostside PID roster
+# /tmp/$NAME/ : host work dir
+# /tmp/PING : host PID roster
 
 # /HIVE/ : net nfs mount
-# /HIVE/PING : net roster
+# /HIVE/PING : net PID roster
 # /HIVE/cemetery/ : net DEMON memorial (logs)
-
-# /HIVE/node/ : net host specific dir
+# /HIVE/node/ : node specific dir
 # /HIVE/node/$hostname/que/ : net api-que
 
 # /nfsdump/pool/ : net data dump
@@ -50,12 +49,12 @@ die "STILLBORN" if ((my $birth = daemon()) != 0);
 
 # GLOBAL CONST
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-const my $NFSPID => $NFSPATH.PING; # life beat (creates PID that is removed by chron every hour)
-const my $REP => $TOMB.'REP_'.$NAME; # metrics
+#const my $NFSPID => $NFSPATH.PING; # life beat (creates PID that is removed by chron every hour)
+#const my $REP => $TOMB.'REP_'.$NAME; # metrics
 # HOST LOG VARIABLES
-const my @pf => ('PID_LOG_packets_raw', 'PID_LOG_invalid_input', 'PID_LOG_invalid_output', 'PID_LOG_packet_io', 'PID_LOG_net_io');
-const my @dtrace => ('PID_LOG_cpu_io', 'PID_LOG_fs_io', 'PID_LOG_syscall_io');
-const my @unix => ('PID_LOG_top', 'PID_LOG_ps', 'PID_LOG_netstat', 'PID_LOG_zfs', 'PID_LOG_gpart', 'PID_LOG_camcontrol', 'PID_LOG_iostat', 'PID_LOG_io');
+#const my @pf => ('PID_LOG_packets_raw', 'PID_LOG_invalid_input', 'PID_LOG_invalid_output', 'PID_LOG_packet_io', 'PID_LOG_net_io');
+#const my @dtrace => ('PID_LOG_cpu_io', 'PID_LOG_fs_io', 'PID_LOG_syscall_io');
+#const my @unix => ('PID_LOG_top', 'PID_LOG_ps', 'PID_LOG_netstat', 'PID_LOG_zfs', 'PID_LOG_gpart', 'PID_LOG_camcontrol', 'PID_LOG_iostat', 'PID_LOG_io');
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 const my $NAME => name(); # uniq process name
@@ -67,7 +66,8 @@ const my $HPING => '/tmp/PING';
 
 # NET VARIABLES
 const my $NFSPATH => '/HIVE/';
-const my $QUE => $NFSPATH.$NODE.'/que/'; # node path
+const my $NFSPING => $NFSPATH.'PING';
+const my $QUE => $NFSPATH.$NODE.'/'; # node path
 const my $TOMB => $NFSPATH.'cemetery/'; # DEMON logs
 const my $TOMBSTONE => $TOMB.$NAME;
 # NET LOG VARIABLES
@@ -84,13 +84,15 @@ const my $SUICIDE => $TOMB.'SUICIDE_'.$NAME; # triggers suicide
 const my $BIRTH => time();
 const my $RATE => 100;
 const my $SIZE => 128000; # BLKR
-onst my $UA => uagent(); # GET
+const my $UA => uagent(); # GET
 
 # DATA DUMP VARIABLES
-const my $DUMPPATH => ''; 
+const my $DUMPPATH => '';
 die "code needs nfs dump location" if (!defined $DUMPPATH);
-const my $POOL => $DUMPPATH.'pool/'; # remote nfs dump
-const my $G => $DUMPPATH.'g/'; # remote nfs dump
+#const my $POOL => $DUMPPATH.'pool/'; # remote nfs dump
+const my $POOL => '/pool/'; # remote nfs dump
+#const my $G => $DUMPPATH.'g/'; # remote nfs dump
+const my $G => '/g/'; # remote nfs dump
 
 # DISPATCH TABLE ##########################################
 const my %api_hash => ( get => \&get, xtrac => \&xtrac, blkr => \&blkr, krip => \&krip, regx => \&regex, sha => \&sha );
@@ -123,7 +125,7 @@ $DONEfh->autoflush(1);
 $TODOfh->autoflush(1);
 
 h_ping(); # host roster
-n_ping; # net roster (life beat)
+n_ping(); # net roster (life beat)
 
 printf $Lfh ("HELLOWORLD %s\n", TIME());
 
@@ -137,7 +139,7 @@ while (1)
 	my ($api, @QUE) = que_up();
 	if (!defined $api)
 		{ sleep 3600; next; }
-		
+
 # [[ nfsc ]]
 	# verify api
 	next if (api_verify($api, @QUE) < 0);
@@ -189,7 +191,7 @@ sub que_flush
 {
 	my (@QUE, $count) = @_;
 	open(my $TODOfh, '>', $TODO);
-	print $TODOfh "$count\n"; 
+	print $TODOfh "$count\n";
 	foreach (@QUE)
 		{ print $TODOfh "$_\n"; }
 	close $TODOfh;
@@ -280,37 +282,37 @@ sub que_up
 	my @QUE = readline $qfh;
   	chomp @QUE; close $qfh;
 	unlink $que_path;
-	
+
 	my $api = shift @QUE;
 	print $Lfh "$api\n";
 	return ($api, @QUE );
 }
 # AWARENESS
-sub log_begin
-{
-	for my $script (@pf)
-		{ `perl $script $NAME &`; }
-	for my $script (@dtrace)
-		{ `perl $script $NAME &`; }
-	for my $script (@unix)
-		{ `perl $script $NAME &`; }
-}
+#sub log_begin
+#{
+#	for my $script (@pf)
+#		{ `perl $script $NAME &`; }
+#	for my $script (@dtrace)
+#		{ `perl $script $NAME &`; }
+#	for my $script (@unix)
+#		{ `perl $script $NAME &`; }
+#}
 # COMMUNICATION
 sub h_ping
 { # host roster
-	open(my $Pfh, '>>', $PING);
+	open(my $Pfh, '>>', $HPING);
 	printf $Pfh ("%s %s ping!\n", TIME(), $$);
 	close $Pfh;
 }
-sub n_ping 
+sub n_ping
 { # net roster
-	open(my $Dfh, '>>', $NFSPID);
+	open(my $Dfh, '>>', $NFSPING);
 	printf $Dfh ("%s %s %s\n", TIME(), $NAME, $NODE);
 	close $Dfh;
 }
 # XTRACTION & STANDARDIZE
 sub XS
-{ 
+{
 	my ($file) = shift;
 	my ($sha) = file_digest($file) or die "couldn't sha $file";
 	File::Copy::copy($file, $POOL.$sha);
@@ -375,9 +377,9 @@ sub get
 	my $response = $UA->get($i, ':content_file'=>"$tmp");
 	print $Lfh "YAY $i\n"; $YAY++;
 	if (-e $tmp)
-	{ 
+	{
 		print $Lfh "YAY $i\n"; $YAY++;
-		XS($tmp) && unlink($tmp); 
+		XS($tmp) && unlink($tmp);
 	}
 	else
 		{ print $FAILfh "$i\n"; }
