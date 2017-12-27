@@ -1,11 +1,11 @@
 ####################################################
 # DEMON - unix daemon network goons
 
-Everpresent daemons that work on networked dictated ques for distributive computation.
+Everpresent daemons that work on network-dictated-ques for distributive-computation of massive-tasks.
 
 {1} Structure = [[ host-location, nfs-locations ]]
 
-{2} Logic = [[ http-scrape, file-obfuscator, file-sha, file-encrypt, archive-extract, regex ]]
+{2} Logic = [[ http-scrape, file-obfuscate, file-sha, file-encrypt, archive-extract, regex ]]
 
 {3} Network Communication =  [[ pause, kill, stdout, PID_refresh(live_list), host_side-dump, bandwidth ]]
 https://github.com/skrp/MINT
@@ -80,22 +80,26 @@ fix grep arki()
 ( actor @iterations )
 
 # INTERFACE #########################################
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % NODE1                           NODE2             %
-%   876 sha 102/1000               785 sha  80/1000 %
-%   568 get 20/982                 958 blkr 102/2300%
-%   
-% sha 21389                           sha 3214389
-% get 3098                            get 430983
-% blkr  238902                        blkr  5668902
-%
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# 1 kill 876
+%   PID876 sha 102/1000         PID785 sha  80/1000 %
+%   PID568 get 20/982           PID958 blkr 102/2300%
+%                                                   %
+%   PIDsha 21389                PID874 sha 3214389  %
+%   PID1817 get 3098            PID224 get 430983   %
+%   PID1091 blkr  238902        PID344 blkr  5668902%
+%                                                   %
+%                                                   %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+lord@47u >> 1 kill 876
 1 876 dead
-# blkr next_que 1
+
+lord@47u >> blkr next_que 1
 1 921 SB 10000
-# blkr next_que 2 x2
+
+lord@47u >> blkr next_que 2 x2
 2 970 blkr 1000
 2 971 blkr 1000
 
@@ -128,7 +132,10 @@ fix grep arki()
 #      - (PID_LOG_camcontrol)
 #      - (PID_LOG_iostat)
 #      - (MOM_net_io)
- 
+# sec 
+#      - scan-self
+#      - scan-out
+
 # INTELLIGENCE ###############################
 # net_node_avg
 # net_node_over
