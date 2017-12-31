@@ -19,21 +19,6 @@ use LWP::UserAgent;
 use LWP::Protocol::https;
 use Archive::Any;
 
-# STRUCT #######################################
-# /tmp/$NAME/ : host work dir
-# /tmp/PING : host PID roster
-
-# /HIVE/ : net nfs mount
-# /HIVE/PING : net PID roster
-# /HIVE/$CLASS/cemetery/ : net DEMON memorial (logs)
-# /HIVE/$CLASS/q/ : node specific dir
-# /HIVE/node/$hostname/que/ : net api-que
-
-# /nfsdump/pool/ : net data dump
-# /nfsdump/g/ : net metadata dump
-
-# NET-COMM [[ pause, kill, stdout, PID, host_side-dump, bandwidth ]]
-
 # BIRTH
 die "STILLBORN" if ((my $birth = daemon()) != 0);
 
