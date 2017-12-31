@@ -1,7 +1,7 @@
 #!/usr/local/bin/perl
 use strict; use strict;
 use Term::ANSIColor ':constants';
-# TODO: page raw && action: new
+# TODO: page raw && action: new && all-action
 ##########################################
 # INTERFACE - interact with DEMONS via NFS
 #
