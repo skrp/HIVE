@@ -1,6 +1,15 @@
 #!/usr/local/bin/perl
 use strict; use strict;
 use Term::ANSIColor ':constants';
+##########################################
+# INTERFACE - interact with DEMONS via NFS
+#
+# list DEMONS
+# output log
+# output tomb (success-count & failure-count)
+# SLEEP DEMON
+# SUICIDE DEMON
+# beat host (wipe all dead DEMONS)
 
 my ($page) = @ARGV;
 die "ARG1 lines to page" if (!defined $page);
