@@ -1,0 +1,129 @@
+#!/usr/local/bin/perl
+use strict; use strict;
+use Term::ANSIColor ':constants';
+
+my ($page) = @ARGV;
+die "ARG1 lines to page" if (!defined $page);
+opendir(my $adh, '/HIVE/');
+my @ls = readdir $adh; chomp @ls;
+my @hosts; 
+my @demons;
+for (@ls)
+  { push @hosts, $_ unless (/cemetery/ or /PING/ or /QUE/ or /\./); }
+for my $h (@hosts)
+{ 
+  my $ipath = '/HIVE/'.$h;
+  opendir(my $idh, $ipath); 
+  my @i = readdir $idh; chomp @i; 
+  for (@i)
+    { push @demons, $h.' '.$_ unless (/\./); }
+}
+my $count = 0;
+for (@demons)
+{
+  my $hh = $_; my $gg = $_;
+  $hh =~ s/ .*//;
+  $gg =~ s/.* //;
+  print BOLD RED "[$count] ";
+  print BOLD BLUE "$hh   ";
+  print GREEN "$gg\n";
+  $count++;
+} 
+while (1)
+{
+  prompt();
+  my $input = <STDIN>; chomp $input;
+  my ($number, $action) = split(' ', $input, 2);
+  
+  if ($action eq 'raw')
+  {
+    my $iname = $demons[$number]; $iname =~ s/.* //;
+    my $iipath = '/HIVE/cemetery/RAW_'.$iname;
+    open(my $iifh, '<', $iipath);
+    my @raw = readline $iifh; chomp @raw;
+    for (@raw)
+      { print BLUE "$demons[$number] "; print BOLD WHITE "$_\n"; }
+    print "\n\n";
+  }
+
+  elsif ($action eq 'tomb')
+  {
+    my $iname = $demons[$number]; $iname =~ s/.* //;
+
+    my $iipath = '/HIVE/cemetery/DONE_'.$iname;
+    open(my $iifh, '<', $iipath);
+    my @yay = readline $iifh; 
+    chomp @yay; close $iifh;
+    my $yay = @yay;
+
+    my $iiipath = '/HIVE/cemetery/FAIL_'.$iname;
+    open(my $iifh, '<', $iiipath);
+    my @fa = readline $iifh; 
+    chomp @fa; close $iifh;
+    my $fa = @fa;
+    
+    print BOLD WHITE "$demons[$number]   ";
+    print GREEN "YAY: $yay   ";
+    print RED "FAIL $fa\n"; 
+
+    print "\n\n";
+  }
+  
+  elsif ($action eq "sleep")
+  {
+    print YELLOW "TIMEOUT: ";
+    my $to = <STDIN>;
+    print YELLOW "$to\n";
+
+    my $iname = $demons[$number]; $iname =~ s/.* //;
+    my $spath = "/HIVE/cemetery/SLEEP_$iname";
+    open(my $iifh, '>', $spath);
+    print $iifh "$to";
+
+    print "\n\n";
+  }
+  elsif ($action eq "suicide")
+  {
+    my $iname = $demons[$number]; $iname =~ s/.* //;
+    my $spath = "/HIVE/cemetery/SLEEP_$iname";
+    open(my $iifh, '>', $spath);
+    print $iifh "SUICIDE";
+
+    print "\n\n";
+  }
+  elsif ($action eq "beat")
+  {
+    my $hh = $demons[$number]; $hh =~ s/ .*//;
+    my $bpath = "/HIVE/$hh/";
+
+    opendir(my $idh, $bpath);
+    my @dem = readdir $idh;
+    shift @dem; shift @dem;
+
+    for (@dem)
+    {
+      my $pid = $_; chomp $pid;
+      $pid =~ s/_.*//;
+      my @up = `ps $pid`;
+      chomp $up[1];
+      if (!defined $up[$1])
+      { 
+        my $move = $bpath.$_.'/';
+        `mv $move* /HIVE/QUE/`;
+        `rmdir $move`;
+      }
+    }
+    print RED "beat $hh\n";
+   
+    print "\n\n";
+  }
+  else
+    { print BOLD RED "BAD \$action\n\n\n"; }
+}
+
+sub prompt
+{
+  print RED "usage: \$number \$action  ";
+  print RED "[tomb raw sleep suicide beat new]\n";
+  print YELLOW "HIVE rdy:";
+}
