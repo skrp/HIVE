@@ -38,6 +38,9 @@ use Archive::Any;
 # NET-COMM [[ pause, kill, stdout, PID, host_side-dump, bandwidth ]]
 
 # BIRTH
+my ($DUMPPATH) = @ARGV;
+die "nfs dump path" if (!defined $DUMPPATH);
+
 die "STILLBORN" if ((my $birth = daemon()) != 0);
 
 # PREP @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -71,11 +74,9 @@ const my $SUICIDE => $TOMB.'SUICIDE_'.$NAME; # triggers suicide
 # DEMON VARIABLES
 const my $BIRTH => age();
 const my $RATE => 100;
-const my $SIZE => 128000; # BLKR
 const my $UA => uagent(); # GET
 
 # DATA DUMP VARIABLES
-const my $DUMPPATH => '/bkup10/';
 const my $POOL => $DUMPPATH.'pool/'; # remote nfs dump
 const my $G => $DUMPPATH.'g/'; # remote nfs dump
 
