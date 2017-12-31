@@ -31,6 +31,11 @@ use LWP::Protocol::https;
 # /HIVE/PING :         nfs PID roster
 # /HIVE/QUE/ :         nfs queue dump
 # /HIVE/cemetery/ :    nfs logs
+#                      $NAME      = tombsone
+#                      RAW_$NAME  = event log
+#                      DONE_$NAME = success list
+#                      FAIL_$NAME = failure list
+#                      TODO_$NAME = return queue back
 # /HIVE/$NODE/$NAME/ : nfs daemon-specific queue directory
 # DUMPSITE
 # /$DUMPPATH/pool/ :   data dump
@@ -43,7 +48,7 @@ die "nfs dump path" if (!defined $DUMPPATH);
 die "STILLBORN" if ((my $birth = daemon()) != 0);
 
 # PREP @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-const my $NAME => name(); # uniq process name
+const my $NAME => name();
 
 # HOST VARIABLES
 const my $DUMP => '/tmp/'.$NAME.'_dump/'; # unique process hostside dump
@@ -58,30 +63,30 @@ const my $NODE => hostname(); # node name
 
 const my $QUE => $NFSPATH.$NODE.'/'.$NAME.'/'; # node path
 const my $TOMB => $NFSPATH.'cemetery/'; # DEMON logs
-const my $TOMBSTONE => $TOMB.$NAME;
 
-# NET LOG VARIABLES
+# LOG VARIABLES
+const my $TOMBSTONE => $TOMB.$NAME;
 const my $RAW => $TOMB.'RAW_'.$NAME; # output
 const my $TODO => $TOMB.'TODO_'.$NAME; # leftovers that need to be put back in $QUE
 const my $DONE => $TOMB.'DONE_'.$NAME; # successful iterations
 const my $FAIL => $TOMB.'FAIL_'.$NAME; # failed iterations that need to be cleaned up
 const my $ZOMBIE => $TOMB.'ZOMBIE_'.$NAME; # fails path of api_verify()
-# NET CONTROL VARIABLES
+# CONTROL VARIABLES
 const my $SLEEP => $TOMB.'SLEEP_'.$NAME; # triggers sleep
 const my $SUICIDE => $TOMB.'SUICIDE_'.$NAME; # triggers suicide
 
 # DEMON VARIABLES
 const my $BIRTH => age();
 const my $RATE => 100;
-const my $UA => uagent(); # GET
+const my $UA => uagent();
 
-# DATA DUMP VARIABLES
-const my $POOL => $DUMPPATH.'pool/'; # remote nfs dump
-const my $G => $DUMPPATH.'g/'; # remote nfs dump
+# dumpsite mountpoints
+const my $POOL => $DUMPPATH.'pool/'; 
+const my $G => $DUMPPATH.'g/';
 
 # GLOBALS
-my $YAY = 0;
-my $FA = 0;
+my $YAY = 0; # total sucesses
+my $FA = 0;  # total failures
 $SIG{INT} = \&SUICIDE;
 
 chdir('/tmp/');
