@@ -318,7 +318,6 @@ sub XS
   my $cur = $G.'g'.$sha;
   unless (eval { open(my $fh, '>>', $cur) })
   {
-    print $Lfh "meta error $@\n";
     print $Lfh "!!!! FAIL meta $sha\n" unless (-e $cur);
     return;
   }
