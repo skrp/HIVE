@@ -17,7 +17,6 @@ use File::LibMagic;
 use Sys::Hostname 'hostname';
 use LWP::UserAgent;
 use LWP::Protocol::https;
-use Archive::Any;
 
 # STRUCT #######################################
 # /tmp/$NAME_dump/ : host work dir
@@ -37,7 +36,7 @@ use Archive::Any;
 
 # NET-COMM [[ pause, kill, stdout, PID, host_side-dump, bandwidth ]]
 
-# BIRTH
+# BIRTH ###############################################
 my ($DUMPPATH) = @ARGV;
 die "nfs dump path" if (!defined $DUMPPATH);
 
