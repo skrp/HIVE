@@ -110,7 +110,6 @@ unless (-w $NFSPING)
 	{ print $Lfh "PING nonwriteable\n"; exit; }
 unless (-w $QUEDUMP)
 	{ print $Lfh "QUE dump nonwriteable\n"; exit; }
-print "$$\n";
 sleep 100; # give admin chance to populate que
 # @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
@@ -319,16 +318,15 @@ sub XS
   my $cur = $G.'g'.$sha;
   unless (eval { open(my $fh, '>>', $cur) })
   {
-    print "!!!!! $@\n";
-    print "FAIL meta $sha\n" unless (-e $cur);
+    print $Lfh "meta error $@\n";
+    print $Lfh "!!!! FAIL meta $sha\n" unless (-e $cur);
     return;
   }
   open(my $fh, '>>', $cur);
-  print "$cur\n";
-  my $iname = xsname($file); print "bad xsname $file\n" if (!defined $iname);
-  my $ipath = xspath($file); print "bad xspath $file\n" if (!defined $ipath);
-  my $isize = xssize($file); print "bad xssize $file\n" if (!defined $isize);
-  my $imime = file_mime_encoding($file); print "bad xsmime $file\n" if (!defined $imime);
+  my $iname = xsname($file); print $Lfh "bad xsname $file\n" if (!defined $iname);
+  my $ipath = xspath($file); print $Lfh "bad xspath $file\n" if (!defined $ipath);
+  my $isize = xssize($file); print $Lfh "bad xssize $file\n" if (!defined $isize);
+  my $imime = file_mime_encoding($file); print $Lfh "bad xsmime $file\n" if (!defined $imime);
   print $fh "$iname\n$ipath\n$isize\n$imime\n";
   close $fh;
 }
@@ -394,11 +392,10 @@ sub beat
     my @up = `ps $pid`;
     chomp $up[1];
     if (!defined $up[1])
-    { 
+    {
       my $move = $path.$_.'/';
       `mv $move* /HIVE/QUE/`;
       `rmdir $move`;
-      print "PURGE $move\n";
     }
   }
-} 
+}
