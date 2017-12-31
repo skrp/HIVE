@@ -19,6 +19,21 @@ use LWP::UserAgent;
 use LWP::Protocol::https;
 use Archive::Any;
 
+# STRUCT #######################################
+# /tmp/$NAME/ : host work dir
+# /tmp/PING : host PID roster
+
+# /HIVE/ : net nfs mount
+# /HIVE/PING : net PID roster
+# /HIVE/$CLASS/cemetery/ : net DEMON memorial (logs)
+# /HIVE/$CLASS/q/ : node specific dir
+# /HIVE/node/$hostname/que/ : net api-que
+
+# /nfsdump/pool/ : net data dump
+# /nfsdump/g/ : net metadata dump
+
+# NET-COMM [[ pause, kill, stdout, PID, host_side-dump, bandwidth ]]
+
 # BIRTH
 die "STILLBORN" if ((my $birth = daemon()) != 0);
 
@@ -87,11 +102,15 @@ unless (-w $POOL && -w $G)
 unless (-w $PING)
 	{ print $Lfh "PING nonwriteable\n"; exit; }
 
+sleep 30; # give admin chance to populate que
 # @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 # LIVE &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 while (1)
 {
+	my $que_count = q_count();
+	if ($que_count < 3)
+		{ sleep 3600; next; }
 	my @QUE = que_up();
 	my $count = 0;
 	my $ttl = @QUE;
@@ -138,6 +157,13 @@ sub daemon {
    	open(STDOUT, ">$des");
    	open(STDERR, ">$des");
    	return 0;
+}
+sub q_count
+{
+	opendir(my $qdh, $QUE);
+	my @f = readdir $qdh;
+	my $que_count = @f;
+	return $que_count;
 }
 sub SUICIDE
 {
