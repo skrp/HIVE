@@ -4,12 +4,14 @@ use Term::ANSIColor ':constants';
 ##########################################
 # INTERFACE - interact with DEMONS via NFS
 #
-# list DEMONS
-# output log
-# output tomb (success-count & failure-count)
-# SLEEP DEMON
-# SUICIDE DEMON
-# beat host (wipe all dead DEMONS)
+# ACTIONS ################################
+# list    - list DEMONS in network
+# raw     - output log
+# tomb    - output tomb (success-count & failure-count)
+# sleep   - timeout DEMON
+# suicide - clean-kill DEMON
+# beat    - wipe all dead DEMONS on a host
+# new     - change queue array
 
 my ($page) = @ARGV;
 die "ARG1 lines to page" if (!defined $page);
