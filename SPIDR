@@ -6,6 +6,8 @@ use strict; use warnings;
 ########################################################
 #                HIVE OVER NFS                         #
 # SPIDR          t_'(o_0)"'      daemon summons scroll #
+#
+# grab internet data via queue files
 ########################################################
 
 use Const::Fast 'const';
@@ -28,11 +30,10 @@ use LWP::Protocol::https;
 
 # /HIVE/cemetery/ : net DEMON memorial (logs)
 
-# /HIVE/$NODE/$NAME/ : daemon specific dir
-# /HIVE/$NODE/$hostname/ : net api-que
+# /HIVE/$NODE/$NAME/ : daemon-specific queue directory
 
-# /nfsdump/pool/ : net data dump
-# /nfsdump/g/ : net metadata dump
+# /$DUMPPATH/pool/ : net data dump
+# /$DUMPPATH/g/ : net metadata dump
 
 # NET-COMM [[ pause, kill, stdout, PID, host_side-dump, bandwidth ]]
 
