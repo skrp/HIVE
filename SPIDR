@@ -20,14 +20,17 @@ use LWP::Protocol::https;
 use Archive::Any;
 
 # STRUCT #######################################
-# /tmp/$NAME/ : host work dir
+# /tmp/$NAME_dump/ : host work dir
 # /tmp/PING : host PID roster
 
 # /HIVE/ : net nfs mount
 # /HIVE/PING : net PID roster
-# /HIVE/$CLASS/cemetery/ : net DEMON memorial (logs)
-# /HIVE/$CLASS/q/ : node specific dir
-# /HIVE/node/$hostname/que/ : net api-que
+# /HIVE/QUE/ : net queue dump
+
+# /HIVE/cemetery/ : net DEMON memorial (logs)
+
+# /HIVE/$NODE/$NAME/ : daemon specific dir
+# /HIVE/$NODE/$hostname/ : net api-que
 
 # /nfsdump/pool/ : net data dump
 # /nfsdump/g/ : net metadata dump
@@ -38,7 +41,6 @@ use Archive::Any;
 die "STILLBORN" if ((my $birth = daemon()) != 0);
 
 # PREP @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-const my $CLASS => 'SPIDR';
 const my $NAME => name(); # uniq process name
 
 # HOST VARIABLES
@@ -46,9 +48,9 @@ const my $DUMP => '/tmp/'.$NAME.'_dump/'; # unique process hostside dump
 const my $HOSTPING => '/tmp/PING';
 
 # NET VARIABLES
-const my $NFSPATH => "/HIVE/$CLASS/";
-const my $NFSPING => '/HIVE/PING';
-const my $send => '/HIVE/QUE/';
+const my $NFSPATH => "/HIVE/";
+const my $NFSPING => $NFSPATH.'PING';
+const my $QUEDUMP => $NFSPATH.'QUE/';
 
 const my $NODE => hostname(); # node name
 
@@ -99,10 +101,12 @@ printf $Lfh ("HELLOWORLD %s\n", TIME());
 
 unless (-w $POOL && -w $G)
 	{ print $Lfh "cant write nfs dump dirs\n"; exit; }
-unless (-w $PING)
+unless (-w $NFSPING)
 	{ print $Lfh "PING nonwriteable\n"; exit; }
+unless (-w $QUEDUMP)
+	{ print $Lfh "QUE dump nonwriteable\n"; exit; }
 
-sleep 30; # give admin chance to populate que
+sleep 100; # give admin chance to populate que
 # @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 # LIVE &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
@@ -110,12 +114,17 @@ while (1)
 {
 	my $que_count = q_count();
 	if ($que_count < 3)
-		{ sleep 3600; next; }
+	{ 
+		my $curTIME = TIME();
+		print $Lfh "$curTIME bored\n"; 
+		sleep 3600; 
+		next; 
+	}
 	my @QUE = que_up();
 	my $count = 0;
 	my $ttl = @QUE;
 
-	if (!defined $QUE[0] && !defined $QUE[1] !defined $QUE[2])
+	if (!defined $QUE[0] && !defined $QUE[1] && !defined $QUE[2])
 		{ zombie(@QUE); next; }
 
 	print $Lfh "ttl $ttl\n";
@@ -129,7 +138,7 @@ while (1)
 		if ($count % $RATE == 0)
 		{
 			tombstone($count, $ttl);
-			que_flush(@QUE, $count);
+			que_flush(@QUE);
 			n_ping();
 		}
 		$count++;
@@ -147,7 +156,7 @@ sub daemon {
    	die "FAIL daemon2 $!\n" if ((my $pid2 = fork()) < 0);
   	if ($pid2 != 0)
    		{ exit(0); }
-	  chdir('/tmp');
+	chdir('/tmp');
    	umask 0;
    	my $fds = 3;
   	while ($fds < 1024)
@@ -173,9 +182,8 @@ sub SUICIDE
 	printf $Lfh "$curTIME FKTHEWORLD\n";
 	dio('OUT');
 	tombstone($count, $ttl);
-	que_flush(@QUE, $count);
-	my $send = $QUEDUMP.$QUE;
-	`mv $QUE $send`;
+	que_flush(@QUE);
+	`mv $QUE $QUEDUMP`;
 	exit;
 }
 sub SLEEP
@@ -221,14 +229,13 @@ sub tombstone
 	my $life = "$BIRTH $Ttime";
 
 	open(my $Tfh, '>>', $TOMBSTONE);
-	printf $Tfh ("$YAY $NAME $life\n");
+	print $Tfh "yay: $YAY    name: $NAME   age: $life\n";
 }
 # QUEUE
 sub que_flush
 {
-	my (@QUE, $count) = @_;
+	my (@QUE) = @_;
 	open(my $TODOfh, '>', $TODO);
-	print $TODOfh "$count\n";
 	foreach (@QUE)
 		{ print $TODOfh "$_\n"; }
 	close $TODOfh;
@@ -266,7 +273,7 @@ sub h_ping
 {
 	open(my $Pfh, '>>', $HOSTPING);
 	my $curTIME = TIME();
-	printf $Pfh "$curTIME $CLASS $$\n";
+	printf $Pfh "$curTIME $$\n";
 	close $Pfh;
 }
 sub n_ping
