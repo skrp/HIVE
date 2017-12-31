@@ -311,23 +311,23 @@ sub n_ping
 # XTRACTION & STANDARDIZE
 sub XS
 {
-	my ($file) = shift;
-	my ($sha) = file_digest($file) or die "couldn't sha $file";
-	File::Copy::copy($file, $POOL.$sha);
-	my $cur = $G.'g'.$sha;
-	open(my $fh, '>>', $cur) or die "Meta File Creation FAIL $file";
-	printf $fh "%s\n%s\n%s\n%s\n",
-		xsname($file),
-		xspath($file),
-		xssize($file),
-		file_mime_encoding($file);
+  my ($file) = shift;
+  my ($sha) = file_digest($file) or print $Lfh "FAIL sha $file $!";
+  File::Copy::copy($file, $POOL.$sha);
+  my $cur = $G.'g'.$sha;
+  open(my $fh, '>>', $cur) or print $Lfh "FAIL meta $file $!";
+  printf $fh "%s\n%s\n%s\n%s\n",
+    xsname($file),
+    xspath($file),
+    xssize($file),
+    file_mime_encoding($file);
 }
 sub file_digest
 {
-	my ($file) = @_;
-	my $digester = Digest::SHA->new('sha256');
-	$digester->addfile( $file, 'b' );
-	return $digester->hexdigest;
+  my ($file) = @_;
+  my $digester = Digest::SHA->new('sha256');
+  $digester->addfile( $file, 'b' );
+  return $digester->hexdigest;
 }
 sub xsname
 {
