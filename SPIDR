@@ -45,7 +45,7 @@ use LWP::Protocol::https;
 my ($DUMPPATH) = @ARGV;
 die "nfs dump path" if (!defined $DUMPPATH);
 
-#die "STILLBORN" if ((my $birth = daemon()) != 0);
+die "STILLBORN" if ((my $birth = daemon()) != 0);
 
 # PREP @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 const my $NAME => name();
