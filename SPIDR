@@ -45,7 +45,7 @@ use LWP::Protocol::https;
 my ($DUMPPATH) = @ARGV;
 die "nfs dump path" if (!defined $DUMPPATH);
 
-die "STILLBORN" if ((my $birth = daemon()) != 0);
+#die "STILLBORN" if ((my $birth = daemon()) != 0);
 
 # PREP @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 const my $NAME => name();
@@ -81,7 +81,7 @@ const my $RATE => 100;
 const my $UA => uagent();
 
 # dumpsite mountpoints
-const my $POOL => $DUMPPATH.'pool/'; 
+const my $POOL => $DUMPPATH.'pool/';
 const my $G => $DUMPPATH.'g/';
 
 # GLOBALS
@@ -110,20 +110,21 @@ unless (-w $NFSPING)
 	{ print $Lfh "PING nonwriteable\n"; exit; }
 unless (-w $QUEDUMP)
 	{ print $Lfh "QUE dump nonwriteable\n"; exit; }
-
+print "$$\n";
 sleep 100; # give admin chance to populate que
 # @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 # LIVE &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 while (1)
 {
+	beat();
 	my $que_count = q_count();
 	if ($que_count < 3)
-	{ 
+	{
 		my $curTIME = TIME();
-		print $Lfh "$curTIME bored\n"; 
-		sleep 3600; 
-		next; 
+		print $Lfh "$curTIME bored\n";
+		sleep 3600;
+		next;
 	}
 	my @QUE = que_up();
 	my $count = 0;
@@ -315,12 +316,13 @@ sub XS
   my ($sha) = file_digest($file) or print $Lfh "FAIL sha $file $!";
   File::Copy::copy($file, $POOL.$sha);
   my $cur = $G.'g'.$sha;
-  open(my $fh, '>>', $cur) or print $Lfh "FAIL meta $file $!";
-  printf $fh "%s\n%s\n%s\n%s\n",
-    xsname($file),
-    xspath($file),
-    xssize($file),
-    file_mime_encoding($file);
+  open(my $fh, '>>', $cur) or print "FAIL meta $sha $!\n" unless (-e $cur);
+  my $iname = xsname($file); print "bad xsname $file\n" if (!defined $iname);
+  my $ipath = xspath($file); print "bad xspath $file\n" if (!defined $ipath);
+  my $isize = xssize($file); print "bad xssize $file\n" if (!defined $isize);
+  my $imime = file_mime_encoding($file); print "bad xsmime $file\n" if (!defined $imime);
+  print $fh "$iname\n$ipath\n$isize\n$imime\n";
+  close $fh;
 }
 sub file_digest
 {
@@ -369,3 +371,26 @@ sub uagent
   return $s_ua;
 }
 # ///////////////////////////////////////////////////////////
+# MAINTAINENCE
+sub beat
+{
+  my $node = `hostname`; chomp $node;
+  my $path = '/HIVE/'.$node.'/';
+  opendir(my $dh, $path);
+  my @demons = readdir $dh;
+  shift @demons; shift @demons;
+  for (@demons)
+  {
+    my $pid = $_; chomp $pid;
+    $pid =~ s/_.*//;
+    my @up = `ps $pid`;
+    chomp $up[1];
+    if (!defined $up[1])
+    {
+      my $move = $path.$_.'/';
+      `mv $move* /HIVE/QUE/`;
+      `rmdir $move`;
+      print "PURGE $move\n";
+    }
+  }
+}
