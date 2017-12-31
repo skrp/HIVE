@@ -133,7 +133,7 @@ while (1)
 	{
 		if (-e $SLEEP)
    	 		{ SLEEP( $count, $ttl, @QUE); }
-		api($i);
+		pluck($i);
 
 		if ($count % $RATE == 0)
 		{
@@ -145,6 +145,26 @@ while (1)
 # &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 	}
 	unlink $TODO;
+}
+# LOGIC %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+sub pluck
+{
+	my ($i) = @_;
+	sleep 2;
+	my $iname = $i; $iname =~ s?.*/??;
+	my $tmp = $DUMP.$iname;
+	my $response = $UA->get($i, ':content_file'=>"$tmp");
+	if (-e $tmp)
+	{
+		$YAY++;
+		print $DONEfh "$i\n";
+		XS($tmp) && unlink($tmp);
+	}
+	else
+	{
+		$FA++;
+		print $FAILfh "$i\n";
+	}
 }
 
 # CORE SUBS ///////////////////////////////////////////////////////////
@@ -166,13 +186,6 @@ sub daemon {
    	open(STDOUT, ">$des");
    	open(STDERR, ">$des");
    	return 0;
-}
-sub q_count
-{
-	opendir(my $qdh, $QUE);
-	my @f = readdir $qdh;
-	my $que_count = @f;
-	return $que_count;
 }
 sub SUICIDE
 {
@@ -232,6 +245,41 @@ sub tombstone
 	print $Tfh "yay: $YAY    name: $NAME   age: $life   fails: $FA\n";
 }
 # QUEUE
+sub q_count
+{
+	opendir(my $qdh, $QUE);
+	my @f = readdir $qdh;
+	my $que_count = @f;
+	return $que_count;
+}
+sub zombie
+{
+  my (@QUE) = @_;
+  my $id = int(rand(999));
+  my $zpath = $ZOMBIE.$id;
+  open(my $zfh, '>', $zpath);
+  for (@QUE)
+     { print $zfh "$_\n"; }
+  close $zfh;
+}
+sub get_que
+{
+  opendir(my $dh, $QUE);
+  my @ls = readdir($dh);
+  # skip $ls[0] = . ; $ls[1] = ..;
+  my $que_path = $QUE.$ls[2];
+  print $Lfh "que: $que_path\n";
+  return $que_path;
+}
+sub que_up
+{
+  my $que_path = get_que();
+  open(my $qfh, '<', $que_path);
+  my @QUE = readline $qfh;
+  chomp @QUE; close $qfh;
+  move($que_path, $TODO);
+  return (@QUE);
+}
 sub que_flush
 {
 	my (@QUE) = @_;
@@ -240,48 +288,20 @@ sub que_flush
 		{ print $TODOfh "$_\n"; }
 	close $TODOfh;
 }
-sub zombie
-{
-	my (@QUE) = @_;
-  my $id = int(rand(999));
-	my $zpath = $ZOMBIE.$id;
-	open(my $zfh, '>', $zpath);
-	for (@QUE)
-		{ print $zfh "$_\n"; }
-	close $zfh;
-}
-sub que_p
-{
-  opendir(my $dh, $QUE);
- 	my @ls = readdir($dh);
-  # skip $ls[0] = . ; $ls[1] = ..;
-  my $que_path = $QUE.$ls[2];
-	print $Lfh "que: $que_path\n";
-  return $que_path;
-}
-sub que_up
-{
-  my $que_path = que_p();
-	open(my $qfh, '<', $que_path);
-	my @QUE = readline $qfh;
-  chomp @QUE; close $qfh;
-	move($que_path, $TODO);
-	return (@QUE);
-}
 # COMMUNICATION
 sub h_ping
 {
-	open(my $Pfh, '>>', $HOSTPING);
-	my $curTIME = TIME();
-	printf $Pfh "$curTIME $$\n";
-	close $Pfh;
+  open(my $Pfh, '>>', $HOSTPING);
+  my $curTIME = TIME();
+  printf $Pfh "$curTIME $$\n";
+  close $Pfh;
 }
 sub n_ping
 {
-	open(my $Dfh, '>>', $NFSPING);
-	my $curTIME = TIME();
-	printf $Dfh "$curTIME $NODE $NAME\n";
-	close $Dfh;
+  open(my $Dfh, '>>', $NFSPING);
+  my $curTIME = TIME();
+  printf $Dfh "$curTIME $NODE $NAME\n";
+  close $Dfh;
 }
 # XTRACTION & STANDARDIZE
 sub XS
@@ -331,38 +351,16 @@ sub file_mime_encoding
 }
 sub xssize
 {
-	my ($file) = @_;
-	my $size = -s $file;
-	return $size;
+  my ($file) = @_;
+  my $size = -s $file;
+  return $size;
 }
 sub uagent
 {
-	my $s_ua = LWP::UserAgent->new(
-		agent => "Mozilla/50.0.2",
-		from => 'punxnotdead',
-		timeout => 45,
-	);
-	return $s_ua;
+  my $s_ua = LWP::UserAgent->new(
+    agent => "Mozilla/50.0.2",
+    from => 'punxnotdead',
+    timeout => 45);
+  return $s_ua;
 }
 # ///////////////////////////////////////////////////////////
-
-# LOGIC %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-sub api
-{
-	my ($i) = @_;
-	sleep 2;
-	my $iname = $i; $iname =~ s?.*/??;
-	my $tmp = $DUMP.$iname;
-	my $response = $UA->get($i, ':content_file'=>"$tmp");
-	if (-e $tmp)
-	{
-		$YAY++;
-		print $DONEfh "$i\n";
-		XS($tmp) && unlink($tmp);
-	}
-	else
-	{
-		$FA++;
-		print $FAILfh "$i\n";
-	}
-}
