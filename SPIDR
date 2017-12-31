@@ -6,8 +6,10 @@ use strict; use warnings;
 ########################################################
 #                HIVE OVER NFS                         #
 # SPIDR          t_'(o_0)"'      daemon summons scroll #
-#
-# grab internet data via queue files
+#                                                      #
+# grab internet data via queue files                   #
+# dictacte queue files over the network                #
+# distributive-multi-daemon project management over NFS#
 ########################################################
 
 use Const::Fast 'const';
@@ -20,22 +22,19 @@ use Sys::Hostname 'hostname';
 use LWP::UserAgent;
 use LWP::Protocol::https;
 
-# STRUCT #######################################
-# /tmp/$NAME_dump/ : host work dir
-# /tmp/PING : host PID roster
-
-# /HIVE/ : net nfs mount
-# /HIVE/PING : net PID roster
-# /HIVE/QUE/ : net queue dump
-
-# /HIVE/cemetery/ : net DEMON memorial (logs)
-
-# /HIVE/$NODE/$NAME/ : daemon-specific queue directory
-
-# /$DUMPPATH/pool/ : net data dump
-# /$DUMPPATH/g/ : net metadata dump
-
-# NET-COMM [[ pause, kill, stdout, PID, host_side-dump, bandwidth ]]
+# DATA LOCATIONS ###############################
+# HOST
+# /tmp/$NAME_dump/ :   host work dir
+# /tmp/PING :          host PID roster
+# NFS
+# /HIVE/ :             nfs mount
+# /HIVE/PING :         nfs PID roster
+# /HIVE/QUE/ :         nfs queue dump
+# /HIVE/cemetery/ :    nfs logs
+# /HIVE/$NODE/$NAME/ : nfs daemon-specific queue directory
+# DUMPSITE
+# /$DUMPPATH/pool/ :   data dump
+# /$DUMPPATH/g/ :      metadata dump
 
 # BIRTH ###############################################
 my ($DUMPPATH) = @ARGV;
