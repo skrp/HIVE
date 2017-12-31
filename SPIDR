@@ -42,14 +42,17 @@ const my $CLASS => 'SPIDR';
 const my $NAME => name(); # uniq process name
 
 # HOST VARIABLES
-const my $NODE => hostname(); # node name
 const my $DUMP => '/tmp/'.$NAME.'_dump/'; # unique process hostside dump
 const my $HOSTPING => '/tmp/PING';
 
 # NET VARIABLES
 const my $NFSPATH => "/HIVE/$CLASS/";
 const my $NFSPING => '/HIVE/PING';
-const my $QUE => $NFSPATH.$NODE.'/'; # node path
+const my $send => '/HIVE/QUE/';
+
+const my $NODE => hostname(); # node name
+
+const my $QUE => $NFSPATH.$NODE.'/'.$NAME.'/'; # node path
 const my $TOMB => $NFSPATH.'cemetery/'; # DEMON logs
 const my $TOMBSTONE => $TOMB.$NAME;
 
@@ -102,7 +105,6 @@ unless (-w $PING)
 # @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 # LIVE &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-
 while (1)
 {
 	my @QUE = que_up();
@@ -161,6 +163,8 @@ sub SUICIDE
 	dio('OUT');
 	tombstone($count, $ttl);
 	que_flush(@QUE, $count);
+	my $send = $QUEDUMP.$QUE;
+	`mv $QUE $send`;
 	exit;
 }
 sub SLEEP
