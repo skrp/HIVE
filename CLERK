@@ -5,7 +5,7 @@ use strict; use warnings;
 
 ########################################################
 #                HIVE OVER NFS                         #
-# SPIDR          t_'(o_0)"'      daemon summons scroll #
+# CLERK          t_'(o_0)"'      daemon summons scroll #
 ########################################################
 
 use Const::Fast 'const';
@@ -32,16 +32,7 @@ use Archive::Any;
 # /nfsdump/pool/ : net data dump
 # /nfsdump/g/ : net metadata dump
 
-# LOGIC
-#	-que
-
-# HOST-AWARENESS
-#	-log_begin()
-
 # NET-COMM [[ pause, kill, stdout, PID, host_side-dump, bandwidth ]]
-#	-nfsn   network_input
-#	-nfso   network_output
-#	-nfsc   network_command
 
 # BIRTH
 die "STILLBORN" if ((my $birth = daemon()) != 0);
