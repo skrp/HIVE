@@ -229,7 +229,7 @@ sub tombstone
 	my $life = "$BIRTH $Ttime";
 
 	open(my $Tfh, '>>', $TOMBSTONE);
-	print $Tfh "yay: $YAY    name: $NAME   age: $life\n";
+	print $Tfh "yay: $YAY    name: $NAME   age: $life   fails: $FA\n";
 }
 # QUEUE
 sub que_flush
