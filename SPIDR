@@ -281,7 +281,7 @@ sub n_ping
 {
 	open(my $Dfh, '>>', $NFSPING);
 	my $curTIME = TIME();
-	printf $Dfh "$curTIME $NAME $NODE\n";
+	printf $Dfh "$curTIME $NODE $NAME\n";
 	close $Dfh;
 }
 # XTRACTION & STANDARDIZE
