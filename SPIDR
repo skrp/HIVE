@@ -27,6 +27,7 @@ use LWP::Protocol::https;
 # /HIVE/PING      :    nfs PID roster
 # /HIVE/TODO/     :    nfs node-workdir
 # /HIVE/FEED/     :    nfs project dir
+# example: /HIVE/FEED/archive/
 #                      $FEED/ALL  = all iterations
 #                      $FEED/DONE = success list
 #                      $FEED/FAIL = failure list
@@ -43,6 +44,11 @@ die "ARG1 dump-site ARG2 FEED" if (!defined $FEED); # FEED: /HIVE/FEED/achive/
 
 die "STILLBORN" if ((my $birth = daemon()) != 0);
 # PREP @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+unless (substr($DUMPPATH,length($DUMPPATH)-1,1) eq "/")
+  { $DUMPPATH =~ $DUMPPATH.'/'; }
+unless (substr($FEED,length($FEED)-5,5) eq "/QUE/")
+	{ $FEED =~ $FEED.'/QUE/'; }
+
 use constant $NAME => name();
 # HOST VARIABLES ----------
 use constant $HOST => `hostname`;
