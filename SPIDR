@@ -38,8 +38,8 @@ use LWP::Protocol::https;
 # /$DUMPPATH/pool/ :   data dump
 # /$DUMPPATH/g/    :   metadata dump
 # BIRTH ################################################
-my ($DUMPPATH) = @ARGV;
-die "nfs dump path" if (!defined $DUMPPATH);
+my ($DUMPPATH, $FEED) = @ARGV;
+die "ARG1 dump-site ARG2 FEED" if (!defined $FEED);
 
 die "STILLBORN" if ((my $birth = daemon()) != 0);
 # PREP @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -93,7 +93,7 @@ n_ping(); # net roster (life beat)
 printf $Lfh ("HELLOWORLD %s\n", TIME());
 
 unless (-w $POOL && -w $G)
-	{ print $Lfh "cant write nfs dump dirs\n"; exit; }
+	{ print $Lfh "cant write dump $DUMPPATH\n"; exit; }
 unless (-w $NFSPING)
 	{ print $Lfh "PING nonwriteable\n"; exit; }
 unless (-w $QUEDUMP)
@@ -102,27 +102,16 @@ unless (-w $QUEDUMP)
 while (1)
 {
 	beat();
-	my $que_count = q_count();
-	if ($que_count < 3)
-	{
-		my $curTIME = TIME();
-		print $Lfh "$curTIME bored\n";
-		sleep 3600;
-		next;
-	}
 	my @QUE = que_up();
 	my $count = 0;
 	my $ttl = @QUE;
-
-	if (!defined $QUE[0] && !defined $QUE[1] && !defined $QUE[2])
-		{ zombie(@QUE); next; }
 
 	print $Lfh "ttl $ttl\n";
 
 	foreach my $i (@QUE)
 	{
 		if (-e $SLEEP)
-   	 		{ SLEEP( $count, $ttl, @QUE); }
+   	 		{ SLEEP($count, $ttl, @QUE); }
 		pluck($i);
 
 		if ($count % $RATE == 0)
@@ -181,7 +170,6 @@ sub daemon {
 sub SUICIDE
 {
 	my ($count, $ttl, @QUE) = @_;
-	unlink $SUICIDE;
 	my $curTIME = TIME();
 	printf $Lfh "$curTIME FKTHEWORLD\n";
 	dio('OUT');
@@ -202,6 +190,38 @@ sub SLEEP
 	tombstone($count, $ttl);
 	sleep $timeout;
 }
+# REPORT ------------------
+sub name
+{
+	my $id = int(rand(999));
+	my $name = $NODE.'_'.$id.'_'.$$;
+	return $name;
+}
+sub tombstone
+{
+	my ($count, $ttl) = @_;
+
+	my $Ttime = age();
+	my $Ntime = TIME();
+	my $life = "$BIRTH $Ttime";
+
+	open(my $Tfh, '>>', $TOMBSTONE);
+	print $Tfh "$Ntime  yay: $YAY   name: $NAME  age: $life  fails: $FA\n";
+}
+sub h_ping
+{
+  open(my $Pfh, '>>', $HOSTPING);
+  my $curTIME = TIME();
+  printf $Pfh "$curTIME $$\n";
+  close $Pfh;
+}
+sub n_ping
+{
+  open(my $Dfh, '>>', $NFSPING);
+  my $curTIME = TIME();
+  printf $Dfh "$curTIME $NODE $NAME\n";
+  close $Dfh;
+}
 sub age
 {
 	my $age = localtime();
@@ -219,41 +239,17 @@ sub TIME
 	my $time = $mon.'_'.$day.'_'.$hour;
 	return $time;
 }
-sub name
+# QUEUE -------------------
+sub que_up
 {
-	my $id = int(rand(999));
-	my $name = $$.'_'.$id;
-	return $name;
+  my $que_path = que_get();
+  open(my $qfh, '<', $que_path);
+  my @QUE = readline $qfh;
+  chomp @QUE; close $qfh;
+  move($que_path, $TODO);
+  return (@QUE);
 }
-sub tombstone
-{
-	my ($count, $ttl) = @_;
-
-	my $Ttime = age();
-	my $life = "$BIRTH $Ttime";
-
-	open(my $Tfh, '>>', $TOMBSTONE);
-	print $Tfh "yay: $YAY    name: $NAME   age: $life   fails: $FA\n";
-}
-# QUEUE # -----------------
-sub q_count
-{
-	opendir(my $qdh, $QUE);
-	my @f = readdir $qdh;
-	my $que_count = @f;
-	return $que_count;
-}
-sub zombie
-{
-  my (@QUE) = @_;
-  my $id = int(rand(999));
-  my $zpath = $ZOMBIE.$id;
-  open(my $zfh, '>', $zpath);
-  for (@QUE)
-     { print $zfh "$_\n"; }
-  close $zfh;
-}
-sub get_que
+sub que_get
 {
   opendir(my $dh, $QUE);
   my @ls = readdir($dh);
@@ -262,37 +258,12 @@ sub get_que
   print $Lfh "que: $que_path\n";
   return $que_path;
 }
-sub que_up
-{
-  my $que_path = get_que();
-  open(my $qfh, '<', $que_path);
-  my @QUE = readline $qfh;
-  chomp @QUE; close $qfh;
-  move($que_path, $TODO);
-  return (@QUE);
-}
 sub que_flush
 {
 	my (@QUE) = @_;
 	open(my $TODOfh, '>', $TODO);
-	foreach (@QUE)
-		{ print $TODOfh "$_\n"; }
+	print $TODOfh "$_\n" for (@QUE);
 	close $TODOfh;
-}
-# COMMUNICATION -----------
-sub h_ping
-{
-  open(my $Pfh, '>>', $HOSTPING);
-  my $curTIME = TIME();
-  printf $Pfh "$curTIME $$\n";
-  close $Pfh;
-}
-sub n_ping
-{
-  open(my $Dfh, '>>', $NFSPING);
-  my $curTIME = TIME();
-  printf $Dfh "$curTIME $NODE $NAME\n";
-  close $Dfh;
 }
 # XTRACTION & STANDARDIZE -
 sub XS
