@@ -237,11 +237,10 @@ sub TIME
 # QUEUE -------------------
 sub que_up
 {
-  my $que_path = que_get();
-  open(my $qfh, '<', $que_path);
+  que_get();
+  open(my $qfh, '<', $TODO);
   my @QUE = readline $qfh;
   chomp @QUE; close $qfh;
-  move($que_path, $TODO);
   return (@QUE);
 }
 sub que_get
@@ -250,8 +249,8 @@ sub que_get
   my @ls = readdir($dh);
   shift(@ls); shift(@ls); # skip "." ".."
   my $que_path = $FEED.$ls[0];
+	move($que_path, $TODO);
   print $Lfh "que: $que_path\n";
-  return $que_path;
 }
 sub que_flush
 {
