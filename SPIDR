@@ -8,17 +8,15 @@ use strict; use warnings;
 # SPIDR          t_'(o_0)"'      daemon summons scroll #
 #                                                      #
 # grab internet data via queue files                   #
-# dictacte queue files over the network                #
+# admin queue-files over the network                   #
 # distributive-multi-daemon project management over NFS#
 ########################################################
 
-use Const::Fast 'const';
 use Digest::SHA 'sha256_hex';
 use POSIX;
 use File::Path;
 use File::Copy;
 use File::LibMagic;
-use Sys::Hostname 'hostname';
 use LWP::UserAgent;
 use LWP::Protocol::https;
 
@@ -29,14 +27,16 @@ use LWP::Protocol::https;
 # NFS
 # /HIVE/ :             nfs mount
 # /HIVE/PING :         nfs PID roster
-# /HIVE/QUE/ :         nfs queue dump
-# /HIVE/cemetery/ :    nfs logs
+# /HIVE/TODO/ :        nfs node-workdir
+# /HIVE/FEED/ :        nfs project dir
+#                      $FEED/ALL  = all iterations
+#                      $FEED/DONE = success list
+#                      $FEED/FAIL = failure list
+# /tmp/TODO_$NAME      return queue back
+#                      $FEED/QUE/ = que dump
+# /HIVE/TOMB/ :        nfs logs
 #                      $NAME      = tombsone
 #                      RAW_$NAME  = event log
-#                      DONE_$NAME = success list
-#                      FAIL_$NAME = failure list
-#                      TODO_$NAME = return queue back
-# /HIVE/$NODE/$NAME/ : nfs daemon-specific queue directory
 # DUMPSITE
 # /$DUMPPATH/pool/ :   data dump
 # /$DUMPPATH/g/ :      metadata dump
@@ -48,41 +48,41 @@ die "nfs dump path" if (!defined $DUMPPATH);
 die "STILLBORN" if ((my $birth = daemon()) != 0);
 
 # PREP @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-const my $NAME => name();
+use constant $NAME => name();
 
 # HOST VARIABLES
-const my $DUMP => '/tmp/'.$NAME.'_dump/'; # unique process hostside dump
-const my $HOSTPING => '/tmp/PING';
+use constant $DUMP => '/tmp/'.$NAME.'_dump/'; # unique process hostside dump
+use constant $HOSTPING => '/tmp/PING';
 
 # NET VARIABLES
-const my $NFSPATH => "/HIVE/";
-const my $NFSPING => $NFSPATH.'PING';
-const my $QUEDUMP => $NFSPATH.'QUE/';
+use constant $NFSPATH => "/HIVE/";
+use constant $NFSPING => $NFSPATH.'PING';
+use constant $QUEDUMP => $NFSPATH.'QUE/';
 
-const my $NODE => hostname(); # node name
+use constant $NODE => `hostname`; # node name
 
-const my $QUE => $NFSPATH.$NODE.'/'.$NAME.'/'; # node path
-const my $TOMB => $NFSPATH.'cemetery/'; # DEMON logs
+use constant $QUE => $NFSPATH.$NODE.'/'.$NAME.'/'; # node path
+use constant $TOMB => $NFSPATH.'cemetery/'; # DEMON logs
 
 # LOG VARIABLES
-const my $TOMBSTONE => $TOMB.$NAME;
-const my $RAW => $TOMB.'RAW_'.$NAME; # output
-const my $TODO => $TOMB.'TODO_'.$NAME; # leftovers that need to be put back in $QUE
-const my $DONE => $TOMB.'DONE_'.$NAME; # successful iterations
-const my $FAIL => $TOMB.'FAIL_'.$NAME; # failed iterations that need to be cleaned up
-const my $ZOMBIE => $TOMB.'ZOMBIE_'.$NAME; # fails path of api_verify()
+use constant $TOMBSTONE => $TOMB.$NAME;
+use constant $RAW => $TOMB.'RAW_'.$NAME; # output
+use constant $TODO => $TOMB.'TODO_'.$NAME; # leftovers that need to be put back in $QUE
+use constant $DONE => $TOMB.'DONE_'.$NAME; # successful iterations
+use constant $FAIL => $TOMB.'FAIL_'.$NAME; # failed iterations that need to be cleaned up
+use constant $ZOMBIE => $TOMB.'ZOMBIE_'.$NAME; # fails path of api_verify()
 # CONTROL VARIABLES
-const my $SLEEP => $TOMB.'SLEEP_'.$NAME; # triggers sleep
-const my $SUICIDE => $TOMB.'SUICIDE_'.$NAME; # triggers suicide
+use constant $SLEEP => $TOMB.'SLEEP_'.$NAME; # triggers sleep
+use constant $SUICIDE => $TOMB.'SUICIDE_'.$NAME; # triggers suicide
 
 # DEMON VARIABLES
-const my $BIRTH => age();
-const my $RATE => 100;
-const my $UA => uagent();
+use constant $BIRTH => age();
+use constant $RATE => 100;
+use constant $UA => uagent();
 
 # dumpsite mountpoints
-const my $POOL => $DUMPPATH.'pool/';
-const my $G => $DUMPPATH.'g/';
+use constant $POOL => $DUMPPATH.'pool/';
+use constant $G => $DUMPPATH.'g/';
 
 # GLOBALS
 my $YAY = 0; # total sucesses
