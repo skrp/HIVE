@@ -13,7 +13,7 @@ use strict; use warnings;
 use Digest::SHA 'sha256_hex';
 use POSIX;
 use File::Path;
-use File::Copy;
+use File::Copy 'move';
 use File::LibMagic;
 use LWP::UserAgent;
 use LWP::Protocol::https;
@@ -45,21 +45,21 @@ die "STILLBORN" if ((my $birth = daemon()) != 0);
 # PREP @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 use constant $NAME => name();
 # HOST VARIABLES ----------
+use constant $HOST => `hostname`;
 use constant $DUMP => '/tmp/'.$NAME.'_dump/'; # unique process hostside dump
 use constant $HOSTPING => '/tmp/PING';
 # NET VARIABLES -----------
 use constant $NFSPATH => "/HIVE/";
 use constant $NFSPING => $NFSPATH.'PING';
 use constant $QUEDUMP => $NFSPATH.'QUE/';
-
-use constant $NODE => `hostname`; # node name
-
-use constant $QUE => $NFSPATH.$NODE.'/'.$NAME.'/'; # node path
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+use constant $QUE => $NFSPATH..'/'.$NAME.'/'; # node path
 use constant $TOMB => $NFSPATH.'cemetery/'; # DEMON logs
 # LOG VARIABLES -----------
 use constant $TOMBSTONE => $TOMB.$NAME;
 use constant $RAW => $TOMB.'RAW_'.$NAME; # output
-use constant $TODO => $TOMB.'TODO_'.$NAME; # leftovers that need to be put back in $QUE
+use constant $TPATH = '/HIVE/TODO/';
+use constant $TODO => $TPATH.$NAME; # leftovers that need to be put back in $QUE
 use constant $DONE => $TOMB.'DONE_'.$NAME; # successful iterations
 use constant $FAIL => $TOMB.'FAIL_'.$NAME; # failed iterations that need to be cleaned up
 use constant $ZOMBIE => $TOMB.'ZOMBIE_'.$NAME; # fails path of api_verify()
@@ -88,7 +88,7 @@ open(my $DONEfh, '>>', $DONE); $DONEfh->autoflush(1);
 
 
 h_ping(); # host roster
-n_ping(); # net roster (life beat)
+n_ping(); # net roster (life clean)
 
 printf $Lfh ("HELLOWORLD %s\n", TIME());
 
@@ -101,7 +101,7 @@ unless (-w $QUEDUMP)
 # LIVE &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 while (1)
 {
-	beat();
+	clean();
 	my @QUE = que_up();
 	my $count = 0;
 	my $ttl = @QUE;
@@ -138,7 +138,6 @@ sub pluck
 		$YAY++;
 		print $DONEfh "$i\n";
 		XS($tmp);
-		unlink($tmp);
 	}
 	else
 	{
@@ -194,7 +193,7 @@ sub SLEEP
 sub name
 {
 	my $id = int(rand(999));
-	my $name = $NODE.'_'.$id.'_'.$$;
+	my $name = $HOST.'_'.$id.'_'.$$;
 	return $name;
 }
 sub tombstone
@@ -219,7 +218,7 @@ sub n_ping
 {
   open(my $Dfh, '>>', $NFSPING);
   my $curTIME = TIME();
-  printf $Dfh "$curTIME $NODE $NAME\n";
+  printf $Dfh "$curTIME $HOST $NAME\n";
   close $Dfh;
 }
 sub age
@@ -253,8 +252,8 @@ sub que_get
 {
   opendir(my $dh, $QUE);
   my @ls = readdir($dh);
-  # skip $ls[0] = . ; $ls[1] = ..;
-  my $que_path = $QUE.$ls[2];
+  shift(@ls); shift(@ls); # skip "." ".."
+  my $que_path = $QUE.$ls[0];
   print $Lfh "que: $que_path\n";
   return $que_path;
 }
@@ -270,20 +269,22 @@ sub XS
 {
   my ($file) = shift;
   my $sha = file_digest($file); print $Lfh "FAIL sha $file $!" if (!defined $sha);
-  File::Copy::copy($file, $POOL.$sha);
-  my $cur = $G.'g'.$sha;
-  unless (eval { open(my $fh, '>>', $cur) })
+  move($file, $POOL.$sha);
+
+  my $meta = $G.'g'.$sha;
+  unless (eval { open(my $fh, '>>', $meta) })
   {
-    print $Lfh "!!!! FAIL meta $sha\n" unless (-e $cur);
+    print $Lfh "!!!! FAIL meta $sha\n" unless (-e $meta);
     return;
   }
-  open(my $fh, '>>', $cur);
+  open(my $mfh, '>>', $meta);
   my $iname = xsname($file); print $Lfh "bad xsname $file\n" if (!defined $iname);
-  my $ipath = xspath($file); print $Lfh "bad xspath $file\n" if (!defined $ipath);
-  my $isize = xssize($file); print $Lfh "bad xssize $file\n" if (!defined $isize);
+  my $ipath = xspath($file);
+  my $isize = xssize($file);
   my $imime = file_mime_encoding($file); print $Lfh "bad xsmime $file\n" if (!defined $imime);
-  print $fh "$iname\n$ipath\n$isize\n$imime\n";
-  close $fh;
+
+  print $mfh "$iname\n$ipath\n$isize\n$imime\n";
+	close $mfh;
 }
 sub file_digest
 {
@@ -332,24 +333,29 @@ sub uagent
   return $s_ua;
 }
 # MAINTAIN ----------------
-sub beat
+sub clean
 {
-  my $node = `hostname`; chomp $node;
-  my $path = '/HIVE/'.$node.'/';
-  opendir(my $dh, $path);
-  my @demons = readdir $dh;
-  shift @demons; shift @demons;
+  my @demons = glob "$TPATH*";
+  shift @demons; shift @demons; # skip "." ".."
+
   for (@demons)
   {
-    my $pid = $_; chomp $pid;
-    $pid =~ s/_.*//;
-    my @up = `ps $pid`;
-    chomp $up[1];
-    if (!defined $up[1])
+		if (/$HOST/)
     {
-      my $move = $path.$_.'/';
-      `mv $move* /HIVE/QUE/`;
-      `rmdir $move`;
-    }
+	    my $pid = $_; chomp $pid;
+      $pid =~ s/.*_//;
+
+      my @up = `ps $pid`;
+      if (!defined $up[1])
+      {
+		  	my $Tpath = "/HIVE/TODO/$_"; # clean net data
+			  move($Tpath, $FEED);
+
+        my $Dpath = $_.'_dump'; # clean host data
+        $Dpath =~ "/tmp/$Dpath";
+        XS($Dpath);
+		  	rmdir($Dpath);
+      }
+		}
   }
 }
