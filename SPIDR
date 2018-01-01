@@ -39,7 +39,7 @@ use LWP::Protocol::https;
 # /$DUMPPATH/g/    :   metadata dump
 # BIRTH ################################################
 my ($DUMPPATH, $FEED) = @ARGV;
-die "ARG1 dump-site ARG2 FEED" if (!defined $FEED);
+die "ARG1 dump-site ARG2 FEED" if (!defined $FEED); # FEED: /HIVE/FEED/achive/
 
 die "STILLBORN" if ((my $birth = daemon()) != 0);
 # PREP @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -51,15 +51,12 @@ use constant $HOSTPING => '/tmp/PING';
 # NET VARIABLES -----------
 use constant $NFSPATH => "/HIVE/";
 use constant $NFSPING => $NFSPATH.'PING';
-use constant $QUEDUMP => $NFSPATH.'QUE/';
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-use constant $QUE => $NFSPATH..'/'.$NAME.'/'; # node path
-use constant $TOMB => $NFSPATH.'cemetery/'; # DEMON logs
+use constant $TOMB => $NFSPATH.'TOMB/'; # DEMON logs
 # LOG VARIABLES -----------
 use constant $TOMBSTONE => $TOMB.$NAME;
 use constant $RAW => $TOMB.'RAW_'.$NAME; # output
 use constant $TPATH = '/HIVE/TODO/';
-use constant $TODO => $TPATH.$NAME; # leftovers that need to be put back in $QUE
+use constant $TODO => $TPATH.$NAME; # leftovers that need to be put back in $FEED
 use constant $DONE => $TOMB.'DONE_'.$NAME; # successful iterations
 use constant $FAIL => $TOMB.'FAIL_'.$NAME; # failed iterations that need to be cleaned up
 use constant $ZOMBIE => $TOMB.'ZOMBIE_'.$NAME; # fails path of api_verify()
@@ -79,13 +76,12 @@ my $FA = 0;  # total failures
 $SIG{INT} = \&SUICIDE;
 # PREP --------------------
 chdir('/tmp/');
-mkdir $NFSPATH unless(-e $NFSPATH); mkdir $QUE unless (-e $QUE);
-mkdir $TOMB unless (-e $TOMB); mkdir $DUMP or die "$DUMP FAIL\n";
+unless (mkdir $DUMP)
+	{ print $Lfh "cant create dump $DUMP \n"; exit; }
 # OUTPUT ------------------
 open(my $Lfh, '>>', $RAW); $Lfh->autoflush(1);
 open(my $FAILfh, '>>', $FAIL); $FAILfh->autoflush(1);
 open(my $DONEfh, '>>', $DONE); $DONEfh->autoflush(1);
-
 
 h_ping(); # host roster
 n_ping(); # net roster (life clean)
@@ -96,7 +92,7 @@ unless (-w $POOL && -w $G)
 	{ print $Lfh "cant write dump $DUMPPATH\n"; exit; }
 unless (-w $NFSPING)
 	{ print $Lfh "PING nonwriteable\n"; exit; }
-unless (-w $QUEDUMP)
+unless (-w $FEED)
 	{ print $Lfh "QUE dump nonwriteable\n"; exit; }
 # LIVE &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 while (1)
@@ -174,7 +170,7 @@ sub SUICIDE
 	dio('OUT');
 	tombstone($count, $ttl);
 	que_flush(@QUE);
-	`mv $QUE $QUEDUMP`;
+	move($TODO, $FEED);
 	exit;
 }
 sub SLEEP
@@ -250,10 +246,10 @@ sub que_up
 }
 sub que_get
 {
-  opendir(my $dh, $QUE);
+  opendir(my $dh, $FEED);
   my @ls = readdir($dh);
   shift(@ls); shift(@ls); # skip "." ".."
-  my $que_path = $QUE.$ls[0];
+  my $que_path = $FEED.$ls[0];
   print $Lfh "que: $que_path\n";
   return $que_path;
 }
