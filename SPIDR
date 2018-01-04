@@ -41,53 +41,51 @@ use LWP::Protocol::https;
 # BIRTH ################################################
 my ($DUMPPATH, $FEED) = @ARGV;
 die "ARG1 dump-site ARG2 FEED" if (!defined $FEED); # FEED: /HIVE/FEED/achive/
+die "ARG2 FEED path-to-feed-/QUE/" if (substr($FEED, length($FEED)-5, 5) ne "/QUE/"); # FEED: /HIVE/FEED/achive/
+#die "STILLBORN" if ((my $birth = daemon()) != 0);
 
-die "STILLBORN" if ((my $birth = daemon()) != 0);
 # PREP @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-unless (substr($DUMPPATH,length($DUMPPATH)-1,1) eq "/")
-  { $DUMPPATH =~ $DUMPPATH.'/'; }
-unless (substr($FEED,length($FEED)-5,5) eq "/QUE/")
-	{ $FEED =~ $FEED.'/QUE/'; }
-
-use constant $NAME => name();
+chkarg($DUMPPATH);
+print "$DUMPPATH\n$FEED\n";
 # HOST VARIABLES ----------
-use constant $HOST => `hostname`;
-use constant $DUMP => '/tmp/'.$NAME.'_dump/'; # unique process hostside dump
-use constant $HOSTPING => '/tmp/PING';
+my $HOST = `hostname`; chomp $HOST;
+my $NAME = name();
+my $DUMP = '/tmp/'.$NAME.'_dump/'; # unique process hostside dump
+my $HOSTPING = '/tmp/PING';
 # NET VARIABLES -----------
-use constant $NFSPATH => "/HIVE/";
-use constant $NFSPING => $NFSPATH.'PING';
-use constant $TOMB => $NFSPATH.'TOMB/'; # DEMON logs
+my $NFSPATH = "/HIVE/";
+my $NFSPING = $NFSPATH.'PING';
+my $TOMB = $NFSPATH.'TOMB/'; # DEMON logs
 # LOG VARIABLES -----------
-use constant $TOMBSTONE => $TOMB.$NAME;
-use constant $RAW => $TOMB.'RAW_'.$NAME; # output
-use constant $TPATH = '/HIVE/TODO/';
-use constant $TODO => $TPATH.$NAME; # leftovers that need to be put back in $FEED
-use constant $DONE => $TOMB.'DONE_'.$NAME; # successful iterations
-use constant $FAIL => $TOMB.'FAIL_'.$NAME; # failed iterations that need to be cleaned up
-use constant $ZOMBIE => $TOMB.'ZOMBIE_'.$NAME; # fails path of api_verify()
+my $TOMBSTONE = $TOMB.$NAME;
+my $RAW = $TOMB.'RAW_'.$NAME; # output
+my $TPATH = '/HIVE/TODO/';
+my $TODO = $TPATH.$NAME; # leftovers that need to be put back in $FEED
+my $DONE = $TOMB.'DONE_'.$NAME; # successful iterations
+my $FAIL = $TOMB.'FAIL_'.$NAME; # failed iterations that need to be cleaned up
+my $ZOMBIE = $TOMB.'ZOMBIE_'.$NAME; # fails path of api_verify()
 # CONTROL VARIABLES -------
-use constant $SLEEP => $TOMB.'SLEEP_'.$NAME; # triggers sleep
-use constant $SUICIDE => $TOMB.'SUICIDE_'.$NAME; # triggers suicide
+my $SLEEP = $TOMB.'SLEEP_'.$NAME; # triggers sleep
+my $SUICIDE = $TOMB.'SUICIDE_'.$NAME; # triggers suicide
 # DEMON VARIABLES ---------
-use constant $BIRTH => age();
-use constant $RATE => 100;
-use constant $UA => uagent();
+my $BIRTH = age();
+my $RATE = 100;
+my $UA = uagent();
 # dumpsite mountpoints ----
-use constant $POOL => $DUMPPATH.'pool/';
-use constant $G => $DUMPPATH.'g/';
+my $POOL = $DUMPPATH.'pool/';
+my $G = $DUMPPATH.'g/';
 # GLOBALS -----------------
 my $YAY = 0; # total sucesses
 my $FA = 0;  # total failures
 $SIG{INT} = \&SUICIDE;
-# PREP --------------------
-chdir('/tmp/');
-unless (mkdir $DUMP)
-	{ print $Lfh "cant create dump $DUMP \n"; exit; }
 # OUTPUT ------------------
 open(my $Lfh, '>>', $RAW); $Lfh->autoflush(1);
 open(my $FAILfh, '>>', $FAIL); $FAILfh->autoflush(1);
 open(my $DONEfh, '>>', $DONE); $DONEfh->autoflush(1);
+# PREP --------------------
+chdir('/tmp/');
+unless (mkdir $DUMP)
+	{ print $Lfh "cant create dump $DUMP \n"; exit; }
 
 h_ping(); # host roster
 n_ping(); # net roster (life clean)
@@ -105,6 +103,7 @@ while (1)
 {
 	clean();
 	my @QUE = que_up();
+        do {print $Lfh "bored\n"; sleep 3600; next} if (!@QUE);
 	my $count = 0;
 	my $ttl = @QUE;
 
@@ -341,22 +340,27 @@ sub clean
 
   for (@demons)
   {
-		if (/$HOST/)
+    if (/$HOST/)
     {
-	    my $pid = $_; chomp $pid;
+      my $pid = $_; chomp $pid;
       $pid =~ s/.*_//;
 
       my @up = `ps $pid`;
       if (!defined $up[1])
       {
-		  	my $Tpath = "/HIVE/TODO/$_"; # clean net data
-			  move($Tpath, $FEED);
+        my $Tpath = "/HIVE/TODO/$_"; # clean net data
+        move($Tpath, $FEED);
 
         my $Dpath = $_.'_dump'; # clean host data
         $Dpath =~ "/tmp/$Dpath";
         XS($Dpath);
-		  	rmdir($Dpath);
+        rmdir($Dpath);
       }
-		}
+    }
   }
+}
+
+sub chkarg
+{
+  return $_[0] .= substr($_[0], -1) eq "/" ? "" : "/";
 }
