@@ -38,15 +38,13 @@ use LWP::Protocol::https;
 # DUMPSITE ----------------
 # /$DUMPPATH/pool/ :   data dump
 # /$DUMPPATH/g/    :   metadata dump
-# BIRTH ################################################
 my ($DUMPPATH, $FEED) = @ARGV;
-die "ARG1 dump-site ARG2 FEED" if (!defined $FEED); # FEED: /HIVE/FEED/achive/
-die "ARG2 FEED path-to-feed-/QUE/" if (substr($FEED, length($FEED)-5, 5) ne "/QUE/"); # FEED: /HIVE/FEED/achive/
-#die "STILLBORN" if ((my $birth = daemon()) != 0);
-
-# PREP @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-chkarg($DUMPPATH);
-print "$DUMPPATH\n$FEED\n";
+die "ARG1 dump-site ARG2 FEED" if (!defined $FEED);
+die "ARG2 FEED path-to-feed-/QUE/" if (substr($FEED, length($FEED)-5, 5) ne "/QUE/");
+# FEED: /HIVE/FEED/achive/QUE/
+$DUMPPATH =~ s?$?/? if (substr($DUMPPATH, -1, 1) ne "/"));
+# BIRTH ################################################
+die "STILLBORN" if ((my $birth = daemon()) != 0);
 # HOST VARIABLES ----------
 my $HOST = `hostname`; chomp $HOST;
 my $NAME = name();
@@ -358,9 +356,4 @@ sub clean
       }
     }
   }
-}
-
-sub chkarg
-{
-  return $_[0] .= substr($_[0], -1) eq "/" ? "" : "/";
 }
