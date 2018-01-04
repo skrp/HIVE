@@ -17,22 +17,20 @@ use File::Copy 'move';
 use File::LibMagic;
 use LWP::UserAgent;
 use LWP::Protocol::https;
-########################################################
-# DATA LOCATIONS ###############################
+# DATA LOCATIONS #######################################
 # HOST --------------------
 # /tmp/$NAME_dump/:    host work dir
 # /tmp/PING       :    host PID roster
 # NFS ---------------------
 # /HIVE/          :    nfs mount
-# /HIVE/PING      :    nfs PID roster
-# /HIVE/TODO/     :    nfs node-workdir
-# /HIVE/FEED/     :    nfs project dir
+# /HIVE/TODO/     :    nfs daemon-state
+# /HIVE/FEED/     :    nfs project-state
 # example: /HIVE/FEED/archive/
 #                      $FEED/ALL  = all iterations
 #                      $FEED/DONE = success list
 #                      $FEED/FAIL = failure list
 #                      $FEED/QUE/ = que dump
-# /HIVE/TOMB/     :    nfs logs
+# /HIVE/TOMB/     :    nfs memorials
 #                      $NAME      = tombsone
 #                      RAW_$NAME  = event log
 # DUMPSITE ----------------
@@ -86,7 +84,6 @@ unless (mkdir $DUMP)
 	{ print $Lfh "cant create dump $DUMP \n"; exit; }
 
 h_ping(); # host roster
-n_ping(); # net roster (life clean)
 
 printf $Lfh ("HELLOWORLD %s\n", TIME());
 
@@ -212,13 +209,6 @@ sub h_ping
   my $curTIME = TIME();
   printf $Pfh "$curTIME $$\n";
   close $Pfh;
-}
-sub n_ping
-{
-  open(my $Dfh, '>>', $NFSPING);
-  my $curTIME = TIME();
-  printf $Dfh "$curTIME $HOST $NAME\n";
-  close $Dfh;
 }
 sub age
 {
