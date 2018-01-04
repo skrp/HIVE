@@ -17,33 +17,35 @@ use File::Copy 'move';
 use File::LibMagic;
 use LWP::UserAgent;
 use LWP::Protocol::https;
-# DATA LOCATIONS #######################################
+########################################################
+# DATA LOCATIONS ###############################
 # HOST --------------------
 # /tmp/$NAME_dump/:    host work dir
 # /tmp/PING       :    host PID roster
 # NFS ---------------------
 # /HIVE/          :    nfs mount
-# /HIVE/TODO/     :    nfs daemon-state
-# /HIVE/FEED/     :    nfs project-state
+# /HIVE/TODO/     :    nfs node-workdir
+# /HIVE/FEED/     :    nfs project dir
 # example: /HIVE/FEED/archive/
 #                      $FEED/ALL  = all iterations
 #                      $FEED/DONE = success list
 #                      $FEED/FAIL = failure list
 #                      $FEED/QUE/ = que dump
-# /HIVE/TOMB/     :    nfs memorials
-#                      $NAME      = tombsone
-#                      RAW_$NAME  = event log
+# /HIVE/BIO/      :    nfs logs
+#                      RAW_$NAME  = daemon diary 
 # DUMPSITE ----------------
 # /$DUMPPATH/pool/ :   data dump
 # /$DUMPPATH/g/    :   metadata dump
 ########################################################
 my ($DUMPPATH, $FEED) = @ARGV;
-die "ARG1 dump-site ARG2 FEED" if (!defined $FEED);
-die "ARG2 FEED path-to-feed-/QUE/" if (substr($FEED, length($FEED)-5, 5) ne "/QUE/");
 # FEED: /HIVE/FEED/achive/QUE/
-$DUMPPATH =~ s?$?/? if (substr($DUMPPATH, -1, 1) ne "/"));
+die "ARG1 dump-site ARG2 FEED" if (!defined $FEED);
+die "ARG2 FEED path-to-feed-/QUE/" if (substr($FEED, -5, 5) ne "/QUE/"); 
+$DUMPPATH =~ s?$?/? if (substr($DUMPPATH, -1, 1) ne "/");
 # BIRTH ################################################
 die "STILLBORN" if ((my $birth = daemon()) != 0);
+# PREP @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+$DUMPPATH =~ s?$?/? if (substr($DUMPPATH, -1, 1) ne "/");
 # HOST VARIABLES ----------
 my $HOST = `hostname`; chomp $HOST;
 my $NAME = name();
@@ -52,18 +54,17 @@ my $HOSTPING = '/tmp/PING';
 # NET VARIABLES -----------
 my $NFSPATH = "/HIVE/";
 my $NFSPING = $NFSPATH.'PING';
-my $TOMB = $NFSPATH.'TOMB/'; # DEMON logs
+my $BIO = $NFSPATH.'BIO/'; # DEMON logs
 # LOG VARIABLES -----------
-my $TOMBSTONE = $TOMB.$NAME;
-my $RAW = $TOMB.'RAW_'.$NAME; # output
+my $RAW = $BIO.$NAME; # output
 my $TPATH = '/HIVE/TODO/';
+my $QPATH = substr($FEED, (length($FEED)-4), (length($FEED)-4));
 my $TODO = $TPATH.$NAME; # leftovers that need to be put back in $FEED
-my $DONE = $TOMB.'DONE_'.$NAME; # successful iterations
-my $FAIL = $TOMB.'FAIL_'.$NAME; # failed iterations that need to be cleaned up
-my $ZOMBIE = $TOMB.'ZOMBIE_'.$NAME; # fails path of api_verify()
+my $DONE = $QPATH.'DONE_'.$NAME; # successful iterations
+my $FAIL = $QPATH.'FAIL_'.$NAME; # failed iterations that need to be cleaned up
 # CONTROL VARIABLES -------
-my $SLEEP = $TOMB.'SLEEP_'.$NAME; # triggers sleep
-my $SUICIDE = $TOMB.'SUICIDE_'.$NAME; # triggers suicide
+my $SLEEP = $TODO.'SLEEP_'.$NAME; # triggers sleep
+my $SUICIDE = $TODO.'SUICIDE_'.$NAME; # triggers suicide
 # DEMON VARIABLES ---------
 my $BIRTH = age();
 my $RATE = 100;
@@ -90,14 +91,11 @@ printf $Lfh ("HELLOWORLD %s\n", TIME());
 
 unless (-w $POOL && -w $G)
 	{ print $Lfh "cant write dump $DUMPPATH\n"; exit; }
-unless (-w $NFSPING)
-	{ print $Lfh "PING nonwriteable\n"; exit; }
 unless (-w $FEED)
 	{ print $Lfh "QUE dump nonwriteable\n"; exit; }
 # LIVE &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 while (1)
 {
-	clean();
 	my @QUE = que_up();
         do {print $Lfh "bored\n"; sleep 3600; next} if (!@QUE);
 	my $count = 0;
@@ -115,7 +113,6 @@ while (1)
 		{
 			tombstone($count, $ttl);
 			que_flush(@QUE);
-			n_ping();
 		}
 		$count++;
 
@@ -143,8 +140,9 @@ sub pluck
 	}
 }
 # CORE SUBS ////////////////////////////////////////////
-sub daemon {
-  	die "FAIL daemon1 $!\n" if ((my $pid = fork()) < 0);
+sub daemon 
+{
+ 	die "FAIL daemon1 $!\n" if ((my $pid = fork()) < 0);
    	if ($pid != 0)
    		{ exit(0); }
    	POSIX::setsid() or die "FAIL setsid $!";
@@ -168,7 +166,6 @@ sub SUICIDE
 	my ($count, $ttl, @QUE) = @_;
 	my $curTIME = TIME();
 	printf $Lfh "$curTIME FKTHEWORLD\n";
-	dio('OUT');
 	tombstone($count, $ttl);
 	que_flush(@QUE);
 	move($TODO, $FEED);
@@ -201,8 +198,7 @@ sub tombstone
 	my $Ntime = TIME();
 	my $life = "$BIRTH $Ttime";
 
-	open(my $Tfh, '>>', $TOMBSTONE);
-	print $Tfh "$Ntime  yay: $YAY   name: $NAME  age: $life  fails: $FA\n";
+	print $Lfh "$Ntime  yay: $YAY   name: $NAME  age: $life  fails: $FA\n";
 }
 sub h_ping
 {
@@ -213,20 +209,20 @@ sub h_ping
 }
 sub age
 {
-	my $age = localtime();
-	$age =~ s/..........20..//;
-	$age =~ s/^....//;
-	$age =~ s/ /_/;
-	return $age;
+  my $age = localtime();
+  $age =~ s/..........20..//;
+  $age =~ s/^....//;
+  $age =~ s/ /_/;
+  return $age;
 }
 sub TIME
 {
-	my $t = localtime;
-	my $mon = (split(/\s+/, $t))[1];
-	my $day = (split(/\s+/, $t))[2];
-	my $hour = (split(/\s+/, $t))[3];
-	my $time = $mon.'_'.$day.'_'.$hour;
-	return $time;
+  my $t = localtime;
+  my $mon = (split(/\s+/, $t))[1];
+  my $day = (split(/\s+/, $t))[2];
+  my $hour = (split(/\s+/, $t))[3];
+  my $time = $mon.'_'.$day.'_'.$hour;
+  return $time;
 }
 # QUEUE -------------------
 sub que_up
@@ -248,17 +244,16 @@ sub que_get
 }
 sub que_flush
 {
-	my (@QUE) = @_;
-	open(my $TODOfh, '>', $TODO);
-	print $TODOfh "$_\n" for (@QUE);
-	close $TODOfh;
+  my (@QUE) = @_;
+  open(my $TODOfh, '>', $TODO);
+  print $TODOfh "$_\n" for (@QUE);
+  close $TODOfh;
 }
 # XTRACTION & STANDARDIZE -
 sub XS
 {
   my ($file) = shift;
   my $sha = file_digest($file); print $Lfh "FAIL sha $file $!" if (!defined $sha);
-  move($file, $POOL.$sha);
 
   my $meta = $G.'g'.$sha;
   unless (eval { open(my $fh, '>>', $meta) })
@@ -267,13 +262,16 @@ sub XS
     return;
   }
   open(my $mfh, '>>', $meta);
-  my $iname = xsname($file); print $Lfh "bad xsname $file\n" if (!defined $iname);
+  my $iname = xsname($file); 
+    print $Lfh "bad xsname $file\n" if (!defined $iname);
   my $ipath = xspath($file);
   my $isize = xssize($file);
-  my $imime = file_mime_encoding($file); print $Lfh "bad xsmime $file\n" if (!defined $imime);
+  my $imime = file_mime_encoding($file); 
+    print $Lfh "bad xsmime $file\n" if (!defined $imime);
 
   print $mfh "$iname\n$ipath\n$isize\n$imime\n";
-	close $mfh;
+  close $mfh;
+  move($file, $POOL.$sha);
 }
 sub file_digest
 {
@@ -284,28 +282,28 @@ sub file_digest
 }
 sub xsname
 {
-	my ($file) = @_;
-	$file =~ s?^.*/??;
-	return $file;
+  my ($file) = @_;
+  $file =~ s?^.*/??;
+  return $file;
 }
 sub xspath
 {
-	my ($file) = @_;
-	$file =~ s?/?_?g;
-	return $file;
+  my ($file) = @_;
+  $file =~ s?/?_?g;
+  return $file;
 }
 sub file_mime_encoding
 {
-	my ($file) = @_;
-	my $magic = File::LibMagic->new();
-	my $info = $magic->info_from_filename($file);
-	my $des = $info->{description};
-	$des =~ s?[/ ]?.?g;
-	$des =~ s/,/_/g;
-	my $md = $info->{mime_type};
-	$md =~ s?[/ ]?.?g;
-	my $enc = sprintf("%s %s %s", $des, $md, $info->{encoding});
-	return $enc;
+  my ($file) = @_;
+  my $magic = File::LibMagic->new();
+  my $info = $magic->info_from_filename($file);
+  my $des = $info->{description};
+  $des =~ s?[/ ]?.?g;
+  $des =~ s/,/_/g;
+  my $md = $info->{mime_type};
+  $md =~ s?[/ ]?.?g;
+  my $enc = sprintf("%s %s %s", $des, $md, $info->{encoding});
+  return $enc;
 }
 sub xssize
 {
@@ -320,31 +318,4 @@ sub uagent
     from => 'punxnotdead',
     timeout => 45);
   return $s_ua;
-}
-# MAINTAIN ----------------
-sub clean
-{
-  my @demons = glob "$TPATH*";
-  shift @demons; shift @demons; # skip "." ".."
-
-  for (@demons)
-  {
-    if (/$HOST/)
-    {
-      my $pid = $_; chomp $pid;
-      $pid =~ s/.*_//;
-
-      my @up = `ps $pid`;
-      if (!defined $up[1])
-      {
-        my $Tpath = "/HIVE/TODO/$_"; # clean net data
-        move($Tpath, $FEED);
-
-        my $Dpath = $_.'_dump'; # clean host data
-        $Dpath =~ "/tmp/$Dpath";
-        XS($Dpath);
-        rmdir($Dpath);
-      }
-    }
-  }
 }
