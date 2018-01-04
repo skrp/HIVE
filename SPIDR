@@ -17,8 +17,7 @@ use File::Copy 'move';
 use File::LibMagic;
 use LWP::UserAgent;
 use LWP::Protocol::https;
-########################################################
-# DATA LOCATIONS ###############################
+# DATA LOCATIONS #######################################
 # HOST --------------------
 # /tmp/$NAME_dump/:    host work dir
 # /tmp/PING       :    host PID roster
@@ -32,7 +31,7 @@ use LWP::Protocol::https;
 #                      $FEED/FAIL = failure list
 #                      $FEED/QUE/ = que dump
 # /HIVE/BIO/      :    nfs logs
-#                      RAW_$NAME  = daemon diary 
+#                      RAW_$NAME  = daemon diary
 # DUMPSITE ----------------
 # /$DUMPPATH/pool/ :   data dump
 # /$DUMPPATH/g/    :   metadata dump
@@ -40,7 +39,7 @@ use LWP::Protocol::https;
 my ($DUMPPATH, $FEED) = @ARGV;
 # FEED: /HIVE/FEED/achive/QUE/
 die "ARG1 dump-site ARG2 FEED" if (!defined $FEED);
-die "ARG2 FEED path-to-feed-/QUE/" if (substr($FEED, -5, 5) ne "/QUE/"); 
+die "ARG2 FEED path-to-feed-/QUE/" if (substr($FEED, -5, 5) ne "/QUE/");
 $DUMPPATH =~ s?$?/? if (substr($DUMPPATH, -1, 1) ne "/");
 # BIRTH ################################################
 die "STILLBORN" if ((my $birth = daemon()) != 0);
@@ -52,41 +51,38 @@ my $NAME = name();
 my $DUMP = '/tmp/'.$NAME.'_dump/'; # unique process hostside dump
 my $HOSTPING = '/tmp/PING';
 # NET VARIABLES -----------
+# PREP
 my $NFSPATH = "/HIVE/";
-my $NFSPING = $NFSPATH.'PING';
-my $BIO = $NFSPATH.'BIO/'; # DEMON logs
-# LOG VARIABLES -----------
-my $RAW = $BIO.$NAME; # output
 my $TPATH = '/HIVE/TODO/';
+my $BIO = $NFSPATH.'BIO/';
 my $QPATH = substr($FEED, (length($FEED)-4), (length($FEED)-4));
-my $TODO = $TPATH.$NAME; # leftovers that need to be put back in $FEED
-my $DONE = $QPATH.'DONE_'.$NAME; # successful iterations
-my $FAIL = $QPATH.'FAIL_'.$NAME; # failed iterations that need to be cleaned up
-# CONTROL VARIABLES -------
-my $SLEEP = $TODO.'SLEEP_'.$NAME; # triggers sleep
-my $SUICIDE = $TODO.'SUICIDE_'.$NAME; # triggers suicide
-# DEMON VARIABLES ---------
-my $BIRTH = age();
-my $RATE = 100;
-my $UA = uagent();
 # dumpsite mountpoints ----
 my $POOL = $DUMPPATH.'pool/';
 my $G = $DUMPPATH.'g/';
 # GLOBALS -----------------
+my $TODO = $TPATH.$NAME; # leftovers that need to be put back in $FEED
+my $SLEEP = $TODO.'SLEEP_'.$NAME; # control file
+my $BIRTH = age();
+my $RATE = 100;
+my $UA = uagent();
 my $YAY = 0; # total sucesses
 my $FA = 0;  # total failures
 $SIG{INT} = \&SUICIDE;
 # OUTPUT ------------------
+my $RAW = $BIO.$NAME; # output
 open(my $Lfh, '>>', $RAW); $Lfh->autoflush(1);
+
+my $FAIL = $QPATH.'FAIL_'.$NAME; # failed iterations that need to be cleaned up
 open(my $FAILfh, '>>', $FAIL); $FAILfh->autoflush(1);
+
+my $DONE = $QPATH.'DONE_'.$NAME; # successful iterations
 open(my $DONEfh, '>>', $DONE); $DONEfh->autoflush(1);
-# PREP --------------------
+# BEGIN -------------------
 chdir('/tmp/');
 unless (mkdir $DUMP)
 	{ print $Lfh "cant create dump $DUMP \n"; exit; }
 
 h_ping(); # host roster
-
 printf $Lfh ("HELLOWORLD %s\n", TIME());
 
 unless (-w $POOL && -w $G)
@@ -140,7 +136,7 @@ sub pluck
 	}
 }
 # CORE SUBS ////////////////////////////////////////////
-sub daemon 
+sub daemon
 {
  	die "FAIL daemon1 $!\n" if ((my $pid = fork()) < 0);
    	if ($pid != 0)
@@ -262,11 +258,11 @@ sub XS
     return;
   }
   open(my $mfh, '>>', $meta);
-  my $iname = xsname($file); 
+  my $iname = xsname($file);
     print $Lfh "bad xsname $file\n" if (!defined $iname);
   my $ipath = xspath($file);
   my $isize = xssize($file);
-  my $imime = file_mime_encoding($file); 
+  my $imime = file_mime_encoding($file);
     print $Lfh "bad xsmime $file\n" if (!defined $imime);
 
   print $mfh "$iname\n$ipath\n$isize\n$imime\n";
