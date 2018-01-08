@@ -1,6 +1,5 @@
 #!/usr/local/bin/perl
 use strict; use warnings;
-# FreeBSD Only
 # unix or you a bitch-button-smash-hack hacker
 ########################################################
 #                HIVE OVER NFS                         #
