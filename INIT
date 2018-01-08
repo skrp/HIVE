@@ -1,2 +1,17 @@
 #!/usr/local/bin/perl
 use strict; use warnings;
+
+`zfs create zroot/HIVE`;
+`zfs set sharenfs=on zroot/HIVE`;
+
+`mkdir /HIVE/BIO`;
+`chmod 0750 /HIVE/BIO`; # change to nfsv4 acl
+
+`mkdir /HIVE/TODO`;
+`chmod 0770 /HIVE/TODO`;
+
+`mkdir /HIVE/FEED`;
+`mkdir /HIVE/FEED/archive`;
+`mkdir /HIVE/FEED/archive/QUE`;
+
+`chmod -R 0770 /HIVE/FEED`;
