@@ -12,6 +12,7 @@ use strict; use warnings;
 ########################################################
 use Digest::SHA 'sha256_hex';
 use POSIX;
+use Sys::Hostname 'hostname';
 use File::Path;
 use File::Copy 'move';
 use File::LibMagic;
@@ -46,7 +47,7 @@ die "STILLBORN" if ((my $birth = daemon()) != 0);
 # PREP @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 $DUMPPATH =~ s?$?/? if (substr($DUMPPATH, -1, 1) ne "/");
 # HOST VARIABLES ----------
-my $HOST = `hostname`; chomp $HOST;
+my $HOST = hostname(); chomp $HOST;
 my $NAME = name();
 my $DUMP = '/tmp/'.$NAME.'_dump/'; # unique process hostside dump
 my $HOSTPING = '/tmp/PING';
