@@ -52,11 +52,10 @@ my $DUMP = '/tmp/'.$NAME.'_dump/'; # unique process hostside dump
 my $HOSTPING = '/tmp/PING';
 # NET VARIABLES -----------
 my $NFSPATH = '/usr/nfs/HIVE/';
-my $NFSPING = $NFSPATH.'PING';
 my $BIO = $NFSPATH.'BIO/'; # DEMON logs
+my $TPATH = '/HIVE/TODO/'; # current DEMONS
 # LOG VARIABLES -----------
 my $RAW = $BIO.$NAME; # output
-my $TPATH = '/HIVE/TODO/';
 my $QPATH = $FEED.'QUE/';
 my $TODO = $TPATH.$NAME; # leftovers that need to be put back in $FEED
 my $DONE = $FEED.'DONE_'.$NAME; # successful iterations
