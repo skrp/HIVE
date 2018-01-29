@@ -51,7 +51,7 @@ my $NAME = name();
 my $DUMP = '/tmp/'.$NAME.'_dump/'; # unique process hostside dump
 my $HOSTPING = '/tmp/PING';
 # NET VARIABLES -----------
-my $NFSPATH = "/HIVE/";
+my $NFSPATH = '/usr/nfs/HIVE/';
 my $NFSPING = $NFSPATH.'PING';
 my $BIO = $NFSPATH.'BIO/'; # DEMON logs
 # LOG VARIABLES -----------
