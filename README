@@ -1,6 +1,10 @@
 ####################################################
 # DEMON - unix daemon network goons
 
+SPIDR - newer non-API format 
+DEMON - older API format
+
+# INTRO ############################################
 Everpresent daemons that work on network-dictated-ques for distributive-computation of massive-tasks.
 
 {1} Structure = [[ host-location, nfs-locations ]]
